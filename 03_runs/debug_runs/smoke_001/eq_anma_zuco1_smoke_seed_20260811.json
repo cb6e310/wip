@@ -1,0 +1,104 @@
+{
+  "status": "NON_PAPER_SMOKE",
+  "seed": 20260811,
+  "device": "cuda",
+  "task": "task2_nr",
+  "dataset_root": "01_data_protocol/datasets",
+  "split": "trial_level_random",
+  "data_definition": {
+    "trial": "one sentence for one subject",
+    "epoch": "one valid word rawEEG segment from the MAT sentenceData structure",
+    "spectral_feature": "Hanning-window FFT band power, 105 channels x 8 bands",
+    "sampling_rate_hz": 500.0,
+    "bands_hz": [
+      {
+        "name": "theta1",
+        "low": 4.0,
+        "high": 6.0
+      },
+      {
+        "name": "theta2",
+        "low": 6.5,
+        "high": 8.0
+      },
+      {
+        "name": "alpha1",
+        "low": 8.5,
+        "high": 10.0
+      },
+      {
+        "name": "alpha2",
+        "low": 10.5,
+        "high": 13.0
+      },
+      {
+        "name": "beta1",
+        "low": 13.5,
+        "high": 18.0
+      },
+      {
+        "name": "beta2",
+        "low": 18.5,
+        "high": 30.0
+      },
+      {
+        "name": "gamma1",
+        "low": 30.5,
+        "high": 40.0
+      },
+      {
+        "name": "gamma2",
+        "low": 40.0,
+        "high": 49.5
+      }
+    ],
+    "sequence": "valid word units in sentence order; masked mean pooling",
+    "text": "frozen HashingVectorizer n_features=512"
+  },
+  "extraction": {
+    "subjects": 12,
+    "sentences_seen": 3600,
+    "sentences_kept": 3487,
+    "words_seen": 76991,
+    "words_kept": 51089
+  },
+  "n_trials": 3487,
+  "n_subjects": 12,
+  "n_unique_stimuli": 300,
+  "eeg_unit_shape": [
+    840
+  ],
+  "max_word_units": 57,
+  "standardization": {
+    "train_feature_median_abs_max": 1.2853361368179321,
+    "train_iqr_min": 1e-06,
+    "train_iqr_max": 2.1103995740413666,
+    "all_standardized_abs_max": 59.84740447998047
+  },
+  "config": {
+    "proj_dim": 128,
+    "epochs": 20,
+    "batch_size": 64,
+    "lr": 0.001,
+    "temperature": 0.07,
+    "train_fraction": 0.8,
+    "num_candidates": 10,
+    "max_trials": 0
+  },
+  "metrics": {
+    "recall_at_1_n10": 0.2607449856733524,
+    "paired_verification_auroc": 0.8082733310892358,
+    "n_test_trials": 698,
+    "n_test_unique_stimuli": 280,
+    "n_candidates": 10
+  },
+  "elapsed_sec": 97.9109913110733,
+  "simplifications": [
+    "trial-level random split instead of joint subject-and-stimulus holdout",
+    "single seed and N=10 only",
+    "A1 front-end uses FFT band power for the smoke path; fixed-window sensitivity is not run",
+    "masked mean plus linear projections instead of the preregistered Transformer alignment encoder",
+    "frozen hashing text features instead of a pretrained text encoder",
+    "no Stage-1 sham probes, OOF u/u_min/G_k, ANMA-orig, or EQ-ANMA weighting"
+  ]
+}

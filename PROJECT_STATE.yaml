@@ -1,6 +1,6 @@
 schema_version: 1
-updated_at: "2026-08-13T15:54:00+08:00"
-updated_by_run: 2026-08-13_008_a3_preparation
+updated_at: "2026-08-13T17:36:16+08:00"
+updated_by_run: 2026-08-13_009_state_reconciliation
 
 project:
   name: trustworthy_subject_general_eeg_text_alignment
@@ -62,11 +62,27 @@ blockers:
       - S0_A1_ADMISSION
       - S0_ALIGN_UNIT_COST
     resolution: Author-approve the band edges/window/unit convention and add it to the data-card/protocol artifact before paper-level admission.
-  - id: B_TMNRED_DATA_CARD_AUDIT
-    reason: TMNRED is downloaded and its event-level assignment inventory is recorded, but leakage audits are pending and participants.tsv header/row alignment requires manual review before the data card can be accepted.
+  - id: B_TMNRED_EXPERIMENT_PROTOCOL
+    reason: Structural TMNRED data-card audit is complete, but experiment protocol is not cleared; demographics are unusable, one subject-session is incomplete, license metadata disagree, and joint split/session/candidate rules are pending.
     blocks:
-      - S0_TMNRED_DATA_CARD
-    resolution: Resolve the participant metadata alignment, complete stimulus/session/near-duplicate leakage audits, and then review the TMNRED data card.
+      - S0_CANDIDATES
+      - S0_JOINT_SPLIT
+      - S0_LEAKAGE_AUDIT
+    resolution: Resolve the incomplete cell, license discrepancy, session policy, candidate policy, and joint subject-stimulus split; retain the completed structural card as evidence.
+  - id: B_ZUCO2_REFERENCE_EXCLUSIONS
+    reason: Full audit counts malformed, placeholder, missing word groups and nested fixation leaves, but no sample exclusion or imputation rule is frozen.
+    blocks:
+      - S0_JOINT_SPLIT
+      - S0_A1_ADMISSION
+      - S0_LEAKAGE_AUDIT
+    resolution: Author-approve and register the exclusion and empty-reference policy before fitting normalization, probes, or splits.
+  - id: B_ZUCO2_STIMULUS_JOIN
+    reason: All summary sentence texts match the material sequence across subjects, but duplicate source-text slots remain ambiguous (NR=10, TSR=34); no paragraph/sentence ID join is selected.
+    blocks:
+      - S0_CANDIDATES
+      - S0_JOINT_SPLIT
+      - S0_LEAKAGE_AUDIT
+    resolution: Verify paragraph_id and sentence_id correspondence and freeze a deterministic identity join before candidate or split construction.
   - id: B_SEMANTIC_ITEM_UNRESOLVED
     reason: The guide permits content-word type or semantic cluster, but the project has not frozen one choice against ZuCo 2.0 support counts.
     blocks:
@@ -88,9 +104,9 @@ blockers:
       - S0_A3_CONTAMINATION_CHECK
     resolution: Obtain a corpus-level no-ZuCo/natural-reading attestation, record checkpoint and corpus rights, approve and hash an exact-name or spatial EGI128-to-canonical map with coverage, then run the real 500-to-200 preprocessing and no-gradient 200D extraction smoke.
 
-last_completed_task: S0_A1_FRONTEND
+last_completed_task: S0_DATA_CARD
 recommended_next_task: S0_H_DEFINITION
-last_run: runs/2026-08-13_008_a3_preparation.md
+last_run: runs/2026-08-13_009_state_reconciliation.md
 
 do_not_do_yet:
   - Do not treat the ZuCo 1.0 smoke as paper evidence.
@@ -99,6 +115,7 @@ do_not_do_yet:
   - Do not add A4 without an author-approved definition in the governing guide.
   - Do not treat the A1 synthetic contract self-check as real-data admission evidence.
   - Do not run the A1 fixed-window path on 128-channel ZuCo data without an explicit verified channel map.
+  - Do not treat either structural data-card PASS as experiment-ready; unresolved joins, exclusions, splits, licenses, and semantic units remain active blockers.
   - Do not include A3 in T6 or claim contamination clearance until the CO-N7 audit blockers are resolved.
   - Do not use the A3 synthetic identity channel positions as a semantic EGI-to-LaBraM mapping.
   - Do not substitute CBraMod or REVE-Base for the guide-frozen A3 backbone without an author-approved specification change.
