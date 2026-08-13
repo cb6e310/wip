@@ -1,0 +1,30 @@
+schema_version: '1.0'
+purpose: raw ZuCo2 channel inventory and unresolved A3 mapping contract
+source_dataset: zuco_2.0
+raw_glob: 'task* - */Raw data/*/*_EEG.mat'
+raw_channel_count: 128
+raw_sampling_rate_hz: 500
+raw_label_sequence: E1_to_E128
+raw_label_sequence_sha256: cd6df81aad081504ce7036670df2792e0c24a5712cea7ca6db809a2adce54432
+raw_order_stability: VERIFIED_ACROSS_252_FILES
+raw_chanloc_geometry: absent_in_continuous_raw_files
+summary_channel_count: 105
+summary_channel_warning: summary_preprocessed_105_is_not_the_A3_continuous_raw_input
+model_target: LaBraM-Base
+model_input_positions: 128_plus_cls
+model_channel_names: NOT_FROZEN
+source_to_model_indices: NOT_FROZEN
+coverage: 0.0
+mapping_status: BLOCKED
+mapping_rule: do not assume EGI E1..E128 equals LaBraM canonical positional order
+candidate_geometry_source: MNE GSN-HydroCel-128 (candidate only; not frozen)
+required_resolution:
+  - approve authoritative HydroCel-128 geometry and coordinate transform
+  - choose exact-name subset or spatial interpolation policy
+  - publish ordered model names, source indices, coverage, and mapping hash
+  - rerun real-EEG extraction smoke after approval
+mapping_representation:
+  exact_reorder_supported: true
+  spatial_mixing_matrix_supported: true
+  matrix_shape: '[128,128]'
+  matrix_hash: NOT_FROZEN

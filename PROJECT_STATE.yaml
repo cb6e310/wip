@@ -1,0 +1,104 @@
+schema_version: 1
+updated_at: "2026-08-13T15:54:00+08:00"
+updated_by_run: 2026-08-13_008_a3_preparation
+
+project:
+  name: trustworthy_subject_general_eeg_text_alignment
+  spec_version: v3.4
+  spec_path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_4_2026-08-11.md
+  execution_plan_path: guide/EEG_Text_Bprime_Execution_Plan_v3_2026-08-11_to_Submission.md
+  server_root: /home/song/projects/trust_align
+  python_path: /home/song/projects/trust_align/.venv/bin/python
+
+scope:
+  primary_dataset: zuco_2_0
+  additional_dataset: tmnred
+  legacy_non_paper_evidence: zuco_1_0_smoke
+  backbones:
+    spec_defined:
+      - A1
+      - A3
+    requested:
+      - A1
+      - A3
+      - A4
+    active:
+      - A1
+      - A3
+    pending_definition:
+      - A4
+
+execution:
+  stage: stage_0
+  status: IN_PROGRESS
+  current_gate: null
+
+route:
+  primary: EQ-ANMA
+  backup: CSPE
+  locked: null
+  locked_by_run: null
+
+gates:
+  gate_a:
+    status: BLOCKED
+    outcome: null
+    evidence_grade: null
+  gate_b:
+    status: BLOCKED
+    outcome: null
+    evidence_grade: null
+
+blockers:
+  - id: B_ZUCO2_CHANNEL_MAP
+    reason: ZuCo 2.0 word-level summary EEG has 105 channels, while continuous EEGLAB files have 128 channels; no verified 128-to-105 channel order/drop map is present.
+    blocks:
+      - S0_A1_ADMISSION
+      - S0_ALIGN_UNIT_COST
+    resolution: Inspect the raw channel labels/order, freeze an explicit map with coverage, and use it for the ET-free fixed-window sensitivity.
+  - id: B_A1_BANDPOWER_FORMULA
+    reason: The guide names eight bands but does not fully freeze the exact frequency edges, PSD window, and signal-unit convention; the implementation records the legacy smoke convention as provisional.
+    blocks:
+      - S0_A1_ADMISSION
+      - S0_ALIGN_UNIT_COST
+    resolution: Author-approve the band edges/window/unit convention and add it to the data-card/protocol artifact before paper-level admission.
+  - id: B_TMNRED_DATA_CARD_AUDIT
+    reason: TMNRED is downloaded and its event-level assignment inventory is recorded, but leakage audits are pending and participants.tsv header/row alignment requires manual review before the data card can be accepted.
+    blocks:
+      - S0_TMNRED_DATA_CARD
+    resolution: Resolve the participant metadata alignment, complete stimulus/session/near-duplicate leakage audits, and then review the TMNRED data card.
+  - id: B_SEMANTIC_ITEM_UNRESOLVED
+    reason: The guide permits content-word type or semantic cluster, but the project has not frozen one choice against ZuCo 2.0 support counts.
+    blocks:
+      - S0_SEMANTIC_ITEM
+    resolution: Complete the ZuCo 2.0 data card, compare support coverage, and freeze one item definition before Stage-1 probes.
+  - id: B_GATE_A_POPULATION_E5
+    reason: Unified spec Appendix E-5 leaves the Gate A pilot statistical population unresolved.
+    blocks:
+      - S0_GATE_A_POPULATION_E5
+    resolution: Record an author-approved outer-training-OOF or multi-outer-cell population rule before Gate A.
+  - id: B_A4_SPEC_CONFLICT
+    reason: The requested third backbone A4 is not defined in the v3.4 guide; section 4.7 freezes A1/A3 and says not to substitute a third backbone.
+    blocks:
+      - S0_A4_DEFINITION
+    resolution: Obtain an explicit author decision and a guide-level definition before adding A4 to active backbones or any experiment.
+  - id: B_A3_NOT_VALIDATED
+    reason: LaBraM-Base checkpoint bytes/hash, official release pooling/load contract, required runtime modules, and the 252-file raw E1..E128 order now pass engineering checks; CO-N7 corpus exclusion, checkpoint/corpus rights, an approved EGI128-to-canonical map, and real EEG end-to-end extraction remain unresolved.
+    blocks:
+      - S0_A3_CONTAMINATION_CHECK
+    resolution: Obtain a corpus-level no-ZuCo/natural-reading attestation, record checkpoint and corpus rights, approve and hash an exact-name or spatial EGI128-to-canonical map with coverage, then run the real 500-to-200 preprocessing and no-gradient 200D extraction smoke.
+
+last_completed_task: S0_A1_FRONTEND
+recommended_next_task: S0_H_DEFINITION
+last_run: runs/2026-08-13_008_a3_preparation.md
+
+do_not_do_yet:
+  - Do not treat the ZuCo 1.0 smoke as paper evidence.
+  - Do not start Gate A or Gate B before their prerequisites and population rule are validated.
+  - Do not lock a route or start the main experiment before ROUTE_LOCK is DONE.
+  - Do not add A4 without an author-approved definition in the governing guide.
+  - Do not treat the A1 synthetic contract self-check as real-data admission evidence.
+  - Do not run the A1 fixed-window path on 128-channel ZuCo data without an explicit verified channel map.
+  - Do not include A3 in T6 or claim contamination clearance until the CO-N7 audit blockers are resolved.
+  - Do not use the A3 synthetic identity channel positions as a semantic EGI-to-LaBraM mapping.
+  - Do not substitute CBraMod or REVE-Base for the guide-frozen A3 backbone without an author-approved specification change.

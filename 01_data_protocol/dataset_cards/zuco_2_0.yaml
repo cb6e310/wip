@@ -1,0 +1,172 @@
+schema_version: 1
+dataset: zuco_2_0
+status: DATA_CARD_STRUCTURAL_PASS_EXPERIMENT_BLOCKED
+card_run_id: 2026-08-13_007_data_prep
+seed: 20260813
+source:
+  archive: 01_data_protocol/datasets/_downloads/zuco2.0-osfstorage.zip
+  extracted_root: 01_data_protocol/datasets/zuco_2.0
+  release_layout: ZuCo 2.0 OSF extraction as present on project server
+  archive_integrity:
+    zip_entries_total: 1352
+    regular_file_entries: 1350
+    directory_entries: 2
+    archive_uncompressed_bytes: 128920389085
+    extracted_regular_files: 1350
+    extracted_bytes: 128920389085
+    path_set_match: true
+    duplicate_archive_paths: 0
+    crc_bad_entries: 0
+  license_or_access:
+    status: SOURCE_METADATA_NOT_REASSESSED_IN_THIS_RUN
+    note: Availability is recorded by the prior extraction verification; licensing is not inferred here.
+coverage:
+  summary_subjects:
+    count: 18
+    ids: [YAC, YAG, YAK, YDG, YDR, YFR, YFS, YHS, YIS, YLS, YMD, YMS, YRH, YRK, YRP, YSD, YSL, YTL]
+  answers_only_subjects_observed: [YMH]
+  answers_only_note: YMH has answer files but no complete summary/raw subject inventory; it is excluded from the 18-subject population.
+  tasks:
+    task1_NR:
+      material_body_files: 7
+      material_body_rows: 370
+      control_question_files_excluded: 7
+      summary_mat_files: 18
+      sentence_slots_per_summary_file: 349
+      raw_eeg_files: 126
+      raw_et_files: 126
+      raw_sessions_per_subject: 7
+      material_glob: task_materials/nr_[1-7].csv
+    task2_TSR:
+      material_body_files: 7
+      material_body_rows: 411
+      control_question_files: 0
+      summary_mat_files: 18
+      sentence_slots_per_summary_file: 390
+      raw_eeg_files: 126
+      raw_et_files: 126
+      raw_sessions_per_subject: 7
+      material_glob: task_materials/tsr_[1-7].csv
+  coverage_status: SOURCE_FILE_COUNTS_AND_FULL_REFERENCE_AUDIT_VERIFIED; MATERIAL_JOIN_NOT_FROZEN
+assignment_support:
+  unit: sentence_slot_rawData_validity
+  note: This is a source-reference support inventory, not a frozen stimulus identity or split.
+  task1_NR:
+    subject_count: 18
+    sentence_slot_count: 349
+    support_range_subjects: [14, 18]
+    missing_support_cell_count: 253
+    placeholder_cell_count: 367
+  task2_TSR:
+    subject_count: 18
+    sentence_slot_count: 390
+    support_range_subjects: [14, 18]
+    missing_support_cell_count: 269
+    placeholder_cell_count: 432
+materials:
+  format: semicolon_delimited_csv_without_header
+  body_columns: [paragraph_id_raw, sentence_id_raw, text_raw, condition_raw]
+  body_column_width: 4
+  nr_files: [nr_1.csv, nr_2.csv, nr_3.csv, nr_4.csv, nr_5.csv, nr_6.csv, nr_7.csv]
+  nr_body_rows: 370
+  nr_control_question_files_excluded: [nr_1_control_questions.csv, nr_2_control_questions.csv, nr_3_control_questions.csv, nr_4_control_questions.csv, nr_5_control_questions.csv, nr_6_control_questions.csv, nr_7_control_questions.csv]
+  tsr_files: [tsr_1.csv, tsr_2.csv, tsr_3.csv, tsr_4.csv, tsr_5.csv, tsr_6.csv, tsr_7.csv]
+  tsr_body_rows: 411
+  interpretation: Preserve all source columns; paragraph/sentence identifiers are not silently renamed to summary indices.
+  duplicate_policy: Inventory only; no deduplication applied.
+  text_join:
+    all_summary_slots_text_match: true
+    sequence_consistent_across_18_subjects: true
+    task1_nr_ambiguous_duplicate_text_slots: 10
+    task2_tsr_ambiguous_duplicate_text_slots: 34
+    unmatched_slots: 0
+    status: AMBIGUOUS_DUPLICATE_TEXT_NO_ID_JOIN
+schema:
+  summary_mat:
+    format: MATLAB_v7_3_HDF5
+    files: 36
+    root_groups: ["#refs#", sentenceData]
+    sentence_slots: {task1_NR: 349, task2_TSR: 390}
+    word_level_summary_eeg_channels: 105
+    word_level_example_shape: [52, 105]
+    sentence_rawdata_example_shape: [4760, 105]
+    reference_handling: MATLAB object references are preserved; invalid, placeholder, Group, container, and numeric leaf layers are counted separately.
+  continuous_raw:
+    format: MATLAB_v5
+    eeg_files: 252
+    et_files: 252
+    eeg_channels: 128
+    sampling_rate_hz: 500
+    eeg_example_shape: [128, 225411]
+    et_columns: 7
+    deep_inspection: YAC session 1 EEG and ET per task; all 504 raw inventory records PASS with MATLAB_v5 fallback.
+    channel_mapping: UNRESOLVED; no 128_to_105 map inferred
+  official_reader:
+    path: 01_data_protocol/datasets/zuco_2.0/scripts/python_reader/data_loading_helpers.py
+    functions_used_or_exposed: [extract_all_fixations, extract_word_level_data, load_matlab_string, is_real_word]
+    caveat: Reader is a source helper, not an experiment split/exclusion policy.
+reference_inventory:
+  audit_artifact_json: 04_results/audits/zuco2_data_audit.json
+  audit_artifact_yaml: 04_results/audits/zuco2_data_audit.yaml
+  audit_run_id: 2026-08-13_007_data_prep
+  audit_scope: all 36 summary files, all sentence and word references, all raw file inventory, one deep EEG and ET MATLAB_v5 inspection per task
+  task1_NR:
+    sentence_rawdata_valid_total: 5915
+    sentence_rawdata_placeholder_total: 367
+    word_slots_total: 119271
+    word_content_valid_total: 119271
+    word_group_valid_total: 6083
+    word_group_missing_total: 199
+    word_raw_eeg_container_valid_total: 117920
+    word_raw_eeg_word_with_valid_fixation_total: 79639
+    word_raw_eeg_fixation_valid_total: 122213
+    word_raw_eeg_fixation_malformed_total: 76795
+  task2_TSR:
+    sentence_rawdata_valid_total: 6588
+    sentence_rawdata_placeholder_total: 432
+    word_slots_total: 143831
+    word_content_valid_total: 143831
+    word_group_valid_total: 6764
+    word_group_missing_total: 256
+    word_raw_eeg_container_valid_total: 143689
+    word_raw_eeg_word_with_valid_fixation_total: 75518
+    word_raw_eeg_fixation_valid_total: 109703
+    word_raw_eeg_fixation_malformed_total: 136375
+  exclusion_rule: NONE_FROZEN; the audit does not drop or impute samples.
+leakage_and_split:
+  status: NOT_RUN
+  required: subject_and_stimulus_joint_holdout
+  subject_folds: 6
+  text_folds: 5
+  forbidden_before_freeze: [stimulus_id_join, near_duplicate_filter, candidate_pool, semantic_cluster, normalization_fit, channel_selection]
+semantic_units:
+  status: UNRESOLVED
+  legal_options_from_guide: [content_word_type, semantic_cluster]
+  support_rule: n_obs_ge_20_and_n_subjects_ge_5
+  selection: NONE
+protocol_blockers:
+  - id: B_ZUCO2_CHANNEL_MAP
+    resolution: Freeze source-verified EGI128_to_summary105 map with label order and coverage.
+  - id: B_A1_BANDPOWER_FORMULA
+    resolution: Author-approve exact band edges, PSD/window, and signal units.
+  - id: B_ZUCO2_REFERENCE_EXCLUSIONS
+    resolution: Pre-register malformed/placeholder/empty reference handling after audit review.
+  - id: B_ZUCO2_STIMULUS_JOIN
+    resolution: Resolve duplicate-text slots with paragraph_id/sentence_id evidence before split construction.
+  - id: B_SEMANTIC_ITEM_UNRESOLVED
+    resolution: Select content-word or semantic-cluster unit after support inventory.
+validation_boundary:
+  extraction_and_source_schema_only: true
+  no_model_results: true
+  no_split: true
+  no_channel_map: true
+  no_bandpower: true
+  no_semantic_item: true
+  experiment_ready: false
+artifacts:
+  loader: 02_code/src/data/zuco2_loader.py
+  audit_script: 02_code/scripts/audit_zuco2_data.py
+  focused_tests: 02_code/tests/test_zuco2_loader.py
+  data_card: 01_data_protocol/dataset_cards/zuco_2_0.yaml
+  audit_json: 04_results/audits/zuco2_data_audit.json
+  audit_yaml: 04_results/audits/zuco2_data_audit.yaml

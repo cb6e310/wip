@@ -1,0 +1,65 @@
+schema_version: 1
+run_id: 2026-08-13_006_a1_a3
+backbone: A1
+status: ENGINEERING_CONTRACT_PASS_SCIENTIFIC_ADMISSION_BLOCKED
+source_spec: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_4_2026-08-11.md#4.7.1
+config:
+  n_channels: 105
+  feature_dim: 840
+  feature_order: channel_major
+  sampling_rate_hz: 500.0
+  bands:
+    - {name: theta1, low_hz: 4.0, high_hz: 6.0}
+    - {name: theta2, low_hz: 6.5, high_hz: 8.0}
+    - {name: alpha1, low_hz: 8.5, high_hz: 10.0}
+    - {name: alpha2, low_hz: 10.5, high_hz: 13.0}
+    - {name: beta1, low_hz: 13.5, high_hz: 18.0}
+    - {name: beta2, low_hz: 18.5, high_hz: 30.0}
+    - {name: gamma1, low_hz: 30.5, high_hz: 40.0}
+    - {name: gamma2, low_hz: 40.0, high_hz: 49.5}
+  segmentation_primary: eyetracking_word_level
+  segmentation_sensitivity: et_free_fixed_window_1s_stride_0.5s
+  normalization: train_quantile_clip_0.5_99.5_then_median_iqr_robust_zscore_then_transform_clip
+  normalization_fit_scope: outer_train_fold_only
+  forbidden_inputs:
+    - sequence_length
+    - unit_count
+    - eye_tracking_scalars
+  alignment_encoder:
+    architecture: transformer_encoder
+    layers: 2
+    d_model: 256
+    heads: 8
+    feedforward: 512
+    d_align: 256
+    parameter_limit: 20000000
+  tensor_contract:
+    input_features: (B,T_max,C*8) float32
+    input_mask: (B,T_max) bool
+    output: (B,d_align)
+  initialization_seed: 20260813
+  fold: A1-contract-1
+  method: A1
+  config_hash: 163c8d99624c95d15fd68d76e6ce8d7d30f2f140021c807bcef7aa1d62a2eb97
+implementation:
+  files:
+    - 02_code/src/backbones/a1_spectral.py
+    - 02_code/tests/test_a1_contract.py
+    - 02_code/scripts/a1_contract_selfcheck.py
+  unit_tests: 7
+  unit_tests_passed: 7
+  selfcheck_status: PASS
+  selfcheck_elapsed_seconds: 0.451
+  source_sha256:
+    02_code/src/backbones/a1_spectral.py: 2a3c22d2c7a738b354395f83d46938f9427e23b437512d02586d3ff14e77b69f
+    02_code/tests/test_a1_contract.py: 0527b1571a749bafc471e3e1eafc2c8a2ffc44912a476deda59fdf12e9647bc4
+  selfcheck_shapes:
+    word_sequence: [4, 840]
+    fixed_sequence: [7, 840]
+    padded: [2, 7, 840]
+    mask: [2, 7]
+    output: [2, 256]
+scientific_freeze_notes:
+  - Frequency edges and FFT/Hann/PSD/unit convention are recorded from the legacy smoke implementation as an explicit provisional configuration; guide v3.4 does not fully specify them.
+  - Fixed-window real-data use is blocked until an author/data-card verified 128-to-105 channel map is supplied; the API rejects implicit first-105 selection.
+  - This artifact validates the tensor/engineering contract only; it is not A1 admission, Gate A evidence, or a paper result.

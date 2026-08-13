@@ -1,0 +1,47 @@
+# Local environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# EEG datasets and downloaded archives
+01_data_protocol/datasets/
+*.mat
+*.h5
+*.hdf5
+*.edf
+*.bdf
+*.fif
+*.set
+*.fdt
+*.zip
+*.tar
+*.tar.gz
+
+# Model weights and generated binary artifacts
+02_code/vendor/checkpoints/
+*.pth
+*.pt
+*.ckpt
+*.safetensors
+*.onnx
+
+# Local run outputs and temporary files
+03_runs/debug_runs/
+04_results/figures/
+04_results/tables/
+*.log
+*.tmp
+*.swp
+
+# Secrets and machine-specific configuration
+.env
+.env.*
+*.pem
+*.key
+*_credentials.*
+*_token.*

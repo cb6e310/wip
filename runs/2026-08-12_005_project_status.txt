@@ -1,0 +1,52 @@
+PROJECT SNAPSHOT
+
+Current stage: stage_0 (IN_PROGRESS)
+Current route: unlocked | primary=EQ-ANMA | backup=CSPE
+Completed prerequisites:
+- P0_ZUCO1_SMOKE: Preserve the legacy ZuCo 1.0 end-to-end smoke run as non-paper evidence
+- S0_TMNRED_AVAILABILITY: Verify lawful TMNRED availability and subject-level metadata
+Active blockers:
+- B_ZUCO2_NOT_EXTRACTED: The verified 117482490882-byte ZuCo 2.0 archive is intact, but 01_data_protocol/datasets/zuco_2.0 is empty; schema and subject/stimulus coverage are not yet verified.
+- B_TMNRED_DATA_CARD_AUDIT: TMNRED is downloaded and its event-level assignment inventory is recorded, but leakage audits are pending and participants.tsv header/row alignment requires manual review before the data card can be accepted.
+- B_SEMANTIC_ITEM_UNRESOLVED: The guide permits content-word type or semantic cluster, but the project has not frozen one choice against ZuCo 2.0 support counts.
+- B_GATE_A_POPULATION_E5: Unified spec Appendix E-5 leaves the Gate A pilot statistical population unresolved.
+- B_A4_SPEC_CONFLICT: The requested third backbone A4 is not defined in the v3.4 guide; section 4.7 freezes A1/A3 and says not to substitute a third backbone.
+
+Ready tasks:
+1. S0_ZUCO2_EXTRACT_VERIFY: Extract ZuCo 2.0 and verify archive, file schema, subjects, and stimulus coverage
+2. S0_H_DEFINITION: Freeze legal language history H and leakage assertions
+3. S0_ANMA_ORIG: Implement and validate the ANMA-orig reference baseline on synthetic data
+4. S0_DIRECT_U_PLUS: Implement the preregistered strongest direct u+ weighting control
+5. S0_A3_CONTAMINATION_CHECK: Verify A3 LaBraM pretraining contamination, license, checkpoint, and channel map
+
+Recommended next task:
+S0_ZUCO2_EXTRACT_VERIFY: Extract ZuCo 2.0 and verify archive, file schema, subjects, and stimulus coverage
+Why: The verified archive is intact and the target extraction directory is empty; this is the first concrete action on the primary dataset.
+
+Do not do yet:
+- Do not treat the ZuCo 1.0 smoke as paper evidence.
+- Do not start Gate A or Gate B before their prerequisites and population rule are validated.
+- Do not lock a route or start the main experiment before ROUTE_LOCK is DONE.
+- Do not add A4 without an author-approved definition in the governing guide.
+
+Blocked downstream:
+- S0_DATA_CARD: Cannot build a verified card while the primary archive is not extracted.
+- S0_SEMANTIC_ITEM: The guide gives two legal item granularities; support counts on ZuCo 2.0 must decide which one is viable.
+- S0_CANDIDATES: Candidate pool sizes and stimulus identities cannot be verified until the data card exists.
+- S0_JOINT_SPLIT: Joint splitting depends on verified subject-stimulus metadata and the frozen item unit.
+- S0_LEAKAGE_AUDIT: The split and candidate evidence are not yet available.
+- S0_A1_ADMISSION: Admission requires the primary data card, joint split, item definition, and completed A1 contract.
+- S0_GATE_A_POPULATION_E5: Appendix E-5 identifies an internal pilot-versus-Gate-A population ambiguity that the guide does not resolve.
+- S0_ALIGN_UNIT_COST: A1 can be measured only after the primary data card and contract are complete.
+- STAGE1_PROBES: Stage 1 is forbidden until the protocol, A1 admission, and Gate A population rule are frozen.
+- SHAM_VALIDATION: No Stage-1 probe results exist.
+- GATE_A: Gate A has no valid OOF/sham evidence and its pilot population rule is unresolved.
+- S0_EQ_ANMA_CORE: EQ-ANMA weights cannot be built before semantic units, frozen Stage-1 observations, and the reference baseline exist.
+- GATE_B: Gate B cannot start before Gate A passes and both weighting paths are validated.
+- ROUTE_LOCK: Neither gate has a valid decision, so no route may be locked.
+- MAIN_EXPERIMENT: Main experiments are prohibited before route lock and protocol audit.
+- S0_TMNRED_DATA_CARD: Download is complete, but participant metadata alignment and leakage audits are not yet resolved; do not treat the balanced event inventory as a cleared experimental split.
+- S0_A4_DEFINITION: A4 is requested in project context but has no definition in the governing v3.4 guide, which explicitly freezes A1/A3 and forbids a third-backbone substitute.
+
+Validator:
+VALID

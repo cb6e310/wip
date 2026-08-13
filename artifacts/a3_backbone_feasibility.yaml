@@ -1,0 +1,91 @@
+schema_version: '1.0'
+purpose: engineering feasibility audit only; no backbone substitution is authorized
+spec_route: A3 is LaBraM-Base only, T6/K7 only, and remains blocked until CO-N7 and mapping are cleared
+contamination_policy: omission from a published corpus list is not a negative proof
+candidates:
+  labram_base:
+    role: specified_A3
+    official_repo: https://github.com/935963004/LaBraM
+    paper: https://arxiv.org/html/2405.18765
+    pretraining_summary: about 2534.78 hours and 20 datasets; no literal ZuCo entry found
+    contamination_status: UNKNOWN
+    checkpoint_path: 02_code/vendor/checkpoints/labram-base.pth
+    checkpoint_sha256: 7c50583826afac76c4ab18f43d958df40496c8229accc09ed6a227c9bb57c37c
+    checkpoint_bytes: 96612769
+    checkpoint_url: https://raw.githubusercontent.com/935963004/LaBraM/d52cb6d1801bb038e10ea1b6b3292c0bd569a9d5/checkpoints/labram-base.pth
+    checkpoint_file_commit: d52cb6d1801bb038e10ea1b6b3292c0bd569a9d5
+    source_commit: c431221e6cfd23dbfa9950e0180682fb322b0548
+    code_license: MIT
+    weights_and_corpus_rights: UNKNOWN
+    input_shape: '[B,C,patches,200]'
+    base_embedding_dim: 200
+    base_depth: 12
+    base_heads: 10
+    position_slots_excluding_cls: 128
+    time_slots: 16
+    runtime_smoke: PASS_on_synthetic_input
+    constructor_contract:
+      init_values: 0.1
+      use_mean_pooling: true
+      qkv_bias: false
+      pooling_order: fc_norm_then_mean_non_cls_patch_tokens
+      missing_expected: [fc_norm.weight, fc_norm.bias]
+      extra_expected: [norm.weight, norm.bias, mask_token, lm_head.weight, lm_head.bias]
+      frozen_parameters: true
+    preprocessing_contract:
+      source_sampling_rate_hz: 500
+      bandpass_hz: [0.1, 75.0]
+      notch_hz: 50.0
+      filter_order: 4
+      notch_q: 30.0
+      filter_parameters_status: candidate_not_guide_frozen
+      resample_to_hz: 200
+      release_scale_divisor: 100.0
+      provenance: official_engine_for_finetuning.py
+    real_extraction: BLOCKED
+    blockers:
+      - CO-N7 corpus manifest or author attestation
+      - checkpoint and pretraining-corpus rights metadata
+      - approved EGI128 to canonical model-channel mapping
+  cbramod:
+    role: contingency_feasibility_only
+    official_repo: https://github.com/wjq-learning/CBraMod
+    paper: https://arxiv.org/html/2412.07236
+    pretraining_summary: TUEG only; 19 channels; 200 Hz; 1 second patches; more than 9000 retained hours
+    contamination_status: UNKNOWN
+    checkpoint_url: https://huggingface.co/weighting666/CBraMod
+    checkpoint_sha256: 0792cb808c14e6b7a2bb2ce1dff379bc47bc54c49a779825bdfeb33bf8157178
+    code_license: MIT
+    weights_license_claim: Apache-2.0_on_HF_card
+    weights_and_corpus_rights: VERIFY_BEFORE_USE
+    input_shape: '[B,C,patches,200]'
+    native_embedding_dim: 200
+    runtime_smoke: NOT_RUN
+    suitability: closest_shape_interface_if_A3_spec_is_explicitly_reopened
+    blockers:
+      - CO-N7 negative proof still unavailable
+      - 128-channel inference and amplitude convention need smoke validation
+      - no substitution without author approval
+  reve_base:
+    role: contingency_feasibility_only
+    official_repo: https://github.com/elouayas/reve_eeg
+    paper: https://arxiv.org/html/2510.21585
+    model_card: https://huggingface.co/brain-bzh/reve-base
+    pretraining_summary: 61415 hours; 92 datasets; position-bank based inference
+    contamination_status: UNKNOWN
+    checkpoint_sha256: 8ecc650619598748286c2457f81f5c6bd12e8bb59db44f7b02af1955c44de8fe
+    weights_license: other_gated_responsible_use_terms
+    weights_and_corpus_rights: OPERATIONAL_AND_LEGAL_BLOCKER
+    input_shape: '[B,C,T] plus electrode positions [B,C,3]'
+    native_embedding_dim: 512
+    patch_samples: 200
+    patch_overlap: 20
+    runtime_smoke: NOT_RUN
+    suitability: not_drop_in; requires_frozen_position_bank_and_512_to_200_projection
+    blockers:
+      - gated access and non-redistribution terms
+      - CO-N7 dataset-ID-level audit
+      - approved HydroCel128 position mapping
+      - explicit fixed 512-to-200 projection
+      - no substitution without author approval
+decision: LaBraM remains the only specified A3 route; candidates are recorded for failure contingency review only

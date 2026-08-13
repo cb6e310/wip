@@ -1,0 +1,102 @@
+schema_version: 1
+run_id: 2026-08-13_006_a1_a3
+status: VERIFIED_EXTRACTION_SCHEMA_PARTIAL
+dataset: zuco_2_0
+archive:
+  path: 01_data_protocol/datasets/_downloads/zuco2.0-osfstorage.zip
+  size_bytes: 117482490882
+  zip_entries_total: 1352
+  regular_file_entries: 1350
+  directory_entries: 2
+  uncompressed_bytes: 128920389085
+  crc_bad_entries: 0
+extraction:
+  root: 01_data_protocol/datasets/zuco_2.0
+  regular_files: 1350
+  total_bytes: 128920389085
+  relative_paths_missing_from_extraction: 0
+  relative_paths_extra_in_extraction: 0
+  duplicate_archive_paths: 0
+  path_set_match: true
+subjects:
+  count: 18
+  ids:
+    - YAC
+    - YAG
+    - YAK
+    - YDG
+    - YDR
+    - YFR
+    - YFS
+    - YHS
+    - YIS
+    - YLS
+    - YMD
+    - YMS
+    - YRH
+    - YRK
+    - YRP
+    - YSD
+    - YSL
+    - YTL
+stimulus_sources:
+  task1_NR:
+    material_files: 7
+    material_glob: 01_data_protocol/datasets/zuco_2.0/task_materials/nr_*.csv
+    representative_sentence_slots_per_subject: 349
+  task2_TSR:
+    material_files: 7
+    material_glob: 01_data_protocol/datasets/zuco_2.0/task_materials/tsr_*.csv
+    representative_sentence_slots_per_subject: 390
+schema_observations:
+  summary_mat_example: 01_data_protocol/datasets/zuco_2.0/task1 - NR/Matlab files/resultsYAC_NR.mat
+  summary_mat_format: MATLAB_v7_3_HDF5
+  sentence_group: sentenceData
+  sentence_fields:
+    - allFixations
+    - content
+    - mean_a1
+    - mean_a1_diff
+    - mean_a2
+    - mean_a2_diff
+    - mean_b1
+    - mean_b1_diff
+    - mean_b2
+    - mean_b2_diff
+    - mean_g1
+    - mean_g1_diff
+    - mean_g2
+    - mean_g2_diff
+    - mean_t1
+    - mean_t1_diff
+    - omissionRate
+    - rawData
+    - word
+    - wordbounds
+  word_fields_observed:
+    - rawEEG
+    - rawET
+    - FFD
+    - GD
+    - GPT
+    - TRT
+    - SFD
+    - nFixations
+    - fixPositions
+  word_level_summary_eeg_channels: 105
+  word_level_example_shape: [52, 105]
+  sentence_rawdata_example_shape: [4760, 105]
+  continuous_raw_eeg_example:
+    file: 01_data_protocol/datasets/zuco_2.0/task1 - NR/Raw data/YAC/YAC_NR1_EEG.mat
+    channels: 128
+    sampling_rate_hz: 500
+    data_shape: [128, 225411]
+    et_columns: 7
+unresolved_for_data_card:
+  - Continuous EEGLAB channels are 128 while word-level summary EEG is 105; no verified 128-to-105 order/drop map was found.
+  - Some summary rawData and word fixation references are missing or malformed and need an explicit exclusion inventory.
+  - Exact A1 band edges, PSD window, and signal-unit convention are not fully frozen by guide v3.4.
+validation_boundary:
+  extraction_and_shallow_schema_only: true
+  no_subject_stimulus_split_or_model_result: true
+  legacy_zuco1_smoke_not_used_as_evidence: true
