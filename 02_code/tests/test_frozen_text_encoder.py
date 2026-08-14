@@ -14,7 +14,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from text.frozen_minilm import (  # noqa: E402
+    DEFAULT_CONFIG,
     MODEL_ID,
+    MAX_SEQ_LENGTH,
     OUTPUT_DIM,
     POOLING,
     REVISION,
@@ -25,11 +27,14 @@ from text.frozen_minilm import (  # noqa: E402
 )
 
 
-TOKENIZER_HASH = "1" * 64
+TOKENIZER_MANIFEST_HASH = "1" * 64
+ENCODER_CONFIG_MANIFEST_HASH = "2" * 64
+SCIENTIFIC_CONFIG_HASH = DEFAULT_CONFIG.scientific_config_hash
 
 
 class StubTokenizer:
-    model_max_length = 8
+    def __init__(self, model_max_length: int = 512) -> None:
+        self.model_max_length = model_max_length
 
     @staticmethod
     def _ids(text: str) -> list[int]:
@@ -70,9 +75,12 @@ class StubTokenizer:
 
 
 class StubModel(nn.Module):
-    def __init__(self) -> None:
+    def __init__(self, max_position_embeddings: int = 512) -> None:
         super().__init__()
-        self.config = SimpleNamespace(hidden_size=OUTPUT_DIM, max_position_embeddings=16)
+        self.config = SimpleNamespace(
+            hidden_size=OUTPUT_DIM,
+            max_position_embeddings=max_position_embeddings,
+        )
         self.embedding = nn.Embedding(64, OUTPUT_DIM)
         with torch.no_grad():
             values = torch.arange(64 * OUTPUT_DIM, dtype=torch.float32).reshape(64, OUTPUT_DIM)
@@ -90,7 +98,8 @@ class FrozenTextEncoderTests(unittest.TestCase):
         self.encoder = FrozenMiniLMEncoder(
             tokenizer=self.tokenizer,
             model=self.model,
-            tokenizer_hash=TOKENIZER_HASH,
+            tokenizer_manifest_hash=TOKENIZER_MANIFEST_HASH,
+            encoder_config_manifest_hash=ENCODER_CONFIG_MANIFEST_HASH,
         )
 
     def test_attention_mask_mean_pooling_numeric(self) -> None:
@@ -124,35 +133,87 @@ class FrozenTextEncoderTests(unittest.TestCase):
         )
 
     def test_cache_key_is_stable(self) -> None:
-        first = build_cache_key("exact text", tokenizer_hash=TOKENIZER_HASH)
-        second = build_cache_key("exact text", tokenizer_hash=TOKENIZER_HASH)
+        first = build_cache_key(
+            "exact text",
+            tokenizer_manifest_hash=TOKENIZER_MANIFEST_HASH,
+            encoder_config_manifest_hash=ENCODER_CONFIG_MANIFEST_HASH,
+            scientific_config_hash=SCIENTIFIC_CONFIG_HASH,
+        )
+        second = build_cache_key(
+            "exact text",
+            tokenizer_manifest_hash=TOKENIZER_MANIFEST_HASH,
+            encoder_config_manifest_hash=ENCODER_CONFIG_MANIFEST_HASH,
+            scientific_config_hash=SCIENTIFIC_CONFIG_HASH,
+        )
         self.assertEqual(first, second)
         self.assertEqual(len(first), 64)
 
     def test_cache_key_changes_with_text_and_tokenizer_hash(self) -> None:
-        baseline = build_cache_key("exact text", tokenizer_hash=TOKENIZER_HASH)
-        self.assertNotEqual(baseline, build_cache_key("exact text ", tokenizer_hash=TOKENIZER_HASH))
-        self.assertNotEqual(baseline, build_cache_key("exact text", tokenizer_hash="2" * 64))
+        baseline = self._cache_key("exact text")
+        self.assertNotEqual(baseline, self._cache_key("exact text "))
+        self.assertNotEqual(
+            baseline,
+            build_cache_key(
+                "exact text",
+                tokenizer_manifest_hash="3" * 64,
+                encoder_config_manifest_hash=ENCODER_CONFIG_MANIFEST_HASH,
+                scientific_config_hash=SCIENTIFIC_CONFIG_HASH,
+            ),
+        )
 
     def test_cache_key_changes_with_revision_pooling_and_config_hash(self) -> None:
-        baseline = build_cache_key("x", tokenizer_hash=TOKENIZER_HASH)
+        baseline = self._cache_key("x")
         self.assertNotEqual(
             baseline,
-            build_cache_key("x", tokenizer_hash=TOKENIZER_HASH, revision=REVISION + "-changed"),
+            self._cache_key("x", revision=REVISION + "-changed"),
         )
         self.assertNotEqual(
             baseline,
-            build_cache_key("x", tokenizer_hash=TOKENIZER_HASH, pooling=POOLING + "-changed"),
+            self._cache_key("x", pooling=POOLING + "-changed"),
         )
         self.assertNotEqual(
             baseline,
-            build_cache_key("x", tokenizer_hash=TOKENIZER_HASH, config_hash="3" * 64),
+            build_cache_key(
+                "x",
+                tokenizer_manifest_hash=TOKENIZER_MANIFEST_HASH,
+                encoder_config_manifest_hash=ENCODER_CONFIG_MANIFEST_HASH,
+                scientific_config_hash="4" * 64,
+            ),
         )
+
+    def test_cache_key_changes_with_encoder_config_manifest_hash(self) -> None:
+        baseline = self._cache_key("x")
+        changed = build_cache_key(
+            "x",
+            tokenizer_manifest_hash=TOKENIZER_MANIFEST_HASH,
+            encoder_config_manifest_hash="5" * 64,
+            scientific_config_hash=SCIENTIFIC_CONFIG_HASH,
+        )
+        self.assertNotEqual(baseline, changed)
+
+    def test_missing_or_invalid_manifest_hash_is_rejected(self) -> None:
+        with self.assertRaises(TypeError):
+            build_cache_key(  # type: ignore[call-arg]
+                "x",
+                tokenizer_manifest_hash=TOKENIZER_MANIFEST_HASH,
+                scientific_config_hash=SCIENTIFIC_CONFIG_HASH,
+            )
+        for bad_hash in ("", "z" * 64, "1" * 63):
+            with self.assertRaises(ValueError):
+                FrozenMiniLMEncoder(
+                    tokenizer=StubTokenizer(),
+                    model=StubModel(),
+                    tokenizer_manifest_hash=TOKENIZER_MANIFEST_HASH,
+                    encoder_config_manifest_hash=bad_hash,
+                )
 
     def test_exact_model_constants_are_frozen(self) -> None:
         self.assertEqual(MODEL_ID, "sentence-transformers/all-MiniLM-L6-v2")
         self.assertEqual(REVISION, "1110a243fdf4706b3f48f1d95db1a4f5529b4d41")
         self.assertEqual(OUTPUT_DIM, 384)
+        self.assertEqual(MAX_SEQ_LENGTH, 256)
+        self.assertEqual(DEFAULT_CONFIG.max_seq_length, 256)
+        self.assertEqual(self.encoder.model_max_length, 256)
 
     def test_model_is_eval_and_all_parameters_are_frozen(self) -> None:
         self.assertFalse(self.encoder.model.training)
@@ -175,11 +236,12 @@ class FrozenTextEncoderTests(unittest.TestCase):
         self.assertEqual(tuple(batch.embeddings.shape), (2, 384))
 
     def test_truncation_counts_and_flags(self) -> None:
-        result = self.encoder.encode("0123456789")
+        result = self.encoder.encode("x" * 300)
         record = result.records[0]
         self.assertTrue(record.truncated)
         self.assertGreater(record.token_count_before_truncation, record.token_count_after_truncation)
-        self.assertEqual(record.token_count_after_truncation, self.tokenizer.model_max_length)
+        self.assertEqual(record.token_count_after_truncation, 256)
+        self.assertEqual(result.model_max_length, 256)
 
     def test_short_input_is_not_marked_truncated(self) -> None:
         record = self.encoder.encode("a").records[0]
@@ -199,12 +261,42 @@ class FrozenTextEncoderTests(unittest.TestCase):
             encoder = FrozenMiniLMEncoder(
                 tokenizer=StubTokenizer(),
                 model=StubModel(),
-                tokenizer_hash=TOKENIZER_HASH,
+                tokenizer_manifest_hash=TOKENIZER_MANIFEST_HASH,
+                encoder_config_manifest_hash=ENCODER_CONFIG_MANIFEST_HASH,
             )
             encoder.encode("offline")
             tokenizer_loader.assert_not_called()
             model_loader.assert_not_called()
 
+    def test_tokenizer_capacity_below_256_hard_fails(self) -> None:
+        with self.assertRaisesRegex(ValueError, "tokenizer.model_max_length"):
+            FrozenMiniLMEncoder(
+                tokenizer=StubTokenizer(model_max_length=255),
+                model=StubModel(),
+                tokenizer_manifest_hash=TOKENIZER_MANIFEST_HASH,
+                encoder_config_manifest_hash=ENCODER_CONFIG_MANIFEST_HASH,
+            )
+
+    def test_model_capacity_below_256_hard_fails(self) -> None:
+        with self.assertRaisesRegex(ValueError, "max_position_embeddings"):
+            FrozenMiniLMEncoder(
+                tokenizer=StubTokenizer(),
+                model=StubModel(max_position_embeddings=255),
+                tokenizer_manifest_hash=TOKENIZER_MANIFEST_HASH,
+                encoder_config_manifest_hash=ENCODER_CONFIG_MANIFEST_HASH,
+            )
+
+    @staticmethod
+    def _cache_key(text: str, **overrides: str) -> str:
+        return build_cache_key(
+            text,
+            tokenizer_manifest_hash=TOKENIZER_MANIFEST_HASH,
+            encoder_config_manifest_hash=ENCODER_CONFIG_MANIFEST_HASH,
+            scientific_config_hash=SCIENTIFIC_CONFIG_HASH,
+            **overrides,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
+    DEFAULT_CONFIG,

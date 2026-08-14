@@ -1,10 +1,14 @@
-schema_version: 1
-run_id: 2026-08-14_012_v37_text_encoder
+schema_version: 2
+run_id: 2026-08-14_014_v38_text_encoder_correction
 task: S0_TEXT_ENCODER
 status: PASS
 evidence_scope: REAL_CPU_TEXT_ENCODER_ENGINEERING_ADMISSION_NO_EEG
-source_spec: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_7_2026-08-13.md#4.8
-source_spec_sha256: ff4c123a2a55450b3f0e1d00d4f3dbd8ee8c543368a7a98ef2170645ab425a86
+source_spec: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_8_2026-08-14.md#4.8-D10-D15-D16
+source_spec_sha256: 81a5ed46c7748c3e1865a8aef46aa7acd5165a589399bbac87d53c46e24f48ef
+previous_attempt:
+  run_id: 2026-08-14_012_v37_text_encoder
+  commit: bbf8d114a16580451d85a47328ec8b37ec54971a
+  rejection_reason: The previous admission used the 512-position transformer capacity rather than the exact revision sentence-transformers max_seq_length=256 and did not bind the released encoder-config manifest in cache keys.
 model:
   model_id: sentence-transformers/all-MiniLM-L6-v2
   requested_revision: 1110a243fdf4706b3f48f1d95db1a4f5529b4d41
@@ -14,14 +18,17 @@ model:
   normalization: l2
   dtype: float32
   mode: eval_no_grad_all_parameters_frozen
-  text_encoder_config_hash: 260791adf1f7808178dd63d56b57ba9765f90886dde971fa0f24538264298264
-  model_max_length: 512
+  sentence_transformers_max_seq_length: 256
+  tokenizer_model_max_length_capacity: 512
+  model_max_position_embeddings_capacity: 512
+  scientific_config_hash: 0f2fb795c15c7ad7ee185f44509ec86eb912aaca6abf88b78fa1560179e412af
 cache_contract:
   exact_utf8_text_sha256: required
   model_id: required
   revision: required
-  tokenizer_hash: required
-  config_hash: required
+  tokenizer_manifest_hash: 78a3daa92dcec076e80baaa628a6553bcbd0b431a214eb02d72c8b5672e69e09
+  encoder_config_manifest_hash: 8049791e90383b0f56624a32a14852552e292bcb38ab18da1de533ad79629845
+  scientific_config_hash: 0f2fb795c15c7ad7ee185f44509ec86eb912aaca6abf88b78fa1560179e412af
   pooling: attention_mask_mean
   normalization: l2
   python_hash_forbidden: true
@@ -31,27 +38,38 @@ provenance:
   loaded_model_weight_file: model.safetensors
   loaded_model_weight_sha256: 53aa51172d142c89d9012cce15ae4d6cc0ca6895895114379cacb4fab128d9db
   model_file_manifest_hash: c0577b9136351b1c12ba99a16f386d5c4c8c45e744941eaea15803880dd30e61
-  transformer_config_sha256: 953f9c0d463486b10a6871cc2fd59f223b2c70184f49815e7efbcab5d8908b41
-  config_file_manifest_hash: 057a3071a64327ac7381f81351e3c11f57c93f62466eecb3a7bd11938a89764d
-  tokenizer_hash: 78a3daa92dcec076e80baaa628a6553bcbd0b431a214eb02d72c8b5672e69e09
+  tokenizer_manifest_hash: 78a3daa92dcec076e80baaa628a6553bcbd0b431a214eb02d72c8b5672e69e09
   tokenizer_file_sha256:
     special_tokens_map.json: 303df45a03609e4ead04bc3dc1536d0ab19b5358db685b6f3da123d05ec200e3
     tokenizer.json: be50c3628f2bf5bb5e3a7f17b1f74611b2561a3a27eeab05e5aa30f411572037
     tokenizer_config.json: acb92769e8195aabd29b7b2137a9e6d6e25c476a4f15aa4355c233426c61576b
     vocab.txt: 07eced375cec144d27c900241f3e339478dec958f92fddbc551f295c992038a3
+  encoder_config_manifest_hash: 8049791e90383b0f56624a32a14852552e292bcb38ab18da1de533ad79629845
+  encoder_config_file_sha256:
+    config.json: 953f9c0d463486b10a6871cc2fd59f223b2c70184f49815e7efbcab5d8908b41
+    sentence_bert_config.json: fc1993fde0a95c24ec6c022539d41cf6e2f7c9721e5415d6fb6897472a9cd4b7
+    modules.json: 84e40c8e006c9b1d6c122e02cba9b02458120b5fb0c87b746c41e0207cf642cf
+    1_Pooling/config.json: 4be450dde3b0273bb9787637cfbd28fe04a7ba6ab9d36ac48e92b11e350ffc23
+    config_sentence_transformers.json: 061ca9d39661d6c6d6de5ba27f79a1cd5770ea247f8d46412a68a498dc5ac9f3
+  optional_release_file_absent:
+    - 2_Normalize/config.json
+  release_contract_assertions:
+    sentence_bert_max_seq_length_256: true
+    module_order_transformer_pooling_normalize: true
+    pooling_mean_tokens_only: true
 implementation:
   files:
-    02_code/src/text/__init__.py: df9372f4b295a25000fe5bea0fef63d2a6ac3d95f84514cc5892470b93c3f01e
-    02_code/src/text/frozen_minilm.py: 284b2e799c5410bbc0ef5ba41746c55598c1a5edc46ff9e3a81818bcb23f9d5b
-    02_code/tests/test_frozen_text_encoder.py: 8e4d526834bfa7b87851a197c012360f50eab956b794bfd08f166ab459664be7
-    02_code/scripts/text_encoder_selfcheck.py: 39c135951216788df96f80817dcce140294140db2244bb649282bc554e963126
-  focused_unit_tests: 15
-  focused_unit_tests_passed: 15
+    02_code/src/text/__init__.py: f34b204ff139aee7541d80514cc01103cbf696ab4d95eff5c74781fcab8b3302
+    02_code/src/text/frozen_minilm.py: f7345b81483f77d569cb6147c8cf4eecab0df8caa39d006f04d098bdc786950f
+    02_code/tests/test_frozen_text_encoder.py: e4aca41909cb805004ee4e86eddad46443187a08e7871b9378c64e4af48e0a80
+    02_code/scripts/text_encoder_selfcheck.py: 199a2f263b653e55718afbfc81fc0f1e58191f2f09c916d4a13facb9e00bab9e
+  focused_unit_tests: 19
+  focused_unit_tests_passed: 19
 cpu_selfcheck:
-  evidence: 03_runs/debug_runs/text_encoder_selfcheck_seed20260813_foldS0-TEXT_methodfrozen-MiniLM-L6-v2_cfg260791adf1f7.json
-  evidence_sha256: 56a6a4b9089f3e733b702168151dcd4f9573b16a403b153a54367e01c5e69153
-  assertions: 19
-  assertions_passed: 19
+  evidence: 03_runs/debug_runs/text_encoder_selfcheck_run2026-08-14_014_v38_text_encoder_correction_seed20260813_foldS0-TEXT_methodfrozen-MiniLM-L6-v2_cfg0f2fb795c15c.json
+  evidence_sha256: 1563ca5460af0df44fdbef7d9b86c5b1243b40f227594cc8d3c2b2ab86e82ef0
+  assertions: 26
+  assertions_passed: 26
   seed: 20260813
   fold: S0-TEXT
   method: frozen-MiniLM-L6-v2
@@ -61,7 +79,7 @@ cpu_selfcheck:
   transformers_version: 5.15.0
   total_parameter_count: 22713216
   trainable_parameter_count: 0
-  elapsed_seconds: 6.322276141494513
+  elapsed_seconds: 6.353107295930386
   shapes:
     short: [1, 384]
     padding_batch: [2, 384]
@@ -74,9 +92,17 @@ cpu_selfcheck:
   byte_identical_determinism: true
   padding_max_abs_diff_vs_single: 1.3411045074462891e-07
   truncation:
-    token_count_before_truncation: 1730
-    token_count_after_truncation: 512
+    token_count_before_truncation: 962
+    token_count_after_truncation: 256
     truncated: true
+a1_regression:
+  code_changed: false
+  config_hash: a9ff618892a29b466d48d20c933503ea509a18c6fb002e274356d1513df73cf4
+  evidence: 03_runs/debug_runs/a1_contract_selfcheck_run2026-08-14_014_v38_text_encoder_correction_seed20260813_foldS0-TEXT_methodA1_cfga9ff618892a2.json
+  evidence_sha256: f3240622d55d7721c6f1f7ccbea5f0a935df25fb7c1d8211b7307111db449769
+  assertions: 6
+  assertions_passed: 6
+  output_shape: [2, 384]
 claim_boundary:
-  - This is a frozen text-coordinate-system engineering admission on real CPU inference.
-  - No EEG data, held-out metric, Gate decision, alignment training, or paper-level result was read or produced.
+  - This is a corrected frozen text-coordinate-system engineering admission on real CPU inference.
+  - No ROAMM admission, EEG data, held-out metric, Gate decision, alignment training or paper-level result was read or produced.

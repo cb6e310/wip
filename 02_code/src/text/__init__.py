@@ -2,6 +2,7 @@
 
 from .frozen_minilm import (
     MODEL_ID,
+    MAX_SEQ_LENGTH,
     OUTPUT_DIM,
     REVISION,
     EncodingResult,
@@ -14,6 +15,7 @@ from .frozen_minilm import (
 
 __all__ = [
     "MODEL_ID",
+    "MAX_SEQ_LENGTH",
     "OUTPUT_DIM",
     "REVISION",
     "EncodingResult",

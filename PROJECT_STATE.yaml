@@ -1,18 +1,19 @@
 schema_version: 1
-updated_at: "2026-08-14T14:15:20+08:00"
-updated_by_run: 2026-08-14_012_v37_text_encoder
+updated_at: "2026-08-14T15:07:11+08:00"
+updated_by_run: 2026-08-14_014_v38_text_encoder_correction
 
 project:
   name: trustworthy_subject_general_eeg_text_alignment
-  spec_version: v3.7
-  spec_path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_7_2026-08-13.md
+  spec_version: v3.8
+  spec_path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_8_2026-08-14.md
   execution_plan_path: guide/EEG_Text_Bprime_Execution_Plan_v3_2026-08-11_to_Submission.md
   server_root: /home/song/projects/trust_align
   python_path: /home/song/projects/trust_align/.venv/bin/python
 
 scope:
   primary_dataset: zuco_2_0
-  additional_dataset: tmnred
+  additional_dataset: roamm_ds007629_v1.3.0
+  structural_fallback_dataset: derco_before_any_outcome_only
   legacy_non_paper_evidence: zuco_1_0_smoke
   backbones:
     spec_defined:
@@ -33,7 +34,7 @@ execution:
 
 route:
   primary: EQ-ANMA
-  backup: CSPE
+  backup: NEGATIVE-DIAGNOSTIC
   locked: null
   locked_by_run: null
 
@@ -49,27 +50,27 @@ gates:
 
 blockers:
   - id: B_INNER_SPLIT_NOT_IMPLEMENTED
-    reason: The deterministic outer 6x5 ZuCo2 split exists, but v3.7 requires a separate 4x4 (or globally downgraded 3x3) inner split inside every outer-train cell; no such artifact or overlap test exists.
+    reason: The deterministic ZuCo2 outer 6x5 split exists, but v3.8 requires ROAMM admission plus separate 4x4 (or globally downgraded 3x3) inner splits inside every admitted outer-train cell; no such inner artifact or overlap test exists.
     blocks:
       - S0_CANDIDATES
       - S0_LEAKAGE_AUDIT
-    resolution: Generate deterministic subject/text inner folds from outer-train only, record the global downgrade decision, and prove every inner train/validation set is disjoint from its outer test set.
+    resolution: After ROAMM admission, generate dataset-local deterministic subject/text inner folds from outer-train only, record the global downgrade decision, and prove every inner train/validation set is disjoint from its own outer test set.
   - id: B_ZUCO2_CANDIDATE_FEASIBILITY
     reason: Current held-out text folds contain only 69-70 NR or 78 TSR sentences before filtering. N=100/200 are impossible under the legal unseen-text pool, and N=50 has not been verified per target after length, near-duplicate, and H-overlap filtering.
     blocks:
       - S0_LEAKAGE_AUDIT
     resolution: After the frozen text encoder and inner split are admitted, build target-level feasibility ledgers and shared candidate lists; require at least 49 legal negatives for every included main target and emit a blocker rather than relaxing source/filter rules.
   - id: B_A1_REAL_SOURCE_ADMISSION
-    reason: v3.7 closes numeric band edges and selects 105-channel sentenceData.rawData for the ET-free A1 sensitivity, but real-file sampling rate, channel order, units, finite values, and field semantics have not been admitted end to end.
+    reason: v3.8 inherits the frozen numeric band edges and 105-channel sentenceData.rawData source for ZuCo2 ET-free A1 sensitivity, but real-file sampling rate, channel order, units, finite values, and field semantics have not been admitted end to end.
     blocks:
       - S0_A1_ADMISSION
       - S0_ALIGN_UNIT_COST
     resolution: Verify the real MAT source contract and run the A1 frontend/self-check on outer-train data. The 128-to-105 map is not an A1 prerequisite; it remains only for A3 or a separately preregistered raw-source sensitivity.
-  - id: B_TMNRED_EXPERIMENT_PROTOCOL
-    reason: Structural TMNRED data-card audit is complete, but experiment protocol is not cleared; released word-level lexical content is absent, demographics are unusable, one subject-session is incomplete, license metadata disagree, and session/candidate/joint-split rules are pending.
+  - id: B_ROAMM_NOT_ADMITTED
+    reason: SPEC v3.8 freezes ROAMM ds007629 v1.3.0 as the mandatory second dataset, but no repository data card, representative real-file schema/unit audit, word-key join, fold-local item support ledger or candidate feasibility artifact exists yet.
     blocks:
-      - S0_TMNRED_PROTOCOL
-    resolution: Resolve only before admitting the TMNRED supplementary panel or CSPE. Under v3.7 D11 it must not block ZuCo2 candidates, leakage, A1 admission, Stage 1, or the minimum single-dataset paper package.
+      - S0_INNER_SPLIT
+    resolution: After the corrected text encoder passes, run only S0_ROAMM_ADMISSION. Admit exact v1.3.0 structure and representative source semantics without training; if structural No-Go occurs before any outcome, DERCo is the sole registered fallback.
   - id: B_A3_NOT_VALIDATED
     reason: v3.6 clears CO-N7 and treats local checkpoint inference rights as a disclosure item; checkpoint/load/pooling/no-gradient and raw E1..E128 inventory pass, but the EGI128-to-canonical map, ZuCo raw unit, filter order/notch Q, and real MAT end-to-end extraction remain unresolved.
     blocks:
@@ -77,19 +78,22 @@ blockers:
     resolution: Approve and hash an exact-name or spatial EGI128-to-canonical map with coverage, verify the raw signal unit, freeze filter order/notch Q, then run the real 500-to-200 preprocessing and no-gradient 200D extraction smoke. Preserve checkpoint provenance and do not redistribute the checkpoint.
 
 last_completed_task: S0_TEXT_ENCODER
-recommended_next_task: S0_INNER_SPLIT
-last_run: runs/2026-08-14_012_v37_text_encoder.md
+recommended_next_task: S0_ROAMM_ADMISSION
+last_run: runs/2026-08-14_014_v38_text_encoder_correction.md
 
 do_not_do_yet:
   - Do not treat the ZuCo 1.0 smoke as paper evidence.
   - Do not start Stage 1, Gate A, or Gate B before all remaining protocol and A1-admission prerequisites are validated.
   - Do not lock a route or start the main experiment before ROUTE_LOCK is DONE.
-  - Do not add a third backbone; the user and v3.7 scope are A1 plus A3 only.
+  - Do not execute CSPE or TMNRED in this paper; v3.8 limits the research route to EQ-ANMA with a negative-diagnostic fallback.
+  - Do not add a third backbone; the user and v3.8 scope are A1 plus A3 only.
   - Do not treat the A1 synthetic contract self-check as real-data admission evidence.
   - Do not run the A1 fixed-window path from 128-channel continuous files; v3.7 fixes its source to 105-channel sentenceData.rawData pending real-field admission.
   - Do not treat the outer split PASS as nested OOF readiness; inner split artifacts do not exist yet.
-  - Do not construct candidates before the exact-revision text encoder is admitted, and do not use outer-train text, relaxed filters, replacement sampling, or silent target deletion to force N=50.
-  - Do not let TMNRED supplementary-panel blockers stop ZuCo2 primary-panel work.
+  - Do not treat the bbf8d11 512-token run as exact-revision text admission; fix 256 and real encoder-config manifest cache binding first.
+  - Do not start ROAMM admission in the same Codex task as the text correction.
+  - Do not construct candidates before the corrected text encoder and ROAMM structural admission, and do not use outer-train text, cross-article borrowing, relaxed filters, replacement sampling, or silent target deletion to force N=50.
+  - Do not use ROAMM outcomes to change ZuCo thresholds, route selection or hyperparameters; the panels are independent.
   - Do not include A3 in T6 until its canonical channel map, raw-unit/filter parameters, and real MAT extraction admission pass; CO-N7 itself is cleared by v3.6.
   - Do not use the A3 synthetic identity channel positions as a semantic EGI-to-LaBraM mapping.
   - Do not substitute CBraMod or REVE-Base for the guide-frozen A3 backbone without an author-approved specification change.

@@ -1,4 +1,4 @@
-"""Exact-revision frozen MiniLM text encoder required by SPEC v3.7 D10.
+"""Exact-revision frozen MiniLM text encoder required by SPEC v3.8 D10/D15/D16.
 
 All sentence targets, item surfaces, legal language histories and candidate
 near-duplicate checks must call this module's one ``encode`` interface.  The
@@ -24,6 +24,7 @@ REVISION = "1110a243fdf4706b3f48f1d95db1a4f5529b4d41"
 OUTPUT_DIM = 384
 POOLING = "attention_mask_mean"
 NORMALIZATION = "l2"
+MAX_SEQ_LENGTH = 256
 
 
 def _canonical_sha256(value: Mapping[str, object]) -> str:
@@ -58,6 +59,7 @@ class FrozenTextEncoderConfig:
     output_dim: int = OUTPUT_DIM
     pooling: str = POOLING
     normalization: str = NORMALIZATION
+    max_seq_length: int = MAX_SEQ_LENGTH
 
     def __post_init__(self) -> None:
         if self.model_id != MODEL_ID:
@@ -70,12 +72,16 @@ class FrozenTextEncoderConfig:
             raise ValueError(f"pooling is frozen to {POOLING}")
         if self.normalization != NORMALIZATION:
             raise ValueError(f"normalization is frozen to {NORMALIZATION}")
+        if self.max_seq_length != MAX_SEQ_LENGTH:
+            raise ValueError(f"max_seq_length is frozen to {MAX_SEQ_LENGTH}")
 
     def to_dict(self) -> dict[str, object]:
         return asdict(self)
 
     @property
-    def config_hash(self) -> str:
+    def scientific_config_hash(self) -> str:
+        """Hash scientific fields; this is not a released-file manifest hash."""
+
         return _canonical_sha256(self.to_dict())
 
 
@@ -104,12 +110,23 @@ def exact_utf8_text_sha256(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
+def _validate_sha256(name: str, value: str) -> str:
+    if not isinstance(value, str) or len(value) != 64:
+        raise ValueError(f"{name} must be a 64-character SHA256 hex digest")
+    try:
+        int(value, 16)
+    except ValueError as error:
+        raise ValueError(f"{name} must be a 64-character SHA256 hex digest") from error
+    return value.lower()
+
+
 def build_cache_key(
     text: str,
     *,
-    tokenizer_hash: str,
+    tokenizer_manifest_hash: str,
+    encoder_config_manifest_hash: str,
+    scientific_config_hash: str,
     config: FrozenTextEncoderConfig = DEFAULT_CONFIG,
-    config_hash: str | None = None,
     model_id: str | None = None,
     revision: str | None = None,
     pooling: str | None = None,
@@ -117,17 +134,22 @@ def build_cache_key(
 ) -> str:
     """Build a stable cache key bound to exact text and the frozen contract."""
 
-    if len(tokenizer_hash) != 64:
-        raise ValueError("tokenizer_hash must be a SHA256 hex digest")
-    bound_config_hash = config.config_hash if config_hash is None else config_hash
-    if len(bound_config_hash) != 64:
-        raise ValueError("config_hash must be a SHA256 hex digest")
+    tokenizer_manifest_hash = _validate_sha256(
+        "tokenizer_manifest_hash", tokenizer_manifest_hash
+    )
+    encoder_config_manifest_hash = _validate_sha256(
+        "encoder_config_manifest_hash", encoder_config_manifest_hash
+    )
+    scientific_config_hash = _validate_sha256(
+        "scientific_config_hash", scientific_config_hash
+    )
     payload = {
         "exact_utf8_text_sha256": exact_utf8_text_sha256(text),
         "model_id": config.model_id if model_id is None else model_id,
         "revision": config.revision if revision is None else revision,
-        "tokenizer_hash": tokenizer_hash,
-        "config_hash": bound_config_hash,
+        "tokenizer_manifest_hash": tokenizer_manifest_hash,
+        "encoder_config_manifest_hash": encoder_config_manifest_hash,
+        "scientific_config_hash": scientific_config_hash,
         "pooling": config.pooling if pooling is None else pooling,
         "normalization": config.normalization if normalization is None else normalization,
     }
@@ -173,7 +195,8 @@ class FrozenMiniLMEncoder:
         *,
         tokenizer: Any | None = None,
         model: Any | None = None,
-        tokenizer_hash: str,
+        tokenizer_manifest_hash: str,
+        encoder_config_manifest_hash: str,
         config: FrozenTextEncoderConfig = DEFAULT_CONFIG,
         device: str | torch.device = "cpu",
         local_files_only: bool = False,
@@ -182,9 +205,15 @@ class FrozenMiniLMEncoder:
             raise ValueError("tokenizer and model must be supplied together")
         self.config = config
         self.device = torch.device(device)
-        self.tokenizer_hash = tokenizer_hash
-        if len(tokenizer_hash) != 64:
-            raise ValueError("tokenizer_hash must be a SHA256 hex digest")
+        self.tokenizer_manifest_hash = _validate_sha256(
+            "tokenizer_manifest_hash", tokenizer_manifest_hash
+        )
+        self.encoder_config_manifest_hash = _validate_sha256(
+            "encoder_config_manifest_hash", encoder_config_manifest_hash
+        )
+        self.scientific_config_hash = _validate_sha256(
+            "scientific_config_hash", config.scientific_config_hash
+        )
         if tokenizer is None:
             from transformers import AutoModel, AutoTokenizer
 
@@ -214,16 +243,20 @@ class FrozenMiniLMEncoder:
         self.model_max_length = self._resolve_model_max_length()
 
     def _resolve_model_max_length(self) -> int:
-        candidates: list[int] = []
         tokenizer_limit = int(getattr(self.tokenizer, "model_max_length", 0))
-        if 1 <= tokenizer_limit < 1_000_000:
-            candidates.append(tokenizer_limit)
         config_limit = int(getattr(self.model.config, "max_position_embeddings", 0))
-        if config_limit >= 1:
-            candidates.append(config_limit)
-        if not candidates:
-            raise ValueError("tokenizer/model expose no legal finite sequence limit")
-        return min(candidates)
+        required = self.config.max_seq_length
+        if tokenizer_limit < required:
+            raise ValueError(
+                "tokenizer.model_max_length is below the frozen sentence-transformers "
+                f"max_seq_length: {tokenizer_limit} < {required}"
+            )
+        if config_limit < required:
+            raise ValueError(
+                "model.config.max_position_embeddings is below the frozen "
+                f"sentence-transformers max_seq_length: {config_limit} < {required}"
+            )
+        return required
 
     @property
     def total_parameter_count(self) -> int:
@@ -295,7 +328,9 @@ class FrozenMiniLMEncoder:
                 truncated=before > after,
                 cache_key=build_cache_key(
                     text,
-                    tokenizer_hash=self.tokenizer_hash,
+                    tokenizer_manifest_hash=self.tokenizer_manifest_hash,
+                    encoder_config_manifest_hash=self.encoder_config_manifest_hash,
+                    scientific_config_hash=self.scientific_config_hash,
                     config=self.config,
                 ),
             )

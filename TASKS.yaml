@@ -98,9 +98,9 @@ S0_TMNRED_DATA_CARD:
   completion_note: Structural data-card self-check PASS (10/10); experiment_ready=false. Misaligned demographics, incomplete event cell, license discrepancy, semantic item, session policy, candidate policy, and joint split remain unresolved.
 
 S0_TMNRED_PROTOCOL:
-  title: Resolve or bound the TMNRED supplementary-panel experiment protocol
+  title: Archive the superseded TMNRED supplementary-panel protocol
   stage: stage_0
-  status: BLOCKED
+  status: SKIPPED
   critical_path: false
   priority: 40
   prerequisites:
@@ -111,7 +111,7 @@ S0_TMNRED_PROTOCOL:
     - released lexical/event linkage or a bounded semantic No-Go is recorded without inferred or translated items
     - incomplete cell, license discrepancy, session policy, candidate policy, and joint split are resolved for TMNRED only
     - the outcome cannot change or block any ZuCo2 primary-panel task
-  blocked_reason: The released snapshot lacks word-level lexical content and still has license, incomplete-cell, session, candidate, and split uncertainties. This task is supplementary-only and not on the ZuCo2 critical path.
+  completion_note: SPEC v3.8 replaces TMNRED with ROAMM as the mandatory second dataset and removes CSPE from this paper. Existing TMNRED structural audits remain historical evidence; no outcome-driven dataset switch occurred.
 
 S0_SEMANTIC_ITEM:
   title: Freeze the cross-subject semantic item definition and support rule
@@ -160,7 +160,7 @@ S0_H_DEFINITION:
   completion_note: H_full and H_empty are implemented with explicit rejection of target/gold/current/future, candidate, target-statistic, and eye-tracking payloads; five focused tests pass.
 
 S0_TEXT_ENCODER:
-  title: Implement the exact-revision frozen 384D text encoder and reconcile A1 d_align
+  title: Correct and readmit the exact-revision frozen 384D text encoder
   stage: stage_0
   status: DONE
   critical_path: true
@@ -174,44 +174,79 @@ S0_TEXT_ENCODER:
     - artifacts/text_encoder_freeze.yaml
     - artifacts/a1_frontend_freeze.yaml
   acceptance:
-    - model ID and revision exactly match v3.7 D10
+    - model ID and revision exactly match v3.8 D10/D15/D16
+    - sentence-transformers max_seq_length is exactly 256 from the exact-revision sentence_bert_config and model card, not the 512-position transformer capacity
     - official attention-mask mean pooling plus L2 normalization returns finite float32 384D embeddings
     - model is eval-only, no-grad, and has no trainable text projection
     - sentence targets, H, items, and near-duplicate filtering share one implementation and cache-key contract
-    - model, tokenizer, config, and artifact hashes plus a deterministic CPU smoke are recorded
+    - cache keys bind separate tokenizer-manifest, actual encoder-config-manifest, and scientific-config hashes
+    - model, tokenizer, encoder config files, and artifact hashes plus a deterministic CPU smoke are recorded
     - A1 DEFAULT_CONFIG.d_align and its freeze/self-check artifact are updated from 256 to 384 with no other A1 hyperparameter change
     - no paper-level EEG result is read or produced
-  completed_by_run: 2026-08-14_012_v37_text_encoder
-  evidence_scope: REAL_CPU_TEXT_ENCODER_AND_SYNTHETIC_A1_ENGINEERING_CONTRACT_NO_EEG
+  previous_attempt_run: 2026-08-14_012_v37_text_encoder
+  previous_attempt_commit: bbf8d114a16580451d85a47328ec8b37ec54971a
+  review_status: CORRECTED_AND_READMITTED_BY_V38
+  review_reason: The implementation truncated at 512 by taking tokenizer/model physical capacity, while the exact-revision sentence-transformers config/model card freezes 256; the cache key also omitted the actual encoder config file manifest hash.
+  completed_by_run: 2026-08-14_014_v38_text_encoder_correction
+  evidence_scope: REAL_CPU_TEXT_ENCODER_CORRECTION_AND_SYNTHETIC_A1_REGRESSION_NO_EEG
   evidence:
     - artifacts/text_encoder_freeze.yaml
     - artifacts/a1_frontend_freeze.yaml
     - 02_code/src/text/frozen_minilm.py
     - 02_code/tests/test_frozen_text_encoder.py
     - 02_code/scripts/text_encoder_selfcheck.py
-    - 03_runs/debug_runs/text_encoder_selfcheck_seed20260813_foldS0-TEXT_methodfrozen-MiniLM-L6-v2_cfg260791adf1f7.json
-    - 03_runs/debug_runs/a1_contract_selfcheck_seed20260813_foldS0-TEXT_methodA1_cfga9ff618892a2.json
-  completion_note: Exact MiniLM revision 1110a243fdf4706b3f48f1d95db1a4f5529b4d41 resolved exactly and passed the real CPU 384D float32 attention-mask-mean plus L2, eval/no-grad, zero-trainable, padding, truncation, provenance-hash and byte-identical determinism contract (19/19). A1 d_align=384 passed a new synthetic [2,384] contract rerun (6/6); no EEG data or paper-level result was read or produced.
+    - 03_runs/debug_runs/text_encoder_selfcheck_run2026-08-14_014_v38_text_encoder_correction_seed20260813_foldS0-TEXT_methodfrozen-MiniLM-L6-v2_cfg0f2fb795c15c.json
+    - 03_runs/debug_runs/a1_contract_selfcheck_run2026-08-14_014_v38_text_encoder_correction_seed20260813_foldS0-TEXT_methodA1_cfga9ff618892a2.json
+  completion_note: Exact revision readmission PASS. The sentence-transformers contract is fixed to max_seq_length=256 while tokenizer/model physical capacities are independently verified as 512/512. Cache keys bind separate tokenizer manifest 78a3daa9..., encoder-config manifest 8049791e..., and scientific config 0f2fb795... hashes. Real CPU checks pass 26/26 with long input 962→256 and truncated=true; A1 unchanged regression passes 6/6 at [2,384]. No ROAMM admission, EEG data, training, held-out result or Gate result was read or produced.
+
+S0_ROAMM_ADMISSION:
+  title: Admit ROAMM v1.3.0 as the mandatory second-dataset replication panel
+  stage: stage_0
+  status: TODO
+  critical_path: true
+  priority: 6
+  prerequisites:
+    - S0_TEXT_ENCODER
+  produces:
+    - 01_data_protocol/dataset_cards/roamm.yaml
+    - artifacts/roamm_admission.yaml
+    - 04_results/audits/roamm_text_feasibility.json
+    - 02_code/scripts/audit_roamm_admission.py
+    - 02_code/tests/test_roamm_admission.py
+  acceptance:
+    - OpenNeuro ds007629 v1.3.0, tag commit, DOI, CC0 license, git-annex keys and source hashes are pinned without floating latest
+    - 44 participants by 5 raw and synchronized runs are inventoried, with every missing or anomalous subject-run explicitly ledgered
+    - a representative synchronized pkl and raw BDF prove readable schema, 64 EEG channels, sampling-rate/preprocessing provenance, units or defensible numeric-scale interpretation, finite ranges and exact story/run identity
+    - released coordinate files prove unique word_key to sentence_id/story/page linkage, 487 total sentences, 42 cross-page exclusions and 445 single-page sentences with frozen per-story counts 86/88/93/91/87
+    - first_pass_reading includes both mind-wandering states; is_mw is forbidden from model inputs, weights, splits and candidate construction
+    - release-native word-key item predicate and outer-train-only support ledger feasibility are recorded without retokenizing, translating or inferring sentence identity
+    - each held-out article has a structural N=50 upper bound, while full near-duplicate/H/length feasibility remains explicitly delegated to S0_CANDIDATES
+    - no alignment training, EEG held-out metric, Gate decision or paper-level result is read or produced
+  why_waiting: This task becomes eligible only after the corrected 256-token/config-manifest text contract passes.
 
 S0_INNER_SPLIT:
-  title: Build deterministic nested inner folds inside every ZuCo2 outer-train cell
+  title: Build deterministic nested inner folds inside every admitted dataset outer-train cell
   stage: stage_0
-  status: READY
+  status: TODO
   critical_path: true
   priority: 6
   prerequisites:
     - S0_JOINT_SPLIT
     - S0_SEMANTIC_ITEM
+    - S0_ROAMM_ADMISSION
   produces:
     - 01_data_protocol/splits/zuco_2_0_inner_folds.json
+    - 01_data_protocol/splits/roamm_outer_folds.json
+    - 01_data_protocol/splits/roamm_inner_folds.json
     - 02_code/tests/test_inner_split.py
   acceptance:
-    - each outer cell receives its own 4x4 inner subject-by-text split from outer-train only
-    - deterministic subject and atomic text-group algorithms match v3.7 section 4.2.1
+    - each ZuCo2 and ROAMM outer cell receives its own 4x4 inner subject-by-text split from outer-train only
+    - ROAMM uses six balanced subject folds and five atomic article folds, with four remaining articles as the four inner text folds
+    - deterministic subject and atomic text-group algorithms match v3.8 sections 4.2.1 and 4.9
     - a triggered 3x3 downgrade is applied globally and recorded rather than per-cell cherry-picked
     - no inner train or validation record overlaps the corresponding outer test subjects or stimuli
     - artifact is byte-stable and records seed, outer-cell ID, config hash, and source artifact hash
-  why_ready: The outer split and semantic support artifacts are DONE, and v3.7 removes all remaining author choices from the inner-split algorithm.
+  waiting_reason: ZuCo2 outer split is ready, but v3.8 requires ROAMM admission before the shared split implementation is generalized to both independent panels.
 
 S0_CANDIDATES:
   title: Freeze shared unseen-stimulus candidate lists and paired-verification pairs
@@ -233,7 +268,7 @@ S0_CANDIDATES:
     - all methods and seeds reuse the same lists
     - per-target feasibility proves at least 49 legal negatives for main N=50 or emits a blocker without changing the protocol
     - N=100/200 are marked unavailable for current ZuCo2 folds rather than filled from training text
-  blocked_reason: The v3.7 frozen text encoder is admitted, but the nested inner split has not been implemented; target-level N=50 feasibility is therefore unknown. TMNRED is a separate supplementary-panel issue and is not a prerequisite.
+  blocked_reason: The corrected v3.8 text encoder is admitted, but ROAMM admission has not run and nested inner splits do not exist; target-level N=50 feasibility is therefore unknown for both independent panels.
 
 S0_JOINT_SPLIT:
   title: Build the joint held-out subject-and-stimulus outer split
@@ -277,7 +312,7 @@ S0_LEAKAGE_AUDIT:
     - all preprocessing and probe fits are outer-train-only
     - H, candidates, subject/stimulus split, and test-time calibration checks are green
     - failed checks invalidate affected runs
-  blocked_reason: The outer ZuCo2 split exists, but the inner split and shared candidate lists/pairs do not. The full V1-V5 audit cannot pass until those primary-panel artifacts exist; TMNRED is not a prerequisite.
+  blocked_reason: The corrected text admission, ROAMM admission, dataset-local inner splits and shared candidate lists/pairs do not all exist. The full V1-V5 audit cannot pass until those artifacts are complete for each panel.
 
 S0_A1_FRONTEND:
   title: Implement and freeze the A1 spectral frontend and tensor contract
@@ -321,7 +356,7 @@ S0_A1_ADMISSION:
     - linear subject probe and coarse semantic probe are above chance or explained
     - A1 is not uniformly worse than raw spectral features
     - all results use only outer-training data
-  blocked_reason: Reference exclusions, source join, semantic item, H, outer split, numeric bands, the exact 384D text contract and d_align=384 integration pass. Admission still requires the inner split, candidates/leakage, real sentenceData.rawData source checks, and outer-train sham/subject/semantic probe evidence. A 128-to-105 map is not an A1 prerequisite.
+  blocked_reason: Reference exclusions, source join, semantic item, H, outer split, numeric bands, corrected v3.8 text admission and A1 d_align=384 integration pass. A1 admission still requires the inner split, candidates/leakage, real sentenceData.rawData source checks, and outer-train sham/subject/semantic probe evidence. A 128-to-105 map is not an A1 prerequisite.
 
 S0_A3_CONTAMINATION_CHECK:
   title: Verify A3 LaBraM pretraining contamination, license, checkpoint, and channel map

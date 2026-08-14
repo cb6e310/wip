@@ -38,7 +38,7 @@ from text.frozen_minilm import (  # noqa: E402
 )
 
 
-RUN_ID = "2026-08-14_012_v37_text_encoder"
+RUN_ID = "2026-08-14_014_v38_text_encoder_correction"
 SEED = 20260813
 FOLD = "S0-TEXT"
 METHOD = "frozen-MiniLM-L6-v2"
@@ -46,8 +46,8 @@ METHOD = "frozen-MiniLM-L6-v2"
 
 def parse_args() -> argparse.Namespace:
     default_name = (
-        f"text_encoder_selfcheck_seed{SEED}_fold{FOLD}_method{METHOD}_"
-        f"cfg{DEFAULT_CONFIG.config_hash[:12]}.json"
+        f"text_encoder_selfcheck_run{RUN_ID}_seed{SEED}_fold{FOLD}_method{METHOD}_"
+        f"cfg{DEFAULT_CONFIG.scientific_config_hash[:12]}.json"
     )
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -83,17 +83,38 @@ def _classify_snapshot_hashes(snapshot: Path) -> dict[str, dict[str, str]]:
         if Path(name).suffix in {".safetensors", ".bin"}
         and "optimizer" not in Path(name).name.lower()
     }
-    config = {
-        name: digest
-        for name, digest in all_files.items()
-        if Path(name).name == "config.json" or name == "sentence_bert_config.json"
+    required_encoder_config_names = {
+        "config.json",
+        "sentence_bert_config.json",
+        "modules.json",
+        "1_Pooling/config.json",
     }
-    if not tokenizer or not model or "config.json" not in config:
+    optional_encoder_config_names = {
+        "2_Normalize/config.json",
+        "config_sentence_transformers.json",
+    }
+    missing_required = required_encoder_config_names.difference(all_files)
+    if missing_required:
+        raise RuntimeError(
+            f"missing required encoder config files: {sorted(missing_required)}"
+        )
+    encoder_config_names = required_encoder_config_names.union(
+        optional_encoder_config_names.intersection(all_files)
+    )
+    encoder_config = {
+        name: all_files[name] for name in sorted(encoder_config_names)
+    }
+    if not tokenizer or not model:
         raise RuntimeError(
             "incomplete provenance files: "
-            f"tokenizer={sorted(tokenizer)}, model={sorted(model)}, config={sorted(config)}"
+            f"tokenizer={sorted(tokenizer)}, model={sorted(model)}"
         )
-    return {"tokenizer": tokenizer, "config": config, "model": model, "all": all_files}
+    return {
+        "tokenizer": tokenizer,
+        "encoder_config": encoder_config,
+        "model": model,
+        "all": all_files,
+    }
 
 
 def _aggregate(group: dict[str, str]) -> str:
@@ -125,12 +146,19 @@ def main() -> int:
     ).resolve()
     resolved_revision = snapshot.name
     provenance = _classify_snapshot_hashes(snapshot)
-    tokenizer_hash = _aggregate(provenance["tokenizer"])
+    tokenizer_manifest_hash = _aggregate(provenance["tokenizer"])
+    encoder_config_manifest_hash = _aggregate(provenance["encoder_config"])
     model_file_hash = _aggregate(provenance["model"])
-    model_config_file_hash = _aggregate(provenance["config"])
+    scientific_config_hash = DEFAULT_CONFIG.scientific_config_hash
+
+    sentence_config = json.loads((snapshot / "sentence_bert_config.json").read_text(encoding="utf-8"))
+    modules = json.loads((snapshot / "modules.json").read_text(encoding="utf-8"))
+    pooling_config = json.loads((snapshot / "1_Pooling" / "config.json").read_text(encoding="utf-8"))
+    module_types = [str(item.get("type", "")) for item in modules]
 
     encoder = FrozenMiniLMEncoder(
-        tokenizer_hash=tokenizer_hash,
+        tokenizer_manifest_hash=tokenizer_manifest_hash,
+        encoder_config_manifest_hash=encoder_config_manifest_hash,
         device="cpu",
         local_files_only=True,
     )
@@ -162,9 +190,33 @@ def main() -> int:
         "resolved_revision_exact": resolved_revision == REVISION,
         "model_config_revision_exact": config_resolved_revision == REVISION,
         "provenance_tokenizer_complete": bool(provenance["tokenizer"]),
-        "provenance_config_complete": bool(provenance["config"]),
+        "provenance_encoder_config_complete": bool(provenance["encoder_config"]),
+        "encoder_config_manifest_has_exact_release_files": set(provenance["encoder_config"])
+        == {
+            "config.json",
+            "sentence_bert_config.json",
+            "modules.json",
+            "1_Pooling/config.json",
+            "config_sentence_transformers.json",
+        },
         "provenance_model_complete": bool(model_file_keys),
         "loaded_safetensors_hash_complete": len(loaded_model_weight_sha256) == 64,
+        "sentence_transformers_max_seq_length_256": sentence_config.get("max_seq_length") == 256,
+        "tokenizer_capacity_at_least_256": int(encoder.tokenizer.model_max_length) >= 256,
+        "model_capacity_at_least_256": int(encoder.model.config.max_position_embeddings) >= 256,
+        "resolved_model_max_length_256": encoder.model_max_length == 256,
+        "modules_transformer_pooling_normalize": module_types
+        == [
+            "sentence_transformers.models.Transformer",
+            "sentence_transformers.models.Pooling",
+            "sentence_transformers.models.Normalize",
+        ],
+        "pooling_config_mean_only": bool(
+            pooling_config.get("pooling_mode_mean_tokens") is True
+            and pooling_config.get("pooling_mode_cls_token") is False
+            and pooling_config.get("pooling_mode_max_tokens") is False
+            and pooling_config.get("pooling_mode_mean_sqrt_len_tokens") is False
+        ),
         "model_eval": not encoder.model.training,
         "trainable_parameter_count_zero": encoder.trainable_parameter_count == 0,
         "short_shape_1x384": tuple(short_embedding.shape) == (1, 384),
@@ -187,6 +239,7 @@ def main() -> int:
             long_record.truncated
             and long_record.token_count_before_truncation
             > long_record.token_count_after_truncation
+            and long_record.token_count_after_truncation == 256
         ),
     }
     passed = all(assertions.values())
@@ -211,18 +264,25 @@ def main() -> int:
         "provenance": {
             "cache_snapshot_path_recorded_as_external": str(snapshot),
             "tokenizer_file_sha256": provenance["tokenizer"],
-            "config_file_sha256": provenance["config"],
+            "encoder_config_file_sha256": provenance["encoder_config"],
+            "encoder_config_optional_absent": ["2_Normalize/config.json"],
             "model_file_sha256": provenance["model"],
             "loaded_model_weight_file": loaded_model_weight_file,
             "loaded_model_weight_sha256": loaded_model_weight_sha256,
-            "transformer_config_sha256": provenance["config"]["config.json"],
-            "tokenizer_hash": tokenizer_hash,
-            "model_config_file_hash": model_config_file_hash,
+            "transformer_config_sha256": provenance["encoder_config"]["config.json"],
+            "tokenizer_manifest_hash": tokenizer_manifest_hash,
+            "encoder_config_manifest_hash": encoder_config_manifest_hash,
+            "scientific_config_hash": scientific_config_hash,
             "model_file_hash": model_file_hash,
             "weights_copied_to_repository": False,
         },
         "text_encoder_config": DEFAULT_CONFIG.to_dict(),
-        "text_encoder_config_hash": DEFAULT_CONFIG.config_hash,
+        "scientific_config_hash": scientific_config_hash,
+        "release_contract": {
+            "sentence_bert_config": sentence_config,
+            "module_types": module_types,
+            "pooling_config": pooling_config,
+        },
         "input_text_sha256": {
             "short": exact_utf8_text_sha256(short_text),
             "other": exact_utf8_text_sha256(other_text),
@@ -230,6 +290,11 @@ def main() -> int:
         },
         "tokenization": {
             "model_max_length": encoder.model_max_length,
+            "sentence_transformers_max_seq_length": int(sentence_config["max_seq_length"]),
+            "tokenizer_model_max_length": int(encoder.tokenizer.model_max_length),
+            "model_max_position_embeddings": int(
+                encoder.model.config.max_position_embeddings
+            ),
             "short": {
                 "token_count_before_truncation": first.records[0].token_count_before_truncation,
                 "token_count_after_truncation": first.records[0].token_count_after_truncation,
@@ -279,7 +344,7 @@ def main() -> int:
     )
     print(
         f"seed={SEED} fold={FOLD} method={METHOD} "
-        f"config_hash={DEFAULT_CONFIG.config_hash}"
+        f"scientific_config_hash={scientific_config_hash}"
     )
     print(f"resolved_revision={resolved_revision} assertions={len(assertions)} status={record['status']}")
     print(f"output={args.output}")

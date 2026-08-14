@@ -16,7 +16,7 @@ commands, state records, and run notes.
 
 Scientific definitions, thresholds, and experimental rules come only from:
 
-1. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_7_2026-08-13.md`
+1. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_8_2026-08-14.md`
 2. `guide/EEG_Text_Bprime_Execution_Plan_v3_2026-08-11_to_Submission.md`
 
 The unified spec controls scientific definitions and claim boundaries. The execution
@@ -71,7 +71,7 @@ Allowed task states are `TODO`, `READY`, `IN_PROGRESS`, `DONE`, `BLOCKED`, `FAIL
 - Gate thresholds and held-out decisions must never be changed after seeing results.
 - Do not begin Gate B before Gate A has a valid passing outcome.
 - Do not begin the main experiment before `ROUTE_LOCK` is `DONE` and one route is locked.
-- EQ-ANMA and CSPE cannot both be title-level locked routes.
+- This paper executes EQ-ANMA only; the registered backup is a negative diagnostic, not CSPE or a post-outcome dataset switch.
 
 ## End-Of-Session Contract
 

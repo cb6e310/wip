@@ -2,37 +2,37 @@
 
 ## Current stage
 
-Stage 0 remains `IN_PROGRESS` under SPEC v3.7. No Stage-1 probe, Gate A/B, route lock, EEG training, held-out evaluation, or paper-level experiment was authorized or run.
+Stage 0 remains `IN_PROGRESS` under SPEC v3.8. No ROAMM admission, inner split, candidate construction, Stage-1 probe, Gate A/B, route lock, EEG training, held-out evaluation or paper-level experiment ran in the text-correction task.
 
-## Completed in `2026-08-14_012_v37_text_encoder`
+## Completed in `2026-08-14_014_v38_text_encoder_correction`
 
-- The frozen text-encoder engineering contract is `PASS`: `sentence-transformers/all-MiniLM-L6-v2` revision `1110a243fdf4706b3f48f1d95db1a4f5529b4d41` resolved exactly and was loaded on CPU through `transformers.AutoTokenizer`/`AutoModel`.
-- The one public encode path uses last-hidden-state attention-mask mean pooling, L2 normalization, explicit float32 384D output, eval/no-grad and zero trainable parameters. Cache keys bind exact UTF-8 text SHA256, model ID, revision, tokenizer hash, config hash, pooling and normalization.
-- Real CPU admission passed 19/19 assertions: short `[1,384]`, padding batch `[2,384]`, long `[1,384]`, finite norms approximately 1, byte-identical repeated encoding, and truncation 1730 to 512 tokens. Model/tokenizer/config provenance hashes are frozen in `artifacts/text_encoder_freeze.yaml`; weights remain outside the repository.
-- A1 default `d_align` is now 384. The new synthetic A1 contract rerun passed 6/6 with output `[2,384]`; PSD, bands, windows, normalization, other network hyperparameters and parameter ceiling were unchanged.
-- Focused tests passed 15/15 for the text encoder and 7/7 for A1; the full suite passed 84/84.
+- `S0_TEXT_ENCODER` is corrected and readmitted. The exact model/revision, attention-mask mean pooling, L2, float32 384D, eval/no-grad, zero-trainable and shared encode interface from `bbf8d11` are retained.
+- The sentence-transformers contract is now explicitly `max_seq_length=256`, sourced from exact-revision `sentence_bert_config.json`; tokenizer and transformer physical capacities are separately verified as 512 and 512 and may not raise the scientific limit.
+- Cache keys bind exact UTF-8 text SHA256, model ID, revision, tokenizer manifest hash `78a3daa9...e09`, encoder-config manifest hash `8049791e...845`, scientific config hash `0f2fb795...2af`, pooling and normalization.
+- The encoder-config manifest covers `config.json`, `sentence_bert_config.json`, `modules.json`, `1_Pooling/config.json` and the released `config_sentence_transformers.json`; `2_Normalize/config.json` is absent from this release and recorded as absent. Module order and mean-only pooling were verified.
+- Real CPU self-check passed 26/26: long input 962→256, `truncated=true`, shapes remain `[1,384]`/`[2,384]`, finite L2 norms are approximately 1, repeated bytes are identical, and trainable parameters are 0.
+- A1 code and hyperparameters were not changed. A1 focused tests passed 7/7 and the new regression self-check passed 6/6 with output `[2,384]`.
+- Text focused tests passed 19/19 and the complete suite passed 88/88 before the final state update.
 
 ## Current critical path
 
-1. `S0_INNER_SPLIT` — READY and recommended; it has not been implemented.
-2. `S0_CANDIDATES` — BLOCKED until the inner split exists and per-target N=50 feasibility is verified.
-3. A1 real-source admission and the full leakage audit.
+1. `S0_ROAMM_ADMISSION` — recommended next task; not implemented in this run.
+2. `S0_INNER_SPLIT` — waits for ROAMM structural admission.
+3. `S0_CANDIDATES`, A1 real-source admission and full leakage audit.
 4. Stage 1 / Gate A only after all protocol artifacts pass.
-
-`S0_DIRECT_U_PLUS` remains independently READY but was not implemented in this run.
 
 ## Residual blockers
 
-- No inner split artifact inside each outer cell.
-- Candidate N=50 remains unverified per target after all legal filters; no shared candidate or paired-verification artifacts exist.
-- A1 real `sentenceData.rawData` admission has not passed: sampling rate, channel order, units, finite values and field semantics remain unverified end to end.
-- A3 canonical channel mapping and real extraction remain T6-only blockers.
-- TMNRED experiment protocol remains unresolved for the supplementary panel only.
+- ROAMM ds007629 v1.3.0 has not been admitted in the repository.
+- No dataset-local inner split artifacts exist.
+- Target-level N=50 feasibility and shared candidate/paired-verification artifacts do not exist.
+- A1 real `sentenceData.rawData` source admission has not passed.
+- A3 canonical channel mapping and real extraction remain unresolved.
 
 ## Claim boundary
 
-The text-encoder engineering contract and A1 384D synthetic contract pass. A1 real-data admission does not pass. There are no EEG or paper-level results and no Gate conclusion.
+The corrected text-encoder engineering contract and unchanged A1 384D synthetic regression pass. There are no ROAMM/EEG/held-out/paper-level results and no Gate conclusion.
 
 ## Do not do yet
 
-Do not treat outer split PASS as nested OOF readiness. Do not construct candidates or force N=50 before the inner split and feasibility ledger. Do not run Stage 1, Gate A/B, route lock, T6 real extraction, EEG training, or main experiments.
+Do not combine ROAMM admission with this completed correction record. Do not start inner split, candidates, direct `u+`, A1 real admission, Stage 1, Gate A/B, route lock or training.
