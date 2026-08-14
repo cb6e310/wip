@@ -203,8 +203,8 @@ S0_ROAMM_ADMISSION:
   title: Admit ROAMM v1.3.0 as the mandatory second-dataset replication panel
   stage: stage_0
   status: TODO
-  critical_path: true
-  priority: 6
+  critical_path: false
+  priority: 23
   prerequisites:
     - S0_TEXT_ENCODER
   produces:
@@ -222,36 +222,44 @@ S0_ROAMM_ADMISSION:
     - release-native word-key item predicate and outer-train-only support ledger feasibility are recorded without retokenizing, translating or inferring sentence identity
     - each held-out article has a structural N=50 upper bound, while full near-duplicate/H/length feasibility remains explicitly delegated to S0_CANDIDATES
     - no alignment training, EEG held-out metric, Gate decision or paper-level result is read or produced
-  why_waiting: This task becomes eligible only after the corrected 256-token/config-manifest text contract passes.
+  deferred_reason: Author-approved v3.9 execution reorder. Preserve the incomplete v3.8 checkpoint, but do no further ROAMM work until the ZuCo2 MAIN_EXPERIMENT, method table, thresholds and route are frozen. This is a scheduling deferral, not dataset removal or an outcome-contingent switch.
 
 S0_INNER_SPLIT:
-  title: Build deterministic nested inner folds inside every admitted dataset outer-train cell
+  title: Build deterministic nested inner folds inside every ZuCo2 outer-train cell
   stage: stage_0
-  status: TODO
+  status: DONE
   critical_path: true
   priority: 6
   prerequisites:
     - S0_JOINT_SPLIT
     - S0_SEMANTIC_ITEM
-    - S0_ROAMM_ADMISSION
   produces:
     - 01_data_protocol/splits/zuco_2_0_inner_folds.json
-    - 01_data_protocol/splits/roamm_outer_folds.json
-    - 01_data_protocol/splits/roamm_inner_folds.json
+    - 04_results/audits/zuco2_inner_split_support.json
+    - 02_code/src/data/inner_split.py
+    - 02_code/scripts/build_zuco2_inner_split.py
     - 02_code/tests/test_inner_split.py
   acceptance:
-    - each ZuCo2 and ROAMM outer cell receives its own 4x4 inner subject-by-text split from outer-train only
-    - ROAMM uses six balanced subject folds and five atomic article folds, with four remaining articles as the four inner text folds
-    - deterministic subject and atomic text-group algorithms match v3.8 sections 4.2.1 and 4.9
-    - a triggered 3x3 downgrade is applied globally and recorded rather than per-cell cherry-picked
+    - each of the 60 task-local ZuCo2 outer cells (30 NR and 30 TSR) receives its own inner subject-by-text split from outer-train only
+    - deterministic subject and atomic text-group algorithms match v3.9 section 4.2.1
+    - the default is 4x4; within each independent task panel, if any of its 30 outer cells triggers J17, one recorded 3x3 downgrade is applied to all 30 cells of that task rather than cherry-picked per cell
     - no inner train or validation record overlaps the corresponding outer test subjects or stimuli
-    - artifact is byte-stable and records seed, outer-cell ID, config hash, and source artifact hash
-  waiting_reason: ZuCo2 outer split is ready, but v3.8 requires ROAMM admission before the shared split implementation is generalized to both independent panels.
+    - artifact is byte-stable and records seed, outer-cell ID, config hash, source outer-artifact hash, algorithm version, trigger evidence and global fold decision
+    - the implementation does not read, mutate or require any ROAMM file or artifact
+  completed_by_run: 2026-08-14_017_v39_zuco2_inner_split
+  evidence_scope: REAL_ZUCO2_PROTOCOL_ARTIFACT_NO_EEG_VALUES_OR_PAPER_METRICS
+  evidence:
+    - 01_data_protocol/splits/zuco_2_0_inner_folds.json
+    - 04_results/audits/zuco2_inner_split_support.json
+    - 02_code/src/data/inner_split.py
+    - 02_code/scripts/build_zuco2_inner_split.py
+    - 02_code/tests/test_inner_split.py
+  completion_note: All 60 task-local outer cells were rebuilt from outer-train records only. J17 item-support medians triggered task-global 3x3 for both NR (minimum 9.0) and TSR (minimum 8.0); the subject trigger did not fire because both task panels had a minimum of 15 valid outer-train subjects. Two independent real builds were byte-identical, all isolation/integrity assertions passed, and no ROAMM path, EEG value, training, held-out metric or Gate result was read or produced.
 
 S0_CANDIDATES:
-  title: Freeze shared unseen-stimulus candidate lists and paired-verification pairs
+  title: Freeze ZuCo2 shared unseen-stimulus candidate lists and paired-verification pairs
   stage: stage_0
-  status: BLOCKED
+  status: READY
   critical_path: true
   priority: 5
   prerequisites:
@@ -268,7 +276,7 @@ S0_CANDIDATES:
     - all methods and seeds reuse the same lists
     - per-target feasibility proves at least 49 legal negatives for main N=50 or emits a blocker without changing the protocol
     - N=100/200 are marked unavailable for current ZuCo2 folds rather than filled from training text
-  blocked_reason: The corrected v3.8 text encoder is admitted, but ROAMM admission has not run and nested inner splits do not exist; target-level N=50 feasibility is therefore unknown for both independent panels.
+  why_ready: The corrected text encoder and deterministic ZuCo2 nested inner split are admitted. Build the frozen per-target unseen-stimulus feasibility ledger and shared candidate/pair artifacts next; ROAMM remains deferred and is not a prerequisite.
 
 S0_JOINT_SPLIT:
   title: Build the joint held-out subject-and-stimulus outer split
@@ -297,7 +305,7 @@ S0_JOINT_SPLIT:
   completion_note: Two task-local ZuCo2 panels pass the deterministic outer 6 subject-fold by 5 text-fold contract. The 12,503 eligible records use verified source-slot identities; the artifact is byte-stable for seed 20260813 and has SHA256 20aedfd56c7c5ee41a491e5b5531ef77728344808d42ba45d72d7e30250cffa6. This is not an inner split; S0_INNER_SPLIT remains separately required. TMNRED policy does not block this primary panel.
 
 S0_LEAKAGE_AUDIT:
-  title: Run the V1-V5 leakage and protocol audit
+  title: Run the ZuCo2 V1-V5 leakage and protocol audit
   stage: stage_0
   status: BLOCKED
   critical_path: true
@@ -312,7 +320,7 @@ S0_LEAKAGE_AUDIT:
     - all preprocessing and probe fits are outer-train-only
     - H, candidates, subject/stimulus split, and test-time calibration checks are green
     - failed checks invalidate affected runs
-  blocked_reason: The corrected text admission, ROAMM admission, dataset-local inner splits and shared candidate lists/pairs do not all exist. The full V1-V5 audit cannot pass until those artifacts are complete for each panel.
+  blocked_reason: The ZuCo2 inner split is admitted, but shared candidate lists/pairs do not yet exist. The ZuCo2 V1-V5 audit cannot pass until candidate artifacts are complete; deferred ROAMM artifacts are independently audited after ZuCo2 results freeze.
 
 S0_A1_FRONTEND:
   title: Implement and freeze the A1 spectral frontend and tensor contract
@@ -356,7 +364,7 @@ S0_A1_ADMISSION:
     - linear subject probe and coarse semantic probe are above chance or explained
     - A1 is not uniformly worse than raw spectral features
     - all results use only outer-training data
-  blocked_reason: Reference exclusions, source join, semantic item, H, outer split, numeric bands, corrected v3.8 text admission and A1 d_align=384 integration pass. A1 admission still requires the inner split, candidates/leakage, real sentenceData.rawData source checks, and outer-train sham/subject/semantic probe evidence. A 128-to-105 map is not an A1 prerequisite.
+  blocked_reason: Reference exclusions, source join, semantic item, H, outer and inner splits, numeric bands, corrected v3.8 text admission and A1 d_align=384 integration pass. A1 admission still requires candidates/leakage, real sentenceData.rawData source checks, and outer-train sham/subject/semantic probe evidence. A 128-to-105 map is not an A1 prerequisite.
 
 S0_A3_CONTAMINATION_CHECK:
   title: Verify A3 LaBraM pretraining contamination, license, checkpoint, and channel map
@@ -585,7 +593,7 @@ ROUTE_LOCK:
   blocked_reason: Neither gate has a valid decision, so no route may be locked.
 
 MAIN_EXPERIMENT:
-  title: Run the frozen minimum-paper-package main experiment
+  title: Run and freeze the full ZuCo2 minimum-paper-package main experiment
   stage: main_experiment
   status: BLOCKED
   critical_path: true
@@ -600,4 +608,6 @@ MAIN_EXPERIMENT:
     - route, split, candidate lists, primary metric, primary null, and seeds are frozen
     - results use joint subject/stimulus holdout and subject-level statistics
     - required real/three-sham/text-only, language-only, direct-u+, and uncertainty outputs exist
+    - both ZuCo2 NR and TSR task panels complete the frozen table or every preregistered invalid/missing cell is explicitly ledgered
+    - completion freezes the ZuCo2 method table, thresholds and route before ROAMM admission resumes; it does not by itself establish cross-dataset replication or paper completion
   blocked_reason: Main experiments are prohibited before route lock and protocol audit.

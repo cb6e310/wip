@@ -1,46 +1,27 @@
 # Current Handoff
 
-## Current stage
+## Direction and stage
 
-Stage 0 remains `IN_PROGRESS` under SPEC v3.8. No ROAMM admission, inner split, candidate construction, Stage-1 probe, Gate A/B, route lock, EEG training, held-out evaluation or paper-level experiment ran in the text-correction task.
+Stage 0 remains `IN_PROGRESS` under SPEC v3.9. ZuCo 2.0 NR/TSR must be completed and frozen before ROAMM resumes as the mandatory external replication panel. This ordering does not change any scientific threshold or remove ROAMM.
 
-## Active `2026-08-14_015_v38_roamm_admission` checkpoint
+## Current verified state
 
-- The two ignored v3.8 text self-check evidence files were hash-verified, archived in the separate pushed commit `3457b6a3592bd75cf1b0312d6818047c66d3f537`, and left scientifically unchanged.
-- ROAMM exact v1.3.0 source/tree metadata and all five coordinate files pass the frozen structural counts: 44×5 raw/synced inventory, 10,839 coordinate rows, 487 sentences, 42 cross-page exclusions and 445 single-page sentences (`86/88/93/91/87`).
-- Strict full-audit code and 16 offline focused tests are implemented. The background transfer of all 220 synced PKLs is still running; no sample-based support result is accepted as complete.
-- Checkpoint artifacts are marked `IN_PROGRESS_DOWNLOAD`, `experiment_ready=false`. `S0_ROAMM_ADMISSION` is not DONE, `B_ROAMM_NOT_ADMITTED` remains active, and `S0_INNER_SPLIT` remains TODO.
-- Resume by waiting for the verified 220/220 PKL transfer, downloading and hashing the one frozen representative BDF, then run the audit script in `--mode full`. Do not start inner split, candidates, direct `u+`, A1 real admission, training or Gates.
+- Repository base before this task: `502a92f5de1a984e999ea8692b59ad9fd9e6d8bd`.
+- `S0_TEXT_ENCODER=DONE`, `S0_JOINT_SPLIT=DONE`, and `S0_SEMANTIC_ITEM=DONE` remain unchanged.
+- `S0_INNER_SPLIT=DONE` by run `2026-08-14_017_v39_zuco2_inner_split`.
+- The real ZuCo2 builder verified the frozen outer artifact SHA256 `20aedfd56c7c5ee41a491e5b5531ef77728344808d42ba45d72d7e30250cffa6`, both panel input hashes, the source-slot identity, the official semantic predicate, and 143,055 positive item observations.
+- All 60 outer cells exist. J17 independently selected task-global 3x3 for both panels: NR minimum provisional item-support median 9.0, TSR 8.0; both had minimum outer-train subject count 15, so the subject trigger did not fire.
+- Two independent real builds were byte-identical. The split artifact SHA256 is `0271aba0ae9627f35e281029a8a95390513c1e92c8010e8a2795171f837575d7`; the support audit SHA256 is `536ed93758baf1e4d7c8796bc164b39f7ec86a97ac8ac6b4e65bb8e782644564`.
+- Focused tests passed 10 inner, 8 joint-split, and 5 semantic-item tests. The complete suite passed 114 tests with no skip or failure.
 
-## Completed in `2026-08-14_014_v38_text_encoder_correction`
+## ROAMM checkpoint remains paused and not admitted
 
-- `S0_TEXT_ENCODER` is corrected and readmitted. The exact model/revision, attention-mask mean pooling, L2, float32 384D, eval/no-grad, zero-trainable and shared encode interface from `bbf8d11` are retained.
-- The sentence-transformers contract is now explicitly `max_seq_length=256`, sourced from exact-revision `sentence_bert_config.json`; tokenizer and transformer physical capacities are separately verified as 512 and 512 and may not raise the scientific limit.
-- Cache keys bind exact UTF-8 text SHA256, model ID, revision, tokenizer manifest hash `78a3daa9...e09`, encoder-config manifest hash `8049791e...845`, scientific config hash `0f2fb795...2af`, pooling and normalization.
-- The encoder-config manifest covers `config.json`, `sentence_bert_config.json`, `modules.json`, `1_Pooling/config.json` and the released `config_sentence_transformers.json`; `2_Normalize/config.json` is absent from this release and recorded as absent. Module order and mean-only pooling were verified.
-- Real CPU self-check passed 26/26: long input 962→256, `truncated=true`, shapes remain `[1,384]`/`[2,384]`, finite L2 norms are approximately 1, repeated bytes are identical, and trainable parameters are 0.
-- A1 code and hyperparameters were not changed. A1 focused tests passed 7/7 and the new regression self-check passed 6/6 with output `[2,384]`.
-- Text focused tests passed 19/19 and the complete suite passed 88/88 before the final state update.
+The project-specific downloader was positively identified and stopped with SIGTERM only. At stop, 172/220 PKLs were complete and four `.part` files remained. No partial file, manifest, log, or verified download was deleted. `B_ROAMM_DEFERRED_UNTIL_ZUCO2_FREEZE` still blocks only `S0_ROAMM_ADMISSION`; `experiment_ready=false` remains the claim boundary.
 
-## Current critical path
+## Next task
 
-1. `S0_ROAMM_ADMISSION` — recommended next task; not implemented in this run.
-2. `S0_INNER_SPLIT` — waits for ROAMM structural admission.
-3. `S0_CANDIDATES`, A1 real-source admission and full leakage audit.
-4. Stage 1 / Gate A only after all protocol artifacts pass.
-
-## Residual blockers
-
-- ROAMM ds007629 v1.3.0 has not been admitted in the repository.
-- No dataset-local inner split artifacts exist.
-- Target-level N=50 feasibility and shared candidate/paired-verification artifacts do not exist.
-- A1 real `sentenceData.rawData` source admission has not passed.
-- A3 canonical channel mapping and real extraction remain unresolved.
-
-## Claim boundary
-
-The corrected text-encoder engineering contract and unchanged A1 384D synthetic regression pass. There are no ROAMM/EEG/held-out/paper-level results and no Gate conclusion.
+`S0_CANDIDATES` is now `READY` and is the only recommended next task. Build only the frozen ZuCo2 unseen-stimulus candidate feasibility and paired-verification artifacts. Do not use outer-train text, cross-article borrowing, relaxed filters, replacement, or silent target deletion to force N=50.
 
 ## Do not do yet
 
-Do not combine ROAMM admission with this completed correction record. Do not start inner split, candidates, direct `u+`, A1 real admission, Stage 1, Gate A/B, route lock or training.
+Do not resume ROAMM, run A1 real admission, Stage 1, EEG training, retrieval evaluation, Gate A/B, route lock, or paper-level held-out analysis as part of the candidate task. The admitted inner artifacts are protocol infrastructure, not OOF or paper evidence. Cross-dataset replication and paper completion remain blocked until the deferred ROAMM panel is finished.
