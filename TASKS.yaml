@@ -247,6 +247,9 @@ S0_INNER_SPLIT:
     - artifact is byte-stable and records seed, outer-cell ID, config hash, source outer-artifact hash, algorithm version, trigger evidence and global fold decision
     - the implementation does not read, mutate or require any ROAMM file or artifact
   completed_by_run: 2026-08-14_017_v39_zuco2_inner_split
+  reviewed_by_run: 2026-08-14_018_v310_inner_review_candidate_freeze
+  reviewed_commit: d4b08308f6f51e4f7ba4256719641461d38bdc68
+  review_outcome: ADMITTED_NONBLOCKING_ENGINEERING_NOTES_ONLY
   evidence_scope: REAL_ZUCO2_PROTOCOL_ARTIFACT_NO_EEG_VALUES_OR_PAPER_METRICS
   evidence:
     - 01_data_protocol/splits/zuco_2_0_inner_folds.json
@@ -259,7 +262,7 @@ S0_INNER_SPLIT:
 S0_CANDIDATES:
   title: Freeze ZuCo2 shared unseen-stimulus candidate lists and paired-verification pairs
   stage: stage_0
-  status: READY
+  status: DONE
   critical_path: true
   priority: 5
   prerequisites:
@@ -270,13 +273,31 @@ S0_CANDIDATES:
   produces:
     - 01_data_protocol/candidates/candidate_lists.json
     - 01_data_protocol/candidates/paired_verification_pairs.json
+    - 04_results/audits/zuco2_candidate_feasibility.json
+    - 02_code/src/data/candidates.py
+    - 02_code/scripts/build_zuco2_candidates.py
+    - 02_code/tests/test_candidates.py
   acceptance:
-    - candidates come only from the current outer held-out text fold
-    - length matching, near-duplicate filtering, seed, and nesting are recorded
-    - all methods and seeds reuse the same lists
-    - per-target feasibility proves at least 49 legal negatives for main N=50 or emits a blocker without changing the protocol
-    - N=100/200 are marked unavailable for current ZuCo2 folds rather than filled from training text
-  why_ready: The corrected text encoder and deterministic ZuCo2 nested inner split are admitted. Build the frozen per-target unseen-stimulus feasibility ledger and shared candidate/pair artifacts next; ROAMM remains deferred and is not a prerequisite.
+    - outer-test negatives come only from the target's current outer held-out text fold; inner-validation negatives come only from that target's current inner held-out text fold inside the corresponding outer train
+    - target identity is excluded; token-length matching is the hard inclusive 0.75x-to-1.25x rule with no nearest-neighbor refill; frozen MiniLM cosine greater than 0.9 and exact H-full source-sentence overlap are hard exclusions
+    - every target records the pool count and sequential exclusion counts; no target, failure or filter stage is silently dropped
+    - five deterministic hash-ranked negative permutations are created per scope/target; each list is without replacement and N in 10/50/100/200 uses prefixes from the same maximum legal ordering
+    - candidate lists are reused across methods and training seeds; outer lists are also reused across the six outer subject folds sharing one task/text fold
+    - paired-verification pairs are derived exactly from the frozen sentence lists: first negative for 1-to-1 AUROC and the same 49 negatives for 1-to-49 AUPRC
+    - panel-level N=50 passes only if every outer-test and inner-validation target has at least 49 legal negatives; otherwise the audit completes with an explicit structural blocker without source/filter relaxation, replacement or silent target deletion
+    - N=100/200 are marked unavailable wherever infeasible rather than filled from wrong-scope text
+    - artifacts are canonical-byte deterministic and bind exact outer/inner, source-join, H, encoder/model/tokenizer/config and released-text hashes
+  completed_by_run: 2026-08-14_019_v310_zuco2_candidates
+  completion_outcome: STRUCTURAL_NO_GO_N50
+  evidence_scope: REAL_ZUCO2_PROTOCOL_FEASIBILITY_NO_EEG_NO_RETRIEVAL_METRIC
+  evidence:
+    - 01_data_protocol/candidates/candidate_lists.json
+    - 01_data_protocol/candidates/paired_verification_pairs.json
+    - 04_results/audits/zuco2_candidate_feasibility.json
+    - 02_code/src/data/candidates.py
+    - 02_code/scripts/build_zuco2_candidates.py
+    - 02_code/tests/test_candidates.py
+  completion_note: All 739 verified source-slot sentences and all 18,475 outer-test/inner-validation target instances were retained. Two independent real CPU builds and the formal build were byte-identical. The frozen filters leave 18,184 targets below 49 legal negatives, so panel-wide N=50 is structurally unavailable; N=10 is also not panel-wide available, while N=100/200 are unavailable for every target. No source, N, hard filter or target-retention rule was changed, and no EEG value, retrieval metric, training, Gate or ROAMM path was read.
 
 S0_JOINT_SPLIT:
   title: Build the joint held-out subject-and-stimulus outer split
@@ -320,7 +341,7 @@ S0_LEAKAGE_AUDIT:
     - all preprocessing and probe fits are outer-train-only
     - H, candidates, subject/stimulus split, and test-time calibration checks are green
     - failed checks invalidate affected runs
-  blocked_reason: The ZuCo2 inner split is admitted, but shared candidate lists/pairs do not yet exist. The ZuCo2 V1-V5 audit cannot pass until candidate artifacts are complete; deferred ROAMM artifacts are independently audited after ZuCo2 results freeze.
+  blocked_reason: "Candidate engineering is complete, but its admitted outcome is STRUCTURAL_NO_GO_N50: 18,184 of 18,475 target instances cannot supply the frozen 49 legal negatives. V1-V5 leakage work must wait for an author-approved future protocol revision; deferred ROAMM remains independently paused."
 
 S0_A1_FRONTEND:
   title: Implement and freeze the A1 spectral frontend and tensor contract
@@ -522,7 +543,7 @@ GATE_A:
 S0_DIRECT_U_PLUS:
   title: Implement the preregistered strongest direct u+ weighting control
   stage: stage_2
-  status: READY
+  status: BLOCKED
   critical_path: true
   priority: 18
   prerequisites: []
@@ -534,7 +555,7 @@ S0_DIRECT_U_PLUS:
     - measurement-layer hyperparameters are not imposed on this non-measurement row
     - entropy, Gini, quantiles, floor-hit, and all-zero-batch diagnostics use the unique v3.7 definitions
     - all variants and dispersion diagnostics are reportable
-  why_ready: Section 6.16 gives a complete executable definition independent of held-out results, but this task is intentionally sequenced after the protocol-critical text/inner/candidate artifacts.
+  blocked_reason: Section 6.16 remains frozen, but implementation is paused because the admitted ZuCo2 candidate outcome is STRUCTURAL_NO_GO_N50. AUTHOR_REVIEW_N50_PROTOCOL must resolve the evaluation protocol before downstream method work resumes; this is not permission to alter the direct-u-plus formula.
 
 S0_EQ_ANMA_CORE:
   title: Implement the EQ-ANMA weighting path after Stage-1 scores are frozen

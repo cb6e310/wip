@@ -63,6 +63,18 @@ class ProjectMemoryValidatorTests(unittest.TestCase):
     def test_initial_state_is_valid(self) -> None:
         self.assertEqual(CHECKER.validate(self.root), [])
 
+    def test_null_recommendation_is_valid_when_every_open_task_is_blocked(self) -> None:
+        state = self._read("PROJECT_STATE.yaml")
+        tasks = self._read("TASKS.yaml")
+        for task_id, task in tasks.items():
+            if task.get("status") in {"TODO", "READY"}:
+                task["status"] = "BLOCKED"
+                task["blocked_reason"] = "fixture blocks all open tasks"
+        state["recommended_next_task"] = None
+        self._write("PROJECT_STATE.yaml", state)
+        self._write("TASKS.yaml", tasks)
+        self.assertEqual(CHECKER.validate(self.root), [])
+
     def test_illegal_status_is_rejected(self) -> None:
         tasks = self._read("TASKS.yaml")
         tasks["S0_H_DEFINITION"]["status"] = "almost done"

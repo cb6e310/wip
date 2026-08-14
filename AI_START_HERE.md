@@ -1,6 +1,6 @@
 # AI Project Entry Point
 
-This file is the mandatory entry point for every new AI session working on this project. Do not use chat history as project state.
+This file is the mandatory entry point for every new AI session. Do not use chat history as project state.
 
 ## Verified Project Location
 
@@ -8,25 +8,21 @@ This file is the mandatory entry point for every new AI session working on this 
 - Project root: `/home/song/projects/trust_align`
 - Python: `/home/song/projects/trust_align/.venv/bin/python`
 
-Use `trust_align` consistently in commands, state records and run notes.
-
 ## Source of Truth
 
-Scientific definitions, thresholds and experiment rules come only from:
-
-1. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_9_2026-08-14.md`
+1. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_10_2026-08-14.md`
 2. `guide/EEG_Text_Bprime_Execution_Plan_v3_2026-08-11_to_Submission.md`
 
-SPEC v3.9 controls scientific definitions, claim boundaries and the author-approved ZuCo-first execution order. The execution plan controls the lightweight schedule and evidence-grade use of Gate A/B. Never edit either merely to make a task or Gate pass.
+SPEC v3.10 controls scientific definitions, candidate construction, claim boundaries and the ZuCo-first execution order. Never edit a scientific rule merely to make a task or Gate pass.
 
 ## Required Recovery Sequence
 
-Before doing any work, read in this order:
+Read, in order:
 
 1. `PROJECT_STATE.yaml`
 2. `HANDOFF.md`
 3. `TASKS.yaml`
-4. Relevant sections of the two guide files
+4. Relevant guide sections
 
 Then run:
 
@@ -35,7 +31,7 @@ Then run:
 .venv/bin/python scripts/project_status.py
 ```
 
-Before implementation, print this exact shape with values recovered from files:
+Before implementation print:
 
 ```text
 PROJECT SNAPSHOT
@@ -50,37 +46,32 @@ Why:
 Do not do yet:
 ```
 
-If repository state disagrees with the guide, report `STATE_SPEC_CONFLICT`. Block on missing facts rather than guessing.
+If state and SPEC disagree, report `STATE_SPEC_CONFLICT` and stop rather than guessing.
 
-## v3.9 Execution Boundary
+## Current Boundary
 
-- Finish and freeze the full ZuCo 2.0 NR/TSR main experiment before resuming ROAMM.
-- `S0_ROAMM_ADMISSION` is deliberately blocked by `B_ROAMM_DEFERRED_UNTIL_ZUCO2_FREEZE`; this is a scheduling deferral, not dataset removal.
-- Preserve the incomplete run-015 ROAMM checkpoint and verified partial files with `experiment_ready=false`.
-- ROAMM is not a prerequisite for ZuCo inner split, candidates, leakage, Gate A/B, route lock or main experiment.
-- ZuCo results must not determine whether ROAMM runs or change its frozen protocol. No cross-dataset claim is allowed until ROAMM finishes.
-- ZuCo-only `S0_INNER_SPLIT` is complete. Current recommended task is `S0_CANDIDATES`; do not combine it with training, A1 admission or ROAMM work.
+- `S0_INNER_SPLIT=DONE` is admitted after review of commit `d4b0830`.
+- `S0_CANDIDATES=DONE` with `completion_outcome=STRUCTURAL_NO_GO_N50`; the three canonical artifacts are admitted protocol evidence.
+- The complete audit retained 18,475 outer-test/inner-validation target instances; 18,184 have fewer than 49 legal negatives, so frozen N=50 cannot proceed.
+- `B_ZUCO2_N50_STRUCTURAL_NO_GO` blocks leakage and downstream method implementation pending `AUTHOR_REVIEW_N50_PROTOCOL`.
+- `recommended_next_task=null`: no automated engineering or experiment task is authorized until a future author-approved SPEC revision resolves the protocol.
+- Never force feasibility with wrong-scope text, length refill, relaxed cosine/H filters, replacement, target deletion or an unapproved N change.
+- ROAMM remains mandatory but deferred until the frozen ZuCo2 main experiment is complete.
 
 ## State Discipline
 
-Allowed task states are `TODO`, `READY`, `IN_PROGRESS`, `DONE`, `BLOCKED`, `FAILED`, `SKIPPED` and `TERMINATED`.
-
-- A task may be `READY` only when every prerequisite is `DONE` and no active blocker names it.
-- `DONE` requires existing evidence files and `completed_by_run`; code existence alone is not validation.
-- Keep `PROJECT_STATE.yaml` short and current. History belongs in `runs/`.
-- Keep `HANDOFF.md` concise and distinguish implemented from validated.
-- Gate thresholds and held-out decisions must never change after seeing results.
-- Do not begin Gate B before Gate A has a valid passing outcome.
-- Do not begin the main experiment before `ROUTE_LOCK` is `DONE` and one route is locked.
-- This paper executes EQ-ANMA only; the registered backup is a negative diagnostic, not CSPE or a post-outcome dataset switch.
+- `READY` requires every prerequisite `DONE` and no active blocker naming the task.
+- `DONE` requires existing evidence files and `completed_by_run`.
+- Keep current state in `PROJECT_STATE.yaml`, task evidence in `TASKS.yaml`, concise handoff in `HANDOFF.md`, and history in a new `runs/` record.
+- Do not begin Gate B before Gate A PASS.
+- Do not begin the main experiment before `ROUTE_LOCK=DONE` and one route is locked.
+- The registered backup is a negative diagnostic, not CSPE or an outcome-driven dataset switch.
 
 ## End-of-Session Contract
 
-Before ending any session that changed project state:
+After changing state:
 
-1. Update `PROJECT_STATE.yaml`.
-2. Update affected entries in `TASKS.yaml`.
-3. Replace `HANDOFF.md` with a concise current handoff.
-4. Append a new, never-reused `runs/YYYY-MM-DD_<id>.md` record.
-5. Run `.venv/bin/python scripts/check_project_state.py`.
-6. Run `.venv/bin/python scripts/project_status.py` and confirm its recommendation matches the evidence.
+1. Update `PROJECT_STATE.yaml` and affected `TASKS.yaml` entries.
+2. Replace `HANDOFF.md` with the current concise handoff.
+3. Add a unique `runs/YYYY-MM-DD_<id>.md` record.
+4. Run `scripts/check_project_state.py`, `scripts/project_status.py`, the relevant tests and `git diff --check`.

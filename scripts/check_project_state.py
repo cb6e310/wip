@@ -288,9 +288,13 @@ def validate(root: Path) -> list[str]:
 
     candidates = eligible_tasks(tasks, blockers)
     recommended = state.get("recommended_next_task")
-    if recommended not in candidates:
+    if candidates and recommended not in candidates:
         errors.append(
             f"recommended_next_task {recommended!r} is not currently eligible; eligible={candidates}"
+        )
+    if not candidates and recommended is not None:
+        errors.append(
+            f"recommended_next_task must be null when no task is eligible; got {recommended!r}"
         )
     return errors
 
