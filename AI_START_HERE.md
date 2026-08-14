@@ -16,7 +16,7 @@ commands, state records, and run notes.
 
 Scientific definitions, thresholds, and experimental rules come only from:
 
-1. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_6_2026-08-11.md`
+1. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_7_2026-08-13.md`
 2. `guide/EEG_Text_Bprime_Execution_Plan_v3_2026-08-11_to_Submission.md`
 
 The unified spec controls scientific definitions and claim boundaries. The execution

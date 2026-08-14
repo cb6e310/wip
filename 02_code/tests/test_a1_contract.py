@@ -33,6 +33,20 @@ class A1ContractTests(unittest.TestCase):
         cls.epochs = [cls.rng.normal(size=(105, 512)).astype(np.float32) for _ in range(4)]
 
     def test_eight_band_feature_shape_and_determinism(self) -> None:
+        self.assertEqual(DEFAULT_CONFIG.d_align, 384)
+        self.assertEqual(
+            [(band.low_hz, band.high_hz) for band in DEFAULT_CONFIG.bands],
+            [
+                (4.0, 6.0),
+                (6.5, 8.0),
+                (8.5, 10.0),
+                (10.5, 13.0),
+                (13.5, 18.0),
+                (18.5, 30.0),
+                (30.5, 40.0),
+                (40.0, 49.5),
+            ],
+        )
         first = bandpower_features(self.epochs[0])
         second = bandpower_features(self.epochs[0].T)
         self.assertEqual(first.shape, (840,))
@@ -61,6 +75,9 @@ class A1ContractTests(unittest.TestCase):
         self.assertGreaterEqual(fixed.shape[0], 1)
 
     def test_fixed_window_requires_explicit_mapping_for_128_channel_input(self) -> None:
+        direct_sentence_raw = self.rng.normal(size=(105, 600)).astype(np.float32)
+        direct = extract_fixed_window_sequence(direct_sentence_raw)
+        self.assertEqual(direct.shape[1], DEFAULT_CONFIG.feature_dim)
         raw = self.rng.normal(size=(128, 600)).astype(np.float32)
         with self.assertRaises(ValueError):
             extract_fixed_window_sequence(raw)
@@ -100,7 +117,7 @@ class A1ContractTests(unittest.TestCase):
         encoder = A1AlignmentEncoder(seed=17)
         self.assertLessEqual(encoder.parameter_count, DEFAULT_CONFIG.max_encoder_params)
         output = encoder(padded, mask)
-        self.assertEqual(tuple(output.shape), (2, DEFAULT_CONFIG.d_align))
+        self.assertEqual(tuple(output.shape), (2, 384))
         self.assertTrue(torch.isfinite(output).all())
         with self.assertRaises(TypeError):
             encoder(padded.double(), mask)

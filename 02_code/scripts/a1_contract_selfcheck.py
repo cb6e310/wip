@@ -33,8 +33,8 @@ from backbones.a1_spectral import (  # noqa: E402
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--seed", type=int, required=True)
-    parser.add_argument("--fold", required=True)
+    parser.add_argument("--seed", type=int, default=20260813)
+    parser.add_argument("--fold", default="S0-TEXT")
     parser.add_argument("--method", default="A1")
     parser.add_argument("--output", type=Path)
     return parser.parse_args()
@@ -90,13 +90,22 @@ def main() -> int:
     print(f"elapsed_seconds={elapsed:.3f} ranges={record['ranges']}")
     print(f"seed={args.seed} fold={args.fold} method={args.method} config_hash={record['config_hash']}")
     print(f"assertions={assertions} status={record['status']}")
-    if args.output:
-        args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(json.dumps(record, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        print(f"output={args.output}")
+    output_path = args.output
+    if output_path is None:
+        output_path = (
+            SCRIPT_ROOT.parent
+            / "03_runs"
+            / "debug_runs"
+            / (
+                f"a1_contract_selfcheck_seed{args.seed}_fold{args.fold}_"
+                f"method{args.method}_cfg{record['config_hash'][:12]}.json"
+            )
+        )
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(record, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    print(f"output={output_path}")
     return 0 if passed else 1
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

@@ -1,8 +1,9 @@
 schema_version: 1
-run_id: 2026-08-14_010_v36_stage0_recovery
+run_id: 2026-08-14_012_v37_text_encoder
 backbone: A1
 status: ENGINEERING_CONTRACT_PASS_SCIENTIFIC_ADMISSION_BLOCKED
-source_spec: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_6_2026-08-11.md#4.7.1
+source_spec: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_7_2026-08-13.md#4.7.1
+source_spec_sha256: ff4c123a2a55450b3f0e1d00d4f3dbd8ee8c543368a7a98ef2170645ab425a86
 config:
   n_channels: 105
   feature_dim: 840
@@ -19,6 +20,8 @@ config:
     - {name: gamma2, low_hz: 40.0, high_hz: 49.5}
   segmentation_primary: eyetracking_word_level
   segmentation_sensitivity: et_free_fixed_window_1s_stride_0.5s
+  segmentation_sensitivity_source: sentenceData.rawData_105_channels
+  continuous_128_first_105_fallback: forbidden
   normalization: train_quantile_clip_0.5_99.5_then_median_iqr_robust_zscore_then_transform_clip
   normalization_fit_scope: outer_train_fold_only
   forbidden_inputs:
@@ -31,36 +34,37 @@ config:
     d_model: 256
     heads: 8
     feedforward: 512
-    d_align: 256
+    d_align: 384
     parameter_limit: 20000000
   tensor_contract:
     input_features: (B,T_max,C*8) float32
     input_mask: (B,T_max) bool
-    output: (B,d_align)
+    output: (B,384) float32
   initialization_seed: 20260813
-  fold: A1-contract-1
+  fold: S0-TEXT
   method: A1
-  config_hash: 163c8d99624c95d15fd68d76e6ce8d7d30f2f140021c807bcef7aa1d62a2eb97
+  config_hash: a9ff618892a29b466d48d20c933503ea509a18c6fb002e274356d1513df73cf4
 implementation:
   files:
-    - 02_code/src/backbones/a1_spectral.py
-    - 02_code/tests/test_a1_contract.py
-    - 02_code/scripts/a1_contract_selfcheck.py
+    02_code/src/backbones/a1_spectral.py: 5d2aa874590f0ce3315512ede648faa00721cef8e429440068d268ca11d9ce3f
+    02_code/tests/test_a1_contract.py: 332cc56d67179002b8cd56c98a014f9f3792d314720c75b24e3c2ae744d1c1fa
+    02_code/scripts/a1_contract_selfcheck.py: a5d43b5ec4520c26f62d398ee26db0e9dab9861db36c79bf17413b5d19d5db32
   unit_tests: 7
   unit_tests_passed: 7
   selfcheck_status: PASS
-  selfcheck_elapsed_seconds: 0.451
-  source_sha256:
-    02_code/src/backbones/a1_spectral.py: 2a3c22d2c7a738b354395f83d46938f9427e23b437512d02586d3ff14e77b69f
-    02_code/tests/test_a1_contract.py: 0527b1571a749bafc471e3e1eafc2c8a2ffc44912a476deda59fdf12e9647bc4
+  selfcheck_assertions: 6
+  selfcheck_assertions_passed: 6
+  selfcheck_elapsed_seconds: 0.42894289270043373
+  selfcheck_evidence: 03_runs/debug_runs/a1_contract_selfcheck_seed20260813_foldS0-TEXT_methodA1_cfga9ff618892a2.json
+  selfcheck_evidence_sha256: 7228527fa395f9bd1cece9e1c193e30d24bf4610c4a8e182195cc1b4f179186e
   selfcheck_shapes:
     word_sequence: [4, 840]
     fixed_sequence: [7, 840]
     padded: [2, 7, 840]
     mask: [2, 7]
-    output: [2, 256]
+    output: [2, 384]
 scientific_freeze_notes:
-  - v3.6 inherits the frozen raw-unit PSD recipe: demean per channel, Hann, nFFT=max(512, next power of two), one-sided periodogram, half-open band integration, no dB or cross-band rescaling, and outer-train-only clipping plus median/IQR robust z.
-  - The supplied v3.6 prose names the eight bands but does not enumerate their numeric edges; the current edges remain an explicitly registered engineering configuration and are not silently promoted to a paper-level numeric decision.
-  - Fixed-window real-data use is blocked until an author/data-card verified 128-to-105 channel map is supplied; the API rejects implicit first-105 selection.
-  - This artifact validates the tensor/engineering contract only; it is not A1 admission, Gate A evidence, or a paper result.
+  - v3.7 D8 freezes the exact eight half-open bands and the raw-unit Hann periodogram, nFFT=max(512,nextpow2(T)), half-open integration, no-dB rule, and outer-train-only robust normalization.
+  - The preferred ET-free fixed-window source is 105-channel sentenceData.rawData, which may enter A1 directly; implicit first-105 truncation of 128-channel continuous EEG remains forbidden.
+  - Only d_align changed from 256 to 384; the A1 network, PSD, bands, windows, normalization and parameter ceiling are otherwise unchanged.
+  - This rerun is a new synthetic engineering contract under run 2026-08-14_012_v37_text_encoder. It is not A1 real-data admission, EEG evidence, Gate A evidence, or a paper result.

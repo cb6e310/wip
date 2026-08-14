@@ -73,7 +73,7 @@ S0_DATA_CARD:
     - 04_results/audits/zuco2_data_audit.yaml
     - 02_code/src/data/zuco2_loader.py
     - 02_code/scripts/audit_zuco2_data.py
-  completion_note: Structural data card and full reference audit PASS. v3.6 exclusion policy, verified source-slot join, real ZuCo2 joint split, and semantic support ledger now pass; experiment_ready=false because A1 channel/band admission, candidates/leakage, and real sham/probe evidence remain unresolved.
+  completion_note: Structural data card and full reference audit PASS. Verified source-slot join, real ZuCo2 outer joint split, and semantic support ledger pass; experiment_ready=false because text-encoder admission, inner split, candidate feasibility/leakage, A1 real-source admission, and real sham/probe evidence remain unresolved.
 
 S0_TMNRED_DATA_CARD:
   title: Build the TMNRED data card if availability is confirmed
@@ -96,6 +96,22 @@ S0_TMNRED_DATA_CARD:
     - 01_data_protocol/datasets/_downloads/tmnred_data_prep_manifest.json
     - 02_code/scripts/tmnred_data_prep_selfcheck.py
   completion_note: Structural data-card self-check PASS (10/10); experiment_ready=false. Misaligned demographics, incomplete event cell, license discrepancy, semantic item, session policy, candidate policy, and joint split remain unresolved.
+
+S0_TMNRED_PROTOCOL:
+  title: Resolve or bound the TMNRED supplementary-panel experiment protocol
+  stage: stage_0
+  status: BLOCKED
+  critical_path: false
+  priority: 40
+  prerequisites:
+    - S0_TMNRED_DATA_CARD
+  produces:
+    - artifacts/tmnred_experiment_protocol.yaml
+  acceptance:
+    - released lexical/event linkage or a bounded semantic No-Go is recorded without inferred or translated items
+    - incomplete cell, license discrepancy, session policy, candidate policy, and joint split are resolved for TMNRED only
+    - the outcome cannot change or block any ZuCo2 primary-panel task
+  blocked_reason: The released snapshot lacks word-level lexical content and still has license, incomplete-cell, session, candidate, and split uncertainties. This task is supplementary-only and not on the ZuCo2 critical path.
 
 S0_SEMANTIC_ITEM:
   title: Freeze the cross-subject semantic item definition and support rule
@@ -143,6 +159,60 @@ S0_H_DEFINITION:
     - 02_code/tests/test_h_definition.py
   completion_note: H_full and H_empty are implemented with explicit rejection of target/gold/current/future, candidate, target-statistic, and eye-tracking payloads; five focused tests pass.
 
+S0_TEXT_ENCODER:
+  title: Implement the exact-revision frozen 384D text encoder and reconcile A1 d_align
+  stage: stage_0
+  status: DONE
+  critical_path: true
+  priority: 5
+  prerequisites:
+    - S0_H_DEFINITION
+  produces:
+    - 02_code/src/text/frozen_minilm.py
+    - 02_code/tests/test_frozen_text_encoder.py
+    - 02_code/scripts/text_encoder_selfcheck.py
+    - artifacts/text_encoder_freeze.yaml
+    - artifacts/a1_frontend_freeze.yaml
+  acceptance:
+    - model ID and revision exactly match v3.7 D10
+    - official attention-mask mean pooling plus L2 normalization returns finite float32 384D embeddings
+    - model is eval-only, no-grad, and has no trainable text projection
+    - sentence targets, H, items, and near-duplicate filtering share one implementation and cache-key contract
+    - model, tokenizer, config, and artifact hashes plus a deterministic CPU smoke are recorded
+    - A1 DEFAULT_CONFIG.d_align and its freeze/self-check artifact are updated from 256 to 384 with no other A1 hyperparameter change
+    - no paper-level EEG result is read or produced
+  completed_by_run: 2026-08-14_012_v37_text_encoder
+  evidence_scope: REAL_CPU_TEXT_ENCODER_AND_SYNTHETIC_A1_ENGINEERING_CONTRACT_NO_EEG
+  evidence:
+    - artifacts/text_encoder_freeze.yaml
+    - artifacts/a1_frontend_freeze.yaml
+    - 02_code/src/text/frozen_minilm.py
+    - 02_code/tests/test_frozen_text_encoder.py
+    - 02_code/scripts/text_encoder_selfcheck.py
+    - 03_runs/debug_runs/text_encoder_selfcheck_seed20260813_foldS0-TEXT_methodfrozen-MiniLM-L6-v2_cfg260791adf1f7.json
+    - 03_runs/debug_runs/a1_contract_selfcheck_seed20260813_foldS0-TEXT_methodA1_cfga9ff618892a2.json
+  completion_note: Exact MiniLM revision 1110a243fdf4706b3f48f1d95db1a4f5529b4d41 resolved exactly and passed the real CPU 384D float32 attention-mask-mean plus L2, eval/no-grad, zero-trainable, padding, truncation, provenance-hash and byte-identical determinism contract (19/19). A1 d_align=384 passed a new synthetic [2,384] contract rerun (6/6); no EEG data or paper-level result was read or produced.
+
+S0_INNER_SPLIT:
+  title: Build deterministic nested inner folds inside every ZuCo2 outer-train cell
+  stage: stage_0
+  status: READY
+  critical_path: true
+  priority: 6
+  prerequisites:
+    - S0_JOINT_SPLIT
+    - S0_SEMANTIC_ITEM
+  produces:
+    - 01_data_protocol/splits/zuco_2_0_inner_folds.json
+    - 02_code/tests/test_inner_split.py
+  acceptance:
+    - each outer cell receives its own 4x4 inner subject-by-text split from outer-train only
+    - deterministic subject and atomic text-group algorithms match v3.7 section 4.2.1
+    - a triggered 3x3 downgrade is applied globally and recorded rather than per-cell cherry-picked
+    - no inner train or validation record overlaps the corresponding outer test subjects or stimuli
+    - artifact is byte-stable and records seed, outer-cell ID, config hash, and source artifact hash
+  why_ready: The outer split and semantic support artifacts are DONE, and v3.7 removes all remaining author choices from the inner-split algorithm.
+
 S0_CANDIDATES:
   title: Freeze shared unseen-stimulus candidate lists and paired-verification pairs
   stage: stage_0
@@ -152,21 +222,25 @@ S0_CANDIDATES:
   prerequisites:
     - S0_DATA_CARD
     - S0_H_DEFINITION
+    - S0_TEXT_ENCODER
+    - S0_INNER_SPLIT
   produces:
     - 01_data_protocol/candidates/candidate_lists.json
     - 01_data_protocol/candidates/paired_verification_pairs.json
   acceptance:
-    - candidates come only from non-training stimulus pools
+    - candidates come only from the current outer held-out text fold
     - length matching, near-duplicate filtering, seed, and nesting are recorded
     - all methods and seeds reuse the same lists
-  blocked_reason: ZuCo2 source identity and semantic item are now verified, but shared candidate construction still requires the unresolved TMNRED lexical/event, license, incomplete-cell, session, and joint-split policy; no candidate lists have been generated.
+    - per-target feasibility proves at least 49 legal negatives for main N=50 or emits a blocker without changing the protocol
+    - N=100/200 are marked unavailable for current ZuCo2 folds rather than filled from training text
+  blocked_reason: The v3.7 frozen text encoder is admitted, but the nested inner split has not been implemented; target-level N=50 feasibility is therefore unknown. TMNRED is a separate supplementary-panel issue and is not a prerequisite.
 
 S0_JOINT_SPLIT:
   title: Build the joint held-out subject-and-stimulus outer split
   stage: stage_0
   status: DONE
   critical_path: true
-  priority: 6
+  priority: 4
   prerequisites:
     - S0_DATA_CARD
     - S0_SEMANTIC_ITEM
@@ -185,7 +259,7 @@ S0_JOINT_SPLIT:
     - 02_code/scripts/build_zuco2_joint_split.py
     - 02_code/tests/test_joint_split.py
     - 02_code/tests/test_zuco2_source_join.py
-  completion_note: Two task-local ZuCo2 panels pass the frozen deterministic 6 subject-fold by 5 text-fold contract. The 12,503 eligible records use verified source-slot identities; the artifact is byte-stable for seed 20260813 and has SHA256 20aedfd56c7c5ee41a491e5b5531ef77728344808d42ba45d72d7e30250cffa6. TMNRED split policy remains a separate residual blocker.
+  completion_note: Two task-local ZuCo2 panels pass the deterministic outer 6 subject-fold by 5 text-fold contract. The 12,503 eligible records use verified source-slot identities; the artifact is byte-stable for seed 20260813 and has SHA256 20aedfd56c7c5ee41a491e5b5531ef77728344808d42ba45d72d7e30250cffa6. This is not an inner split; S0_INNER_SPLIT remains separately required. TMNRED policy does not block this primary panel.
 
 S0_LEAKAGE_AUDIT:
   title: Run the V1-V5 leakage and protocol audit
@@ -203,7 +277,7 @@ S0_LEAKAGE_AUDIT:
     - all preprocessing and probe fits are outer-train-only
     - H, candidates, subject/stimulus split, and test-time calibration checks are green
     - failed checks invalidate affected runs
-  blocked_reason: The real ZuCo2 split artifact is available, but shared candidate lists/pairs have not been generated and TMNRED protocol remains unresolved; the full V1-V5 audit therefore cannot pass yet.
+  blocked_reason: The outer ZuCo2 split exists, but the inner split and shared candidate lists/pairs do not. The full V1-V5 audit cannot pass until those primary-panel artifacts exist; TMNRED is not a prerequisite.
 
 S0_A1_FRONTEND:
   title: Implement and freeze the A1 spectral frontend and tensor contract
@@ -226,7 +300,7 @@ S0_A1_FRONTEND:
   evidence:
     - artifacts/a1_frontend_freeze.yaml
     - 03_runs/debug_runs/a1_contract_selfcheck_seed_20260813_v2.json
-  completion_note: The frontend/API contract and v3.6 raw-unit Hann-periodogram formula are frozen and synthetic contract checks pass. Real-data admission remains blocked by the explicit 128-to-105 map and author-frozen numeric band edges; current numeric edges are engineering configuration only.
+  completion_note: The frontend/API contract and raw-unit Hann-periodogram formula are frozen and synthetic contract checks pass. v3.7 promotes the existing eight numeric band edges to the scientific contract and selects 105-channel sentenceData.rawData for the fixed-window sensitivity. Real-data sampling/channel-order/unit/finite-value admission and d_align=384 integration remain pending; no 128-to-105 map is required for A1.
 
 S0_A1_ADMISSION:
   title: Run the four A1 admission self-checks on outer-train data
@@ -247,7 +321,7 @@ S0_A1_ADMISSION:
     - linear subject probe and coarse semantic probe are above chance or explained
     - A1 is not uniformly worse than raw spectral features
     - all results use only outer-training data
-  blocked_reason: Reference exclusions, source join, semantic item, H, and real ZuCo2 joint split now pass. Admission still requires the verified continuous 128-to-105 map, author-approved numeric frequency edges, candidates/leakage completion, and real outer-train sham/subject/semantic probe evidence.
+  blocked_reason: Reference exclusions, source join, semantic item, H, outer split, numeric bands, the exact 384D text contract and d_align=384 integration pass. Admission still requires the inner split, candidates/leakage, real sentenceData.rawData source checks, and outer-train sham/subject/semantic probe evidence. A 128-to-105 map is not an A1 prerequisite.
 
 S0_A3_CONTAMINATION_CHECK:
   title: Verify A3 LaBraM pretraining contamination, license, checkpoint, and channel map
@@ -343,7 +417,7 @@ S0_ALIGN_UNIT_COST:
     - one real training run is timed and configured
     - runtime over 45 minutes triggers the guide's cut order
     - no held-out result is used to tune the protocol
-  blocked_reason: The structural data card is complete, but real A1 fixed-window cost is blocked by the unresolved 128-to-105 map and fixed-window preprocessing convention.
+  blocked_reason: The structural data card and text/d_align integration are complete, but real A1 cost measurement remains blocked by sentenceData.rawData sampling/channel-order/unit/finite-value admission.
 
 STAGE1_PROBES:
   title: Run raw/latent real, three matched shams, text-only, OOF scores, and u_min
@@ -413,10 +487,11 @@ S0_DIRECT_U_PLUS:
     - 02_code/src/methods/direct_u_plus.py
     - 02_code/tests/test_direct_u_plus.py
   acceptance:
-    - gamma, score-version, warmup, floor, normalization, and stop-gradient rules match section 6.16
+    - gamma, score-version, warmup, positive-mass-median floor, all-zero uniform fallback, normalization, and stop-gradient rules match v3.7 section 6.16
     - measurement-layer hyperparameters are not imposed on this non-measurement row
+    - entropy, Gini, quantiles, floor-hit, and all-zero-batch diagnostics use the unique v3.7 definitions
     - all variants and dispersion diagnostics are reportable
-  why_ready: Section 6.16 gives a complete executable definition independent of held-out results.
+  why_ready: Section 6.16 gives a complete executable definition independent of held-out results, but this task is intentionally sequenced after the protocol-critical text/inner/candidate artifacts.
 
 S0_EQ_ANMA_CORE:
   title: Implement the EQ-ANMA weighting path after Stage-1 scores are frozen

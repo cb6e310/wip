@@ -1,6 +1,6 @@
 """A1: deterministic spectral frontend and shared alignment encoder.
 
-The scientific contract is the v3.4 specification section 4.7.1.  This module
+The scientific contract is the v3.7 specification section 4.7.1.  This module
 contains no dataset loader and no eye-tracking features.  A caller supplies
 either EEG epochs already aligned to words or a continuous EEG sentence for
 the ET-free fixed-window sensitivity.  Normalization is deliberately a
@@ -33,9 +33,8 @@ class BandDefinition:
             raise ValueError(f"invalid band definition: {self}")
 
 
-# These eight named bands implement the current provisional engineering
-# convention; the guide freezes the eight-band structure but not every numeric
-# edge/PSD/unit detail. The values are therefore recorded and hash-bound.
+# SPEC v3.7 D8 freezes these exact eight half-open ZuCo 2.0 frequency bands.
+# Their values and ordering remain recorded and hash-bound in every A1 run.
 DEFAULT_BANDS: tuple[BandDefinition, ...] = (
     BandDefinition("theta1", 4.0, 6.0),
     BandDefinition("theta2", 6.5, 8.0),
@@ -52,11 +51,9 @@ DEFAULT_BANDS: tuple[BandDefinition, ...] = (
 class A1Config:
     """All A1 values that affect features or the alignment encoder.
 
-    ``sampling_rate_hz=500`` and ``n_channels=105`` are the values observed in
-    the existing ZuCo extraction and the legacy smoke implementation.  They
-    remain explicit in this config and are included in the config hash; a
-    future data-card correction therefore changes the recorded configuration
-    instead of silently changing a run.
+    ``sampling_rate_hz=500`` and ``n_channels=105`` are explicit, hash-bound
+    parts of the v3.7 D8/D9 contract.  Real-file admission must still verify
+    those properties before paper-level use.
     """
 
     n_channels: int = 105
@@ -70,7 +67,7 @@ class A1Config:
     encoder_layers: int = 2
     encoder_heads: int = 8
     encoder_feedforward: int = 512
-    d_align: int = 256
+    d_align: int = 384
     max_encoder_layers: int = 6
     max_encoder_d_model: int = 512
     max_encoder_params: int = 20_000_000
@@ -115,12 +112,12 @@ DEFAULT_CONFIG = A1Config()
 
 @dataclass(frozen=True)
 class A1ChannelMap:
-    """Explicit source-to-A1 channel mapping for continuous EEG.
+    """Explicit source-to-A1 mapping for an optional non-contract raw source.
 
-    The map is intentionally data-free: a caller must provide the verified
-    source labels/order and selected source indices.  No positional or
-    ``first-105`` fallback is allowed, because ZuCo continuous files expose
-    128 channels while the word-level A1 contract exposes 105 EEG channels.
+    The v3.7 fixed-window contract prefers the already 105-channel
+    ``sentenceData.rawData`` source and requires no 128-to-105 map.  If a
+    separate 128-channel continuous source is ever supplied, this explicit
+    verified map is mandatory: positional ``first-105`` fallback is forbidden.
     """
 
     source_labels: tuple[str, ...]
@@ -325,8 +322,10 @@ def extract_fixed_window_sequence(
 ) -> np.ndarray:
     """Extract the mandatory ET-free 1 s / 0.5 s fixed-window sequence.
 
-    Only complete windows are retained.  The function accepts continuous EEG
-    in either ``[C, time]`` or ``[time, C]`` order and never receives eye data.
+    The preferred source is 105-channel ``sentenceData.rawData``, which can
+    enter this frontend directly in either ``[C,time]`` or ``[time,C]`` order.
+    Only complete windows are retained and no eye data are consumed.  A
+    128-channel continuous source is never implicitly truncated to first-105.
     """
 
     fs = config.sampling_rate_hz if sampling_rate_hz is None else float(sampling_rate_hz)
@@ -338,8 +337,9 @@ def extract_fixed_window_sequence(
             raise ValueError("channel map target count must match A1 n_channels")
         continuous = channel_map.apply(raw_array)
     else:
-        # This accepts only already reduced 105-channel input.  In particular,
-        # a 128-channel continuous file cannot silently drop channels.
+        # Direct input is the 105-channel sentenceData.rawData contract.  In
+        # particular, a 128-channel continuous file cannot silently drop
+        # channels or masquerade as this field.
         continuous = _orient_epoch(raw_array, config.n_channels)
     window_samples = int(round(config.fixed_window_seconds * fs))
     stride_samples = int(round(config.fixed_stride_seconds * fs))
