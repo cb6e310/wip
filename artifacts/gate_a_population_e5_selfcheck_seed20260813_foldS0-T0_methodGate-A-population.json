@@ -1,0 +1,587 @@
+{
+  "assertions": {
+    "bootstrap_cluster_count_matches_subjects": true,
+    "bootstrap_draw_width_matches_subjects": true,
+    "bootstrap_uses_subject_ids_only": true,
+    "missing_cell_not_zero_filled": true,
+    "population_valid": true,
+    "seeded_bootstrap_is_deterministic": true,
+    "subject_first_equal_mean": true
+  },
+  "bootstrap": {
+    "canonical_sha256": "7b78c3ef344c42f21b4ff3630186bf7f9ff644061d644237ce2c63cf8878f8ad",
+    "draws": [
+      {
+        "estimate": 1.0,
+        "resample_index": 0,
+        "subject_ids": [
+          "S1",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 1,
+        "subject_ids": [
+          "S2",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 2.0,
+        "resample_index": 2,
+        "subject_ids": [
+          "S1",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 3,
+        "subject_ids": [
+          "S1",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 4,
+        "subject_ids": [
+          "S1",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 2.0,
+        "resample_index": 5,
+        "subject_ids": [
+          "S1",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 6,
+        "subject_ids": [
+          "S1",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 7,
+        "subject_ids": [
+          "S2",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 2.0,
+        "resample_index": 8,
+        "subject_ids": [
+          "S1",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 9,
+        "subject_ids": [
+          "S2",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 10,
+        "subject_ids": [
+          "S2",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 0.0,
+        "resample_index": 11,
+        "subject_ids": [
+          "S2",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 0.0,
+        "resample_index": 12,
+        "subject_ids": [
+          "S2",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 13,
+        "subject_ids": [
+          "S2",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 0.0,
+        "resample_index": 14,
+        "subject_ids": [
+          "S2",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 15,
+        "subject_ids": [
+          "S1",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 16,
+        "subject_ids": [
+          "S1",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 17,
+        "subject_ids": [
+          "S2",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 18,
+        "subject_ids": [
+          "S1",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 0.0,
+        "resample_index": 19,
+        "subject_ids": [
+          "S2",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 2.0,
+        "resample_index": 20,
+        "subject_ids": [
+          "S1",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 0.0,
+        "resample_index": 21,
+        "subject_ids": [
+          "S2",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 2.0,
+        "resample_index": 22,
+        "subject_ids": [
+          "S1",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 0.0,
+        "resample_index": 23,
+        "subject_ids": [
+          "S2",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 2.0,
+        "resample_index": 24,
+        "subject_ids": [
+          "S1",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 25,
+        "subject_ids": [
+          "S2",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 26,
+        "subject_ids": [
+          "S1",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 2.0,
+        "resample_index": 27,
+        "subject_ids": [
+          "S1",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 0.0,
+        "resample_index": 28,
+        "subject_ids": [
+          "S2",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 29,
+        "subject_ids": [
+          "S2",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 30,
+        "subject_ids": [
+          "S1",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 2.0,
+        "resample_index": 31,
+        "subject_ids": [
+          "S1",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 2.0,
+        "resample_index": 32,
+        "subject_ids": [
+          "S1",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 0.0,
+        "resample_index": 33,
+        "subject_ids": [
+          "S2",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 34,
+        "subject_ids": [
+          "S1",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 35,
+        "subject_ids": [
+          "S2",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 0.0,
+        "resample_index": 36,
+        "subject_ids": [
+          "S2",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 0.0,
+        "resample_index": 37,
+        "subject_ids": [
+          "S2",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 2.0,
+        "resample_index": 38,
+        "subject_ids": [
+          "S1",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 39,
+        "subject_ids": [
+          "S2",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 40,
+        "subject_ids": [
+          "S2",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 2.0,
+        "resample_index": 41,
+        "subject_ids": [
+          "S1",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 42,
+        "subject_ids": [
+          "S1",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 43,
+        "subject_ids": [
+          "S1",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 44,
+        "subject_ids": [
+          "S2",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 2.0,
+        "resample_index": 45,
+        "subject_ids": [
+          "S1",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 0.0,
+        "resample_index": 46,
+        "subject_ids": [
+          "S2",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 2.0,
+        "resample_index": 47,
+        "subject_ids": [
+          "S1",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 48,
+        "subject_ids": [
+          "S2",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 49,
+        "subject_ids": [
+          "S2",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 50,
+        "subject_ids": [
+          "S1",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 2.0,
+        "resample_index": 51,
+        "subject_ids": [
+          "S1",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 2.0,
+        "resample_index": 52,
+        "subject_ids": [
+          "S1",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 53,
+        "subject_ids": [
+          "S2",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 54,
+        "subject_ids": [
+          "S2",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 55,
+        "subject_ids": [
+          "S1",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 0.0,
+        "resample_index": 56,
+        "subject_ids": [
+          "S2",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 2.0,
+        "resample_index": 57,
+        "subject_ids": [
+          "S1",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 0.0,
+        "resample_index": 58,
+        "subject_ids": [
+          "S2",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 2.0,
+        "resample_index": 59,
+        "subject_ids": [
+          "S1",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 2.0,
+        "resample_index": 60,
+        "subject_ids": [
+          "S1",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 61,
+        "subject_ids": [
+          "S1",
+          "S2"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 62,
+        "subject_ids": [
+          "S2",
+          "S1"
+        ]
+      },
+      {
+        "estimate": 1.0,
+        "resample_index": 63,
+        "subject_ids": [
+          "S2",
+          "S1"
+        ]
+      }
+    ],
+    "method": "subject_cluster_bootstrap_after_subject_first_aggregation",
+    "metric": "mean_u",
+    "n_resamples": 64,
+    "n_subject_clusters": 2,
+    "schema_version": 1,
+    "seed": 20260813,
+    "source_population_sha256": "cbfc616d8688d7f1a24706be9be742fe58906b47bb606054e28ccb390fc0ebd2"
+  },
+  "config": {
+    "aggregation": "equal_mean_within_subject_across_eligible_outer_cells_then_subject_cluster",
+    "bootstrap_unit": "subject",
+    "metric": "mean_u",
+    "n_resamples": 64,
+    "zero_fill_missing_cells": false
+  },
+  "config_hash": "dfb13d9036d760d4111f451f9b5d84b0e4858ec64b121fbf2d426d26f8360a91",
+  "evidence_scope": "synthetic engineering contract only; no Gate-A result",
+  "fold": "S0-T0",
+  "method": "Gate-A-population-E5",
+  "population": {
+    "aggregation": "equal_mean_within_subject_across_eligible_outer_cells_then_subject_cluster",
+    "canonical_sha256": "cbfc616d8688d7f1a24706be9be742fe58906b47bb606054e28ccb390fc0ebd2",
+    "contract": "EEG_Text_Bprime_Unified_Paper_Spec_v3_5__7.2.1_E5",
+    "excluded_rows": [
+      {
+        "outer_cell": "0-0",
+        "reason": "NO_VALID_ITEM",
+        "subject_id": "S3"
+      }
+    ],
+    "n_subject_clusters": 2,
+    "schema_version": 1,
+    "subjects": [
+      {
+        "eligible_outer_cells": [
+          "0-0",
+          "0-1"
+        ],
+        "mean_u": 2.0,
+        "n_eligible_cells": 2,
+        "pi_g": 0.30000000000000004,
+        "subject_id": "S1"
+      },
+      {
+        "eligible_outer_cells": [
+          "0-0",
+          "0-1"
+        ],
+        "mean_u": 0.0,
+        "n_eligible_cells": 2,
+        "pi_g": 0.1,
+        "subject_id": "S2"
+      }
+    ],
+    "zero_fill_missing_cells": false
+  },
+  "run_id": "2026-08-14_010_v36_stage0_recovery",
+  "schema_version": 1,
+  "seed": 20260813,
+  "status": "PASS"
+}

@@ -1,0 +1,46 @@
+schema_version: 1
+run_id: 2026-08-14_010_v36_stage0_recovery
+seed: 20260813
+fold: stage0_global_diagnostic
+method: unique_monotone_source_slot_join
+status: PASS
+source_spec: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_6_2026-08-11.md#10.4
+config:
+  dataset: zuco_2_0
+  identity_key: dataset|task|source_file|row_number|paragraph_id_raw|sentence_id_raw
+  text_hash_is_identity: false
+  matching_rule: summary_sequence_must_have_one_unique_monotone_embedding_in_material_rows
+config_hash: 637757e54f47c9c2a73a039887f469f4997463d19ccb878e6a9adf88a2d1cb2d
+implementation:
+  module: 02_code/src/data/zuco2_source_join.py
+  tests: 02_code/tests/test_zuco2_source_join.py
+  module_sha256: d6f1097b72d35e7e4e747293a30d5f88480e8508f20ae4e8777255f395a35f25
+  focused_tests: 4_pass
+panels:
+  task1_nr:
+    summary_slots: 349
+    material_rows: 370
+    source_files: 7
+    skipped_rows_per_source_file: 3
+    ambiguous_summary_indices: 0
+    all_18_subject_sequences_identical: true
+    mapping_sha256: 97f3a0bd695d482ceff409b85414790c5f9877fcba28049572f354de61366f12
+  task2_tsr:
+    summary_slots: 390
+    material_rows: 411
+    source_files: 7
+    skipped_rows_per_source_file: 3
+    ambiguous_summary_indices: 0
+    all_18_subject_sequences_identical: true
+    mapping_sha256: 7a3bc1cb3f41557b7f13cb76f44833de0f4b72726849024378ec0935e98a5060
+assertions:
+  all_summary_slots_matched: true
+  earliest_mapping_equals_latest_mapping: true
+  source_slot_keys_unique: true
+  duplicate_text_slots_uniquely_disambiguated: true
+  text_hash_not_used_as_identity: true
+evidence:
+  joint_split_artifact: 01_data_protocol/splits/zuco_2_0_outer_folds.json
+  joint_split_artifact_sha256: 20aedfd56c7c5ee41a491e5b5531ef77728344808d42ba45d72d7e30250cffa6
+  semantic_support_audit: 04_results/audits/semantic_item/zuco2_semantic_item_support.json
+  semantic_support_audit_sha256: fe862ebaed2b027b4924f45c23dacfc01c5c7ad862f6917cbd0a963d2dcff32c

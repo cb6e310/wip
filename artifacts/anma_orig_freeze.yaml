@@ -1,0 +1,46 @@
+schema_version: 1
+run_id: 2026-08-14_010_v36_stage0_recovery
+method: ANMA-orig
+status: ENGINEERING_CONTRACT_PASS
+source_spec: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_6_2026-08-11.md#6.15
+config:
+  eta: 0.1
+  lambda_a: 0.01
+  a_max: 10.0
+  lambda_m_grid: [0.1, 0.3, 1.0, 3.0]
+  n_item_grid: [2, 4, 10, 50]
+  warmup_scope: shared_measurement_module
+  candidate_rule: train_fold_frequency_stratified_and_fixed
+  item_support_rule: n_obs_ge_20_and_subject_coverage_ge_5; sparse_items_use_text_amortization
+  objective: weighted_sentence_alignment_plus_lambda_m_measurement_loss
+  fisher: a_squared_times_p_times_one_minus_p
+  sentence_aggregation: mean_over_supported_items
+  empty_sentence_floor: eta_times_batch_median
+  batch_normalization: batch_size_times_tilde_w_over_sum_plus_epsilon
+  stop_gradient: true
+config_hash: 091302273384a1470283370cc8e8f5eed473f86b95c26ba384b220bfadb58adb
+implementation:
+  module: 02_code/src/methods/anma_orig.py
+  tests: 02_code/tests/test_anma_orig.py
+  selfcheck: 02_code/scripts/anma_orig_selfcheck.py
+  synthetic_selfcheck_artifact: 03_runs/debug_runs/anma_orig_h_selfcheck_seed20260813_foldS0-T0_methodANMA-orig_cfg091302273384.json
+  tests_passed: 9
+  selfcheck_status: PASS
+  provenance: our reference implementation; not a reproduction of a third-party implementation
+diagnostics_required:
+  - mean_y_and_item_accuracy
+  - rho_band
+  - spearman_information_probability
+  - heldout_auroc
+  - parameter_rank_stability
+  - weight_covariate_partial_correlations
+verification:
+  seed: 20260813
+  fold: S0-T0
+  method: ANMA-orig
+  config_hash: 091302273384a1470283370cc8e8f5eed473f86b95c26ba384b220bfadb58adb
+  parameter_recovery_observations: 1536
+  model_sentences: 6
+  assertions_passed: 12
+  selfcheck_sha256: 240cdca6be05706287dd95cd4c96504ae68d865255d469c693676d1ed8252a06
+evidence_scope: synthetic engineering contract only; real probe/data observations remain pending

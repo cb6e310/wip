@@ -73,6 +73,12 @@ class ZuCoLoaderContractTest(unittest.TestCase):
                     loader.dataset_shape(handle, loader.sentence_value(handle, "rawData", 0)),
                     (3, 105),
                 )
+                self.assertEqual(
+                    loader.numeric_eeg_reference_status(
+                        handle, loader.sentence_value(handle, "rawData", 0)
+                    ),
+                    (True, "valid"),
+                )
                 record = loader.summary_record(handle, 0)
                 self.assertIsInstance(record["word_reference"], type(None))
 

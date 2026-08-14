@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Run the reproducible, non-paper A3 preparation audit.
+"""Run the reproducible, non-paper v3.6 A3 preparation audit.
 
 The audit validates source-channel inventory, checkpoint bytes, constructor
 compatibility, and a synthetic no-gradient shape smoke.  It does not claim a
-semantic EGI-to-LaBraM map or a clean pretraining corpus.
+semantic EGI-to-LaBraM map or real MAT extraction admission.  CO-N7 and local
+checkpoint-use policy are scientific/provenance decisions recorded by v3.6,
+not conclusions inferred from this engineering smoke.
 """
 
 from __future__ import annotations
@@ -95,7 +97,7 @@ def inspect_checkpoint(path: Path) -> dict[str, Any]:
         "pinned_url": "https://raw.githubusercontent.com/935963004/LaBraM/d52cb6d1801bb038e10ea1b6b3292c0bd569a9d5/checkpoints/labram-base.pth",
         "source_commit": "c431221e6cfd23dbfa9950e0180682fb322b0548",
         "checkpoint_file_commit": "d52cb6d1801bb038e10ea1b6b3292c0bd569a9d5",
-        "rights_status": "UNKNOWN: code MIT does not establish checkpoint or pretraining-corpus rights",
+        "rights_status": "v3.6 local-research-inference working assumption; disclose provenance and do not redistribute checkpoint",
     }
 
 
@@ -210,7 +212,9 @@ def main() -> int:
     status = "PASS_WITH_BLOCKERS" if all(assertions.values()) else "FAIL"
     result = {
         "status": status,
-        "scope": "engineering preparation only; no paper evidence",
+        "run_id": "2026-08-14_010_v36_stage0_recovery",
+        "spec_version": "v3.6",
+        "scope": "engineering preparation only; no paper evidence and no real extraction admission",
         "seed": args.seed,
         "fold": args.fold,
         "method": method_slug,
@@ -220,12 +224,15 @@ def main() -> int:
         "runtime": runtime,
         "smoke": smoke,
         "assertions": assertions,
+        "scientific_decisions_not_inferred_from_smoke": {
+            "co_n7": "CLEARED_BY_V3_6_APPENDIX_D_AUDIT",
+            "checkpoint_local_use": "WORKING_ASSUMPTION_DISCLOSE_AND_DO_NOT_REDISTRIBUTE",
+        },
         "unresolved_blockers": [
-            "CO-N7 contamination exclusion requires corpus manifest or author attestation",
-            "rights for checkpoint and pretraining corpus are not established",
             "EGI128-to-LaBraM semantic channel map is not frozen",
-            "real EEG preprocessing and extraction are not validated",
+            "ZuCo continuous-MAT raw signal unit is not verified",
             "filter order and notch Q are engineering candidates, not guide-frozen values",
+            "real EEG preprocessing and mapped extraction are not validated",
         ],
         "elapsed_seconds": round(time.perf_counter() - started, 3),
     }
@@ -234,7 +241,10 @@ def main() -> int:
     print("A3 PREPARATION SELF-CHECK")
     print(f"samples={inventory['file_count']} raw_shape=[128,T] windows={smoke['input_windows_shape']}")
     print(f"preprocessed={smoke['preprocessed_shape']} pooled={smoke['pooled_shape']} range=[{smoke['pooled_min']:.6g},{smoke['pooled_max']:.6g}]")
-    print(f"seed={args.seed} fold={args.fold} elapsed_s={result['elapsed_seconds']} status={status}")
+    print(
+        f"seed={args.seed} fold={args.fold} method={method_slug} "
+        f"config_hash={cfg_hash} elapsed_s={result['elapsed_seconds']} status={status}"
+    )
     for name, passed in assertions.items():
         print(f"ASSERT {name}={'PASS' if passed else 'FAIL'}")
     return 0 if status != "FAIL" else 1

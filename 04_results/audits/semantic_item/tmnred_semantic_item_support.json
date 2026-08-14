@@ -1,0 +1,42 @@
+{
+  "assertions": {
+    "frozen_normalization": true,
+    "no_sentence_retokenization": true,
+    "official_predicate_required": true,
+    "status_is_explicit": true
+  },
+  "blocking_facts": [
+    "TMNRED snapshot exposes sentence-level Chinese material only; no released word-level content field.",
+    "No official is_real_word predicate is present in the dataset release.",
+    "This audit does not tokenize, stem, translate, or infer lexical items from sentence text."
+  ],
+  "config_hash": "a20eda60450e31e6e4aa790672a3efa2900fd8a517640a409fef4320c333360c",
+  "dataset": "TMNRED",
+  "definition": {
+    "min_observations": 20,
+    "min_subjects": 5,
+    "no_sentence_retokenization": true,
+    "no_stemming": true,
+    "normalization": "NFKC|strip|casefold",
+    "official_predicate": "required_release_reader_is_real_word",
+    "sentence_rule": "sentence_rawData_numeric_nonplaceholder",
+    "support_rate_redline": 0.2,
+    "usable_eeg_rule": "word_rawEEG_container_with_at_least_one_numeric_nonempty_(n,105)_fixation"
+  },
+  "elapsed_seconds": 0.0,
+  "fold": "stage0_global_diagnostic",
+  "material_path": "01_data_protocol/datasets/tmnred_ds005383_v1.0.0/derivatives/source material/source material_ses.csv",
+  "material_present": true,
+  "method": "semantic_item_support_audit",
+  "paper_eligible": false,
+  "run_id": "2026-08-13_010_semantic_item_support",
+  "schema_version": 1,
+  "seed": 20260813,
+  "status": "BLOCKED_MISSING_RELEASED_WORD_LEVEL_CONTENT",
+  "support": {
+    "item_count": 0,
+    "support_redline_status": "BLOCKED_NO_LEDGER",
+    "supported_item_count": 0,
+    "supported_item_rate": null
+  }
+}

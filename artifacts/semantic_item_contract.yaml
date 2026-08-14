@@ -1,0 +1,63 @@
+schema_version: 1
+run_id: 2026-08-14_010_v36_stage0_recovery
+seed: 20260813
+fold: stage0_global_diagnostic
+method: semantic_item_support_audit
+status: REAL_SUPPORT_LEDGER_PASS
+config_hash: a20eda60450e31e6e4aa790672a3efa2900fd8a517640a409fef4320c333360c
+spec_basis: v3_6_D3_section_6_9_and_section_10_4
+definition:
+  item_namespace: dataset|task|normalized_surface_form
+  source_field: released_word_level_content
+  official_predicate: released_reader.is_real_word
+  normalization: NFKC_then_strip_then_casefold
+  stemming: forbidden
+  sentence_retokenization: forbidden
+  placeholder_or_empty: excluded
+  numeric_or_nonlexical: excluded
+  usable_observation: word_rawEEG_container_with_at_least_one_numeric_nonempty_105_channel_fixation
+  minimum_support:
+    observations: 20
+    subjects: 5
+  support_rate_redline: 0.2
+  redline_action: NO_GO_for_ANMA_item_level; no_post_hoc_cluster_switch
+datasets:
+  zuco_2_0:
+    implementation: 02_code/scripts/semantic_item_audit.py
+    official_reader: 01_data_protocol/datasets/zuco_2.0/scripts/python_reader/data_loading_helpers.py
+    status: REAL_SCAN_AND_SOURCE_SLOT_JOIN_PASS
+    identity_key: dataset|task|source_file|row_number|paragraph_id_raw|sentence_id_raw
+    trial_id_type: verified_source_slot_key
+    text_hash_is_identity: false
+    mapping_sha256:
+      task1_nr: 97f3a0bd695d482ceff409b85414790c5f9877fcba28049572f354de61366f12
+      task2_tsr: 7a3bc1cb3f41557b7f13cb76f44833de0f4b72726849024378ec0935e98a5060
+    note: Summary slots have a unique monotone embedding in released material rows; every exclusion is keyed by the verified source slot and text equality is validation only.
+    support_audit: 04_results/audits/semantic_item/zuco2_semantic_item_support.json
+    exclusion_ledger: 04_results/audits/semantic_item/zuco2_exclusions.jsonl.gz
+    exclusion_records: 317408
+    exclusion_sha256: 7221de2cbf87720a5dd39a8254ea74d6fe0ecb5cbc211b8720bf747fccaedc36
+    paper_eligible: true
+    panels:
+      task1_nr:
+        item_count: 2553
+        observation_count: 74151
+        supported_item_count: 624
+        supported_item_rate: 0.24441833
+        redline_status: PASS
+      task2_tsr:
+        item_count: 2536
+        observation_count: 68904
+        supported_item_count: 666
+        supported_item_rate: 0.26261830
+        redline_status: PASS
+  TMNRED:
+    status: BLOCKED_MISSING_RELEASED_WORD_LEVEL_CONTENT
+    artifact: 04_results/audits/semantic_item/tmnred_semantic_item_support.json
+    note: Sentence-level Chinese material is not tokenized or translated by this implementation.
+verification:
+  focused_tests: 5_pass
+  command: python -m unittest discover -s 02_code/tests -p test_semantic_items.py -v
+  remote_focused_tests: 5_pass
+  self_check_output: every script invocation prints samples/shapes/elapsed/ranges/seed/fold/method/config_hash/assertions/status
+  paper_claim_boundary: ZuCo2 item/support protocol is admitted for downstream fold-local use; these Stage-0 global rates are diagnostics and do not replace outer-train-only support fitting.

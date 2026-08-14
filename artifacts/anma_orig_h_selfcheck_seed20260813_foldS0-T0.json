@@ -1,0 +1,107 @@
+{
+  "anma_config_hash": "091302273384a1470283370cc8e8f5eed473f86b95c26ba384b220bfadb58adb",
+  "assertions": {
+    "diagnostics_finite": 1.0,
+    "h_empty_checks": true,
+    "h_full_checks": true,
+    "model_finite": true,
+    "parameter_loss_decreases": true,
+    "parameter_rank_recovery": true,
+    "threshold_rank_recovery": true,
+    "weights_detached": true,
+    "weights_mean_one": true
+  },
+  "config_hash": "091302273384a1470283370cc8e8f5eed473f86b95c26ba384b220bfadb58adb",
+  "diagnostics": {
+    "empty_sentence_count": 0,
+    "heldout_auroc": 0.625,
+    "item_accuracy": [
+      0.6666666865348816,
+      0.6666666865348816
+    ],
+    "item_accuracy_max": 0.6666666865348816,
+    "item_accuracy_min": 0.6666666865348816,
+    "item_support": [
+      6,
+      6
+    ],
+    "mean_y": 0.6666666865348816,
+    "n_observations": 12,
+    "red_line_flags": {
+      "information_band_degenerate": false,
+      "information_monotonic_degenerate": false,
+      "mean_accuracy_outside_target": false,
+      "measurement_auroc_below_threshold": false
+    },
+    "rho_band": 0.9166666865348816,
+    "spearman_information_probability": -0.25874125874125875,
+    "weight_max": 1.2184033393859863,
+    "weight_mean": 0.9999999403953552,
+    "weight_min": 0.7258081436157227
+  },
+  "elapsed_seconds": 1.454,
+  "fold": "S0-T0",
+  "h_assertions": {
+    "empty": {
+      "candidate_inputs_absent": true,
+      "empty_has_no_tokens": true,
+      "eye_tracking_inputs_absent": true,
+      "future_sentences_absent": true,
+      "scope_stage1_probe_only": true,
+      "target_flag_true": true,
+      "target_statistics_absent": true,
+      "target_tokens_absent": true,
+      "token_budget": true
+    },
+    "full": {
+      "candidate_inputs_absent": true,
+      "empty_has_no_tokens": true,
+      "eye_tracking_inputs_absent": true,
+      "future_sentences_absent": true,
+      "scope_stage1_probe_only": true,
+      "target_flag_true": true,
+      "target_statistics_absent": true,
+      "target_tokens_absent": true,
+      "token_budget": true
+    }
+  },
+  "h_config_hash": "fa3accaaaaedeb173b5173d0e29d3f0c661dd876e70b5d6b0a365cace7a3c2fe",
+  "method": "ANMA-orig",
+  "ranges": {
+    "fitted_a": [
+      0.8624159097671509,
+      1.7212474346160889
+    ],
+    "fitted_b": [
+      -0.46120917797088623,
+      0.6907194256782532
+    ],
+    "weights": [
+      0.7258081436157227,
+      1.2184033393859863
+    ]
+  },
+  "samples": {
+    "model_sentences": 6,
+    "parameter_recovery_observations": 1536
+  },
+  "scope": "synthetic engineering contract only; no paper evidence",
+  "seed": 20260813,
+  "shapes": {
+    "model_p": [
+      6,
+      2
+    ],
+    "q": [
+      512
+    ],
+    "weights": [
+      6
+    ],
+    "y": [
+      512,
+      3
+    ]
+  },
+  "status": "PASS"
+}

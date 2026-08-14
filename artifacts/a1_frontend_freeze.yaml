@@ -1,8 +1,8 @@
 schema_version: 1
-run_id: 2026-08-13_006_a1_a3
+run_id: 2026-08-14_010_v36_stage0_recovery
 backbone: A1
 status: ENGINEERING_CONTRACT_PASS_SCIENTIFIC_ADMISSION_BLOCKED
-source_spec: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_4_2026-08-11.md#4.7.1
+source_spec: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_6_2026-08-11.md#4.7.1
 config:
   n_channels: 105
   feature_dim: 840
@@ -60,6 +60,7 @@ implementation:
     mask: [2, 7]
     output: [2, 256]
 scientific_freeze_notes:
-  - Frequency edges and FFT/Hann/PSD/unit convention are recorded from the legacy smoke implementation as an explicit provisional configuration; guide v3.4 does not fully specify them.
+  - v3.6 inherits the frozen raw-unit PSD recipe: demean per channel, Hann, nFFT=max(512, next power of two), one-sided periodogram, half-open band integration, no dB or cross-band rescaling, and outer-train-only clipping plus median/IQR robust z.
+  - The supplied v3.6 prose names the eight bands but does not enumerate their numeric edges; the current edges remain an explicitly registered engineering configuration and are not silently promoted to a paper-level numeric decision.
   - Fixed-window real-data use is blocked until an author/data-card verified 128-to-105 channel map is supplied; the API rejects implicit first-105 selection.
   - This artifact validates the tensor/engineering contract only; it is not A1 admission, Gate A evidence, or a paper result.

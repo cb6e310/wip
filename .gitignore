@@ -34,6 +34,7 @@ __pycache__/
 03_runs/debug_runs/
 04_results/figures/
 04_results/tables/
+.codex_stage0_*/
 *.log
 *.tmp
 *.swp

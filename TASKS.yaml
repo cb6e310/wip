@@ -73,7 +73,7 @@ S0_DATA_CARD:
     - 04_results/audits/zuco2_data_audit.yaml
     - 02_code/src/data/zuco2_loader.py
     - 02_code/scripts/audit_zuco2_data.py
-  completion_note: Structural data card and full reference audit PASS; experiment_ready=false. Channel map, reference exclusion rule, material ID join, semantic unit, and split remain explicitly unresolved.
+  completion_note: Structural data card and full reference audit PASS. v3.6 exclusion policy, verified source-slot join, real ZuCo2 joint split, and semantic support ledger now pass; experiment_ready=false because A1 channel/band admission, candidates/leakage, and real sham/probe evidence remain unresolved.
 
 S0_TMNRED_DATA_CARD:
   title: Build the TMNRED data card if availability is confirmed
@@ -100,23 +100,32 @@ S0_TMNRED_DATA_CARD:
 S0_SEMANTIC_ITEM:
   title: Freeze the cross-subject semantic item definition and support rule
   stage: stage_0
-  status: BLOCKED
+  status: DONE
   critical_path: true
   priority: 3
   prerequisites:
     - S0_DATA_CARD
   produces:
-    - artifacts/semantic_item_definition.yaml
+    - artifacts/semantic_item_contract.yaml
   acceptance:
     - content-word type versus semantic-cluster choice is explicit
     - n_obs >= 20 and coverage >= 5 training subjects are machine-checkable
     - support rate and sparse-item handling are recorded
-  blocked_reason: The guide gives two legal item granularities; support counts are now inventoried, but an author decision is still required and duplicate-text/material identity is unresolved.
+  completed_by_run: 2026-08-14_010_v36_stage0_recovery
+  evidence_scope: REAL_ZUCO2_PROTOCOL_AND_SUPPORT_LEDGER
+  evidence:
+    - artifacts/semantic_item_contract.yaml
+    - artifacts/zuco2_source_slot_join.yaml
+    - 04_results/audits/semantic_item/zuco2_semantic_item_support.json
+    - 04_results/audits/semantic_item/zuco2_exclusions.jsonl.gz
+    - 02_code/src/protocol/semantic_items.py
+    - 02_code/tests/test_semantic_items.py
+  completion_note: v3.6 task-local released lexical content-word type is implemented. Verified source-slot trial IDs and a complete exclusion ledger yield PASS support rates 24.441833% NR and 26.261830% TSR, both above the frozen 20% No-Go redline. TMNRED remains separately blocked by absent released word-level content.
 
 S0_H_DEFINITION:
   title: Freeze legal language history H and leakage assertions
   stage: stage_0
-  status: READY
+  status: DONE
   critical_path: true
   priority: 4
   prerequisites: []
@@ -126,7 +135,13 @@ S0_H_DEFINITION:
     - H_full and H_empty are specified
     - target/future tokens, target statistics, candidates, and eye-tracking features are forbidden
     - assertions cover every forbidden input
-  why_ready: Appendix F.1 resolves the scientific definition; implementation and assertions are still missing.
+  completed_by_run: 2026-08-14_010_v36_stage0_recovery
+  evidence_scope: ENGINEERING_PROTOCOL_CONTRACT
+  evidence:
+    - artifacts/h_definition.yaml
+    - 02_code/src/protocol/h_definition.py
+    - 02_code/tests/test_h_definition.py
+  completion_note: H_full and H_empty are implemented with explicit rejection of target/gold/current/future, candidate, target-statistic, and eye-tracking payloads; five focused tests pass.
 
 S0_CANDIDATES:
   title: Freeze shared unseen-stimulus candidate lists and paired-verification pairs
@@ -144,12 +159,12 @@ S0_CANDIDATES:
     - candidates come only from non-training stimulus pools
     - length matching, near-duplicate filtering, seed, and nesting are recorded
     - all methods and seeds reuse the same lists
-  blocked_reason: Candidate construction must wait for the unresolved ZuCo material identity join, semantic unit, and TMNRED joint split/license policy.
+  blocked_reason: ZuCo2 source identity and semantic item are now verified, but shared candidate construction still requires the unresolved TMNRED lexical/event, license, incomplete-cell, session, and joint-split policy; no candidate lists have been generated.
 
 S0_JOINT_SPLIT:
   title: Build the joint held-out subject-and-stimulus outer split
   stage: stage_0
-  status: BLOCKED
+  status: DONE
   critical_path: true
   priority: 6
   prerequisites:
@@ -161,7 +176,16 @@ S0_JOINT_SPLIT:
     - six subject folds and five document/material text folds are listed
     - no test subject or stimulus enters preprocessing, probes, thresholds, or tuning
     - every subject and stimulus is held out at least once
-  blocked_reason: Joint splitting depends on the unresolved ZuCo material identity join/reference exclusions and the frozen semantic item; TMNRED has a separate incomplete-cell/session policy.
+  completed_by_run: 2026-08-14_010_v36_stage0_recovery
+  evidence_scope: REAL_ZUCO2_PROTOCOL_ARTIFACT
+  evidence:
+    - 01_data_protocol/splits/zuco_2_0_outer_folds.json
+    - artifacts/zuco2_source_slot_join.yaml
+    - 02_code/src/data/joint_split.py
+    - 02_code/scripts/build_zuco2_joint_split.py
+    - 02_code/tests/test_joint_split.py
+    - 02_code/tests/test_zuco2_source_join.py
+  completion_note: Two task-local ZuCo2 panels pass the frozen deterministic 6 subject-fold by 5 text-fold contract. The 12,503 eligible records use verified source-slot identities; the artifact is byte-stable for seed 20260813 and has SHA256 20aedfd56c7c5ee41a491e5b5531ef77728344808d42ba45d72d7e30250cffa6. TMNRED split policy remains a separate residual blocker.
 
 S0_LEAKAGE_AUDIT:
   title: Run the V1-V5 leakage and protocol audit
@@ -179,7 +203,7 @@ S0_LEAKAGE_AUDIT:
     - all preprocessing and probe fits are outer-train-only
     - H, candidates, subject/stimulus split, and test-time calibration checks are green
     - failed checks invalidate affected runs
-  blocked_reason: The split and candidate evidence are not yet available.
+  blocked_reason: The real ZuCo2 split artifact is available, but shared candidate lists/pairs have not been generated and TMNRED protocol remains unresolved; the full V1-V5 audit therefore cannot pass yet.
 
 S0_A1_FRONTEND:
   title: Implement and freeze the A1 spectral frontend and tensor contract
@@ -202,7 +226,7 @@ S0_A1_FRONTEND:
   evidence:
     - artifacts/a1_frontend_freeze.yaml
     - 03_runs/debug_runs/a1_contract_selfcheck_seed_20260813_v2.json
-  completion_note: The frontend/API contract is frozen and synthetic contract checks pass; real-data admission remains blocked by the explicit 128-to-105 map and unresolved frequency/unit protocol items.
+  completion_note: The frontend/API contract and v3.6 raw-unit Hann-periodogram formula are frozen and synthetic contract checks pass. Real-data admission remains blocked by the explicit 128-to-105 map and author-frozen numeric band edges; current numeric edges are engineering configuration only.
 
 S0_A1_ADMISSION:
   title: Run the four A1 admission self-checks on outer-train data
@@ -223,7 +247,7 @@ S0_A1_ADMISSION:
     - linear subject probe and coarse semantic probe are above chance or explained
     - A1 is not uniformly worse than raw spectral features
     - all results use only outer-training data
-  blocked_reason: Admission requires the verified continuous-channel map, author-approved bandpower frequency/window/unit convention, reference exclusion rule, joint split, semantic item, and real-data sham/probe evidence.
+  blocked_reason: Reference exclusions, source join, semantic item, H, and real ZuCo2 joint split now pass. Admission still requires the verified continuous 128-to-105 map, author-approved numeric frequency edges, candidates/leakage completion, and real outer-train sham/subject/semantic probe evidence.
 
 S0_A3_CONTAMINATION_CHECK:
   title: Verify A3 LaBraM pretraining contamination, license, checkpoint, and channel map
@@ -242,12 +266,12 @@ S0_A3_CONTAMINATION_CHECK:
     - license, checkpoint, embedding dimension, electrode names, and mapping coverage are recorded
     - engineering smoke records seed, fold, method, config hash, preprocessing shape, pooled dimension, and unchanged weights
     - failure removes A3 from T6 and does not trigger a third-backbone substitute
-  blocked_reason: Checkpoint bytes/hash, official release pooling/load contract, required runtime modules, and 252-file raw E1..E128 order pass engineering checks; corpus contamination exclusion, checkpoint/corpus rights, approved EGI128-to-canonical mapping, and real EEG end-to-end extraction remain unresolved, so CO-N7 is not cleared.
+  blocked_reason: v3.6 clears CO-N7 and treats local checkpoint inference rights as disclosure rather than admission. Checkpoint/load/pooling/no-gradient and all 252 raw E1..E128 inventories pass, but the approved EGI128-to-canonical map, ZuCo raw signal unit, filter order/notch Q, and real mapped MAT extraction remain unresolved.
 
 S0_A4_DEFINITION:
   title: Resolve the requested A4 backbone against the governing v3.4 guide
   stage: stage_0
-  status: BLOCKED
+  status: SKIPPED
   critical_path: false
   priority: 30
   prerequisites: []
@@ -256,12 +280,12 @@ S0_A4_DEFINITION:
   acceptance:
     - the author explicitly chooses to retain the v3.4 A1/A3 set or supplies a guide-level A4 definition
     - no A4 code or experiment starts before that decision
-  blocked_reason: A4 is requested in project context but has no definition in the governing v3.4 guide, which explicitly freezes A1/A3 and forbids a third-backbone substitute.
+  skip_reason: The current user scope explicitly specifies two A backbones, and v3.6 freezes exactly A1 and A3; no A4 is requested or permitted.
 
 S0_ANMA_ORIG:
   title: Implement and validate the ANMA-orig reference baseline on synthetic data
   stage: stage_0
-  status: READY
+  status: DONE
   critical_path: true
   priority: 14
   prerequisites: []
@@ -272,12 +296,20 @@ S0_ANMA_ORIG:
     - implementation follows the v3.4 reference definition and shared fairness contract
     - synthetic parameter-recovery and degeneracy diagnostics pass
     - provenance is stated as our reference implementation, not a reproduction
-  why_ready: Section 6.15 closes the original ANMA definition blocker and allows implementation before real EEG data.
+  completed_by_run: 2026-08-14_010_v36_stage0_recovery
+  evidence_scope: SYNTHETIC_ENGINEERING_CONTRACT
+  evidence:
+    - artifacts/anma_orig_freeze.yaml
+    - 02_code/src/methods/anma_orig.py
+    - 02_code/tests/test_anma_orig.py
+    - 02_code/scripts/anma_orig_selfcheck.py
+    - 03_runs/debug_runs/anma_orig_h_selfcheck_seed20260813_foldS0-T0_methodANMA-orig_cfg091302273384.json
+  completion_note: Our reference implementation follows v3.6 section 6.15, including stop-gradient weights, partial-Spearman covariate diagnostics, parameter-rank stability, and RankFit plateau logic. Nine focused tests and the 12-assertion seeded synthetic self-check pass; no real-data performance claim is made.
 
 S0_GATE_A_POPULATION_E5:
   title: Freeze the Gate A pilot statistical population required by Appendix E-5
   stage: stage_0
-  status: BLOCKED
+  status: DONE
   critical_path: true
   priority: 11
   prerequisites: []
@@ -287,7 +319,14 @@ S0_GATE_A_POPULATION_E5:
     - the author-approved population is explicit
     - the rule is compatible with subject-cluster bootstrap and the pilot outer-cell budget
     - no Gate A result is accepted before this file is frozen
-  blocked_reason: Appendix E-5 identifies an internal pilot-versus-Gate-A population ambiguity that the guide does not resolve.
+  completed_by_run: 2026-08-14_010_v36_stage0_recovery
+  evidence_scope: SYNTHETIC_STATISTICAL_UNIT_CONTRACT
+  evidence:
+    - artifacts/gate_a_population_e5.yaml
+    - artifacts/gate_a_population_e5_selfcheck_seed20260813_foldS0-T0_methodGate-A-population.json
+    - 02_code/src/protocol/gate_a_population.py
+    - 02_code/tests/test_gate_a_population.py
+  completion_note: Subject-first equal aggregation, no-zero-fill exclusions, and seeded subject-cluster resampling are implemented and tested. Four focused tests plus seven self-check assertions pass; this is not real Gate-A evidence and does not authorize Stage 1.
 
 S0_ALIGN_UNIT_COST:
   title: Measure one real A1 alignment training unit cost
@@ -326,7 +365,7 @@ STAGE1_PROBES:
     - both raw and frozen-initial-latent bases are reported
     - trial_shuffle, time_block_shuffle, and phase_randomization match real capacity
     - u_oof, u_min, phase-only, text-only, null, fold, seed, and support fields exist
-  blocked_reason: Stage 1 is forbidden until the protocol, A1 admission, and Gate A population rule are frozen.
+  blocked_reason: The Gate-A population rule is now frozen and tested, but Stage 1 remains forbidden until A1 admission, candidates, and the full leakage audit pass.
 
 SHAM_VALIDATION:
   title: Validate sham sanity assertions A-S1, A-S2, and A-S3
@@ -361,7 +400,7 @@ GATE_A:
     - all five v3.4 Gate A criteria are checked on raw basis
     - u_oof and u_min bootstrap, pi_G null calibration, rank stability, confound control, and null robustness are present
     - outcome is explicitly PASS or FAIL and evidence grade is recorded
-  blocked_reason: Gate A has no valid OOF/sham evidence and its pilot population rule is unresolved.
+  blocked_reason: The population rule is frozen and tested, but Gate A has no valid real OOF/sham evidence and Stage 1/A1 admission remain blocked.
 
 S0_DIRECT_U_PLUS:
   title: Implement the preregistered strongest direct u+ weighting control
@@ -396,7 +435,7 @@ S0_EQ_ANMA_CORE:
     - raw u_min-derived G_k is the only training weight source
     - item-to-sentence aggregation is mean with floor eta 0.1
     - weights are stop-gradient, computed once per outer fold, and shared fairness rules pass
-  blocked_reason: EQ-ANMA weights cannot be built before semantic units, frozen Stage-1 observations, and the reference baseline exist.
+  blocked_reason: The semantic item and ANMA-orig reference baseline now pass, but EQ-ANMA weights cannot be built before frozen real Stage-1 observations exist.
 
 GATE_B:
   title: Decide whether EQ-ANMA has independent value over direct u+ weighting

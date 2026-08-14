@@ -1,5 +1,5 @@
 schema_version: '1.0'
-purpose: raw ZuCo2 channel inventory and unresolved A3 mapping contract
+purpose: v3.6 raw ZuCo2 channel inventory and unresolved A3 mapping/admission contract
 source_dataset: zuco_2.0
 raw_glob: 'task* - */Raw data/*/*_EEG.mat'
 raw_channel_count: 128
@@ -22,6 +22,7 @@ required_resolution:
   - approve authoritative HydroCel-128 geometry and coordinate transform
   - choose exact-name subset or spatial interpolation policy
   - publish ordered model names, source indices, coverage, and mapping hash
+  - verify ZuCo raw signal unit and freeze filter order plus notch Q
   - rerun real-EEG extraction smoke after approval
 mapping_representation:
   exact_reorder_supported: true

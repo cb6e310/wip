@@ -1,11 +1,11 @@
 schema_version: 1
-updated_at: "2026-08-13T17:36:16+08:00"
-updated_by_run: 2026-08-13_009_state_reconciliation
+updated_at: "2026-08-14T11:35:56+08:00"
+updated_by_run: 2026-08-14_010_v36_stage0_recovery
 
 project:
   name: trustworthy_subject_general_eeg_text_alignment
-  spec_version: v3.4
-  spec_path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_4_2026-08-11.md
+  spec_version: v3.6
+  spec_path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_6_2026-08-11.md
   execution_plan_path: guide/EEG_Text_Bprime_Execution_Plan_v3_2026-08-11_to_Submission.md
   server_root: /home/song/projects/trust_align
   python_path: /home/song/projects/trust_align/.venv/bin/python
@@ -21,12 +21,10 @@ scope:
     requested:
       - A1
       - A3
-      - A4
     active:
       - A1
       - A3
-    pending_definition:
-      - A4
+    pending_definition: []
 
 execution:
   stage: stage_0
@@ -56,66 +54,36 @@ blockers:
       - S0_A1_ADMISSION
       - S0_ALIGN_UNIT_COST
     resolution: Inspect the raw channel labels/order, freeze an explicit map with coverage, and use it for the ET-free fixed-window sensitivity.
-  - id: B_A1_BANDPOWER_FORMULA
-    reason: The guide names eight bands but does not fully freeze the exact frequency edges, PSD window, and signal-unit convention; the implementation records the legacy smoke convention as provisional.
+  - id: B_A1_NUMERIC_BAND_EDGES
+    reason: v3.6 freezes the raw-unit Hann periodogram, nFFT, half-open integration, no-dB rule, and fold-local robust normalization, but it still names the eight bands without enumerating their exact numeric edges; current code edges are an engineering configuration only.
     blocks:
       - S0_A1_ADMISSION
       - S0_ALIGN_UNIT_COST
-    resolution: Author-approve the band edges/window/unit convention and add it to the data-card/protocol artifact before paper-level admission.
+    resolution: Author-approve the eight numeric frequency intervals and register them without changing the already frozen PSD/window/unit formula before paper-level admission.
   - id: B_TMNRED_EXPERIMENT_PROTOCOL
-    reason: Structural TMNRED data-card audit is complete, but experiment protocol is not cleared; demographics are unusable, one subject-session is incomplete, license metadata disagree, and joint split/session/candidate rules are pending.
+    reason: Structural TMNRED data-card audit is complete, but experiment protocol is not cleared; released word-level lexical content is absent, demographics are unusable, one subject-session is incomplete, license metadata disagree, and session/candidate/joint-split rules are pending.
     blocks:
       - S0_CANDIDATES
-      - S0_JOINT_SPLIT
       - S0_LEAKAGE_AUDIT
-    resolution: Resolve the incomplete cell, license discrepancy, session policy, candidate policy, and joint subject-stimulus split; retain the completed structural card as evidence.
-  - id: B_ZUCO2_REFERENCE_EXCLUSIONS
-    reason: Full audit counts malformed, placeholder, missing word groups and nested fixation leaves, but no sample exclusion or imputation rule is frozen.
-    blocks:
-      - S0_JOINT_SPLIT
-      - S0_A1_ADMISSION
-      - S0_LEAKAGE_AUDIT
-    resolution: Author-approve and register the exclusion and empty-reference policy before fitting normalization, probes, or splits.
-  - id: B_ZUCO2_STIMULUS_JOIN
-    reason: All summary sentence texts match the material sequence across subjects, but duplicate source-text slots remain ambiguous (NR=10, TSR=34); no paragraph/sentence ID join is selected.
-    blocks:
-      - S0_CANDIDATES
-      - S0_JOINT_SPLIT
-      - S0_LEAKAGE_AUDIT
-    resolution: Verify paragraph_id and sentence_id correspondence and freeze a deterministic identity join before candidate or split construction.
-  - id: B_SEMANTIC_ITEM_UNRESOLVED
-    reason: The guide permits content-word type or semantic cluster, but the project has not frozen one choice against ZuCo 2.0 support counts.
-    blocks:
-      - S0_SEMANTIC_ITEM
-    resolution: Complete the ZuCo 2.0 data card, compare support coverage, and freeze one item definition before Stage-1 probes.
-  - id: B_GATE_A_POPULATION_E5
-    reason: Unified spec Appendix E-5 leaves the Gate A pilot statistical population unresolved.
-    blocks:
-      - S0_GATE_A_POPULATION_E5
-    resolution: Record an author-approved outer-training-OOF or multi-outer-cell population rule before Gate A.
-  - id: B_A4_SPEC_CONFLICT
-    reason: The requested third backbone A4 is not defined in the v3.4 guide; section 4.7 freezes A1/A3 and says not to substitute a third backbone.
-    blocks:
-      - S0_A4_DEFINITION
-    resolution: Obtain an explicit author decision and a guide-level definition before adding A4 to active backbones or any experiment.
+    resolution: Obtain released lexical/event linkage or record a bounded TMNRED semantic No-Go, then resolve the incomplete cell, license discrepancy, session policy, candidate policy, and joint subject-stimulus split; do not tokenize, translate, or infer missing lexical items.
   - id: B_A3_NOT_VALIDATED
-    reason: LaBraM-Base checkpoint bytes/hash, official release pooling/load contract, required runtime modules, and the 252-file raw E1..E128 order now pass engineering checks; CO-N7 corpus exclusion, checkpoint/corpus rights, an approved EGI128-to-canonical map, and real EEG end-to-end extraction remain unresolved.
+    reason: v3.6 clears CO-N7 and treats local checkpoint inference rights as a disclosure item; checkpoint/load/pooling/no-gradient and raw E1..E128 inventory pass, but the EGI128-to-canonical map, ZuCo raw unit, filter order/notch Q, and real MAT end-to-end extraction remain unresolved.
     blocks:
       - S0_A3_CONTAMINATION_CHECK
-    resolution: Obtain a corpus-level no-ZuCo/natural-reading attestation, record checkpoint and corpus rights, approve and hash an exact-name or spatial EGI128-to-canonical map with coverage, then run the real 500-to-200 preprocessing and no-gradient 200D extraction smoke.
+    resolution: Approve and hash an exact-name or spatial EGI128-to-canonical map with coverage, verify the raw signal unit, freeze filter order/notch Q, then run the real 500-to-200 preprocessing and no-gradient 200D extraction smoke. Preserve checkpoint provenance and do not redistribute the checkpoint.
 
-last_completed_task: S0_DATA_CARD
-recommended_next_task: S0_H_DEFINITION
-last_run: runs/2026-08-13_009_state_reconciliation.md
+last_completed_task: S0_GATE_A_POPULATION_E5
+recommended_next_task: S0_DIRECT_U_PLUS
+last_run: runs/2026-08-14_010_v36_stage0_recovery.md
 
 do_not_do_yet:
   - Do not treat the ZuCo 1.0 smoke as paper evidence.
-  - Do not start Gate A or Gate B before their prerequisites and population rule are validated.
+  - Do not start Stage 1, Gate A, or Gate B before all remaining protocol and A1-admission prerequisites are validated.
   - Do not lock a route or start the main experiment before ROUTE_LOCK is DONE.
-  - Do not add A4 without an author-approved definition in the governing guide.
+  - Do not add a third backbone; the user and v3.6 scope are A1 plus A3 only.
   - Do not treat the A1 synthetic contract self-check as real-data admission evidence.
   - Do not run the A1 fixed-window path on 128-channel ZuCo data without an explicit verified channel map.
-  - Do not treat either structural data-card PASS as experiment-ready; unresolved joins, exclusions, splits, licenses, and semantic units remain active blockers.
-  - Do not include A3 in T6 or claim contamination clearance until the CO-N7 audit blockers are resolved.
+  - Do not treat the data-card or split PASS as experiment-ready; A1 channel/band admission, candidates/leakage, and TMNRED protocol remain unresolved.
+  - Do not include A3 in T6 until its canonical channel map, raw-unit/filter parameters, and real MAT extraction admission pass; CO-N7 itself is cleared by v3.6.
   - Do not use the A3 synthetic identity channel positions as a semantic EGI-to-LaBraM mapping.
   - Do not substitute CBraMod or REVE-Base for the guide-frozen A3 backbone without an author-approved specification change.

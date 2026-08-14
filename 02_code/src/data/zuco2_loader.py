@@ -174,6 +174,39 @@ def dataset_shape(handle: h5py.File, value: object) -> tuple[int, ...] | None:
     return tuple(int(x) for x in shape) if shape is not None else None
 
 
+def numeric_eeg_reference_status(
+    handle: h5py.File,
+    value: object,
+    *,
+    channels: int = 105,
+) -> tuple[bool, str]:
+    """Validate one released EEG reference without repairing or imputing it.
+
+    The v3.6 data policy admits only a non-empty numeric ``(samples, channels)``
+    leaf.  MATLAB ``(1, 1)`` placeholders are reported separately.  Values are
+    not loaded or transformed here; this is an identity/schema check used by
+    the exclusion ledger and split builder.
+    """
+
+    if channels < 1:
+        raise ValueError("channels must be positive")
+    target = dereference(handle, value)
+    shape = getattr(target, "shape", None)
+    dtype = getattr(target, "dtype", None)
+    if shape is None:
+        return False, "missing_or_invalid_reference"
+    shape_tuple = tuple(int(item) for item in shape)
+    if shape_tuple == (1, 1):
+        return False, "placeholder_1x1"
+    if not shape_tuple or int(np.prod(shape_tuple, dtype=np.int64)) <= 0:
+        return False, "empty_numeric_leaf"
+    if dtype is None or not np.issubdtype(dtype, np.number):
+        return False, "non_numeric_leaf"
+    if len(shape_tuple) != 2 or shape_tuple[1] != channels:
+        return False, f"unexpected_shape_{shape_tuple}"
+    return True, "valid"
+
+
 def summary_sentence_count(handle: h5py.File) -> int:
     sentence = handle.get("sentenceData")
     if sentence is None or not isinstance(sentence, h5py.Group):

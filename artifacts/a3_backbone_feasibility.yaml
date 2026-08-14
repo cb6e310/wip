@@ -1,14 +1,14 @@
 schema_version: '1.0'
-purpose: engineering feasibility audit only; no backbone substitution is authorized
-spec_route: A3 is LaBraM-Base only, T6/K7 only, and remains blocked until CO-N7 and mapping are cleared
-contamination_policy: omission from a published corpus list is not a negative proof
+purpose: v3.6 engineering feasibility and admission-boundary audit; no backbone substitution is authorized
+spec_route: A3 is LaBraM-Base only and T6/K7 only; CO-N7 is cleared, while channel mapping and real extraction admission remain blocked
+contamination_policy: LaBraM Appendix D's complete 2534.78-hour list contains neither ZuCo nor natural-reading EEG; v3.6 therefore clears CO-N7
 candidates:
   labram_base:
     role: specified_A3
     official_repo: https://github.com/935963004/LaBraM
     paper: https://arxiv.org/html/2405.18765
     pretraining_summary: about 2534.78 hours and 20 datasets; no literal ZuCo entry found
-    contamination_status: UNKNOWN
+    contamination_status: CO_N7_CLEARED_BY_V3_6_APPENDIX_D_AUDIT
     checkpoint_path: 02_code/vendor/checkpoints/labram-base.pth
     checkpoint_sha256: 7c50583826afac76c4ab18f43d958df40496c8229accc09ed6a227c9bb57c37c
     checkpoint_bytes: 96612769
@@ -16,7 +16,7 @@ candidates:
     checkpoint_file_commit: d52cb6d1801bb038e10ea1b6b3292c0bd569a9d5
     source_commit: c431221e6cfd23dbfa9950e0180682fb322b0548
     code_license: MIT
-    weights_and_corpus_rights: UNKNOWN
+    weights_and_corpus_rights: LOCAL_RESEARCH_INFERENCE_WORKING_ASSUMPTION_DISCLOSE_NO_REDISTRIBUTION
     input_shape: '[B,C,patches,200]'
     base_embedding_dim: 200
     base_depth: 12
@@ -44,9 +44,12 @@ candidates:
       provenance: official_engine_for_finetuning.py
     real_extraction: BLOCKED
     blockers:
-      - CO-N7 corpus manifest or author attestation
-      - checkpoint and pretraining-corpus rights metadata
       - approved EGI128 to canonical model-channel mapping
+      - ZuCo raw signal unit verification plus frozen filter order and notch Q
+      - real MAT preprocessing and mapped 200D extraction admission
+    disclosures:
+      - record checkpoint source, version, bytes, and SHA256 in paper and ledger
+      - do not redistribute the original checkpoint with project artifacts
   cbramod:
     role: contingency_feasibility_only
     official_repo: https://github.com/wjq-learning/CBraMod
@@ -88,4 +91,18 @@ candidates:
       - approved HydroCel128 position mapping
       - explicit fixed 512-to-200 projection
       - no substitution without author approval
-decision: LaBraM remains the only specified A3 route; candidates are recorded for failure contingency review only
+decision: LaBraM remains the only specified A3 route; CO-N7 and local-use hard blockers are cleared by v3.6, but A3 is not admitted until mapping, raw-unit/filter parameters, and real MAT extraction pass
+latest_engineering_audit:
+  run_id: 2026-08-14_010_v36_stage0_recovery
+  seed: 20260813
+  fold: A3-contract-1
+  method: A3-LaBraM-Base-preparation
+  config_hash: 1546c94a5e8dc297e5633afe6d5493f8e146526af1d4efd4175759c894151000
+  status: PASS_WITH_BLOCKERS
+  raw_files: 252
+  preprocessing_shape: [128, 1600]
+  pooled_shape: [2, 200]
+  assertions: 12/12
+  elapsed_seconds: 161.671
+  artifact: 03_runs/debug_runs/a3_labram_preparation_seed20260813_foldA3-contract-1_methodA3-LaBraM-Base-preparation_cfg1546c94a5e8d.json
+  artifact_sha256: c92f6f1b2cd02d3e5e88518fc8f368abcc31050da837e1747c1058f1f454b299

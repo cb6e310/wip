@@ -1,0 +1,23 @@
+schema_version: 1
+spec_version: v3_6_inherits_v3_5_scientific_freeze_2026_08_13
+contract: section_7_2_1_E5
+status: SCIENTIFIC_RULE_FROZEN_ENGINEERING_SELF_CHECK_PASS
+population_unit: dataset_task_panel_subject
+aggregation_order:
+  - equal_mean_within_subject_across_eligible_outer_cells
+  - subject_cluster_bootstrap_only_after_aggregation
+missing_cell_policy: exclude_subject_cell_without_zero_fill
+pilot_population: outer_train_subjects_of_the_single_pilot_cell
+full_population: same_subject_first_aggregation_across_all_eligible_outer_cells
+synthetic_selfcheck:
+  script: 02_code/scripts/gate_a_population_selfcheck.py
+  artifact: artifacts/gate_a_population_e5_selfcheck_seed20260813_foldS0-T0_methodGate-A-population.json
+  seed: 20260813
+  fold: S0-T0
+  method: Gate-A-population-E5
+  config_hash: dfb13d9036d760d4111f451f9b5d84b0e4858ec64b121fbf2d426d26f8360a91
+  sha256: f5a8cd56386b142dedee4d0baa471e064ad9c5e3ea8abe4e935c3ee34b125ced
+  assertions: 7/7
+  focused_tests: 4_pass
+  real_gate_a_evidence: false
+remaining_boundary: Real OOF metrics and a real-data bootstrap are not present; the recorded bootstrap is a seeded synthetic contract check, not a Gate-A result.

@@ -1,13 +1,17 @@
 # A3 LaBraM-Base Preparation, Contamination, and Provenance Audit
 
-Run: `2026-08-13_008_a3_preparation`
+Run: `2026-08-14_010_v36_stage0_recovery`
 
 ## Verdict
 
-`SPEC_FROZEN / ARCHITECTURE_SUPPORTED / CHECKPOINT_HASH_VERIFIED / SOURCE_CHANNEL_ORDER_VERIFIED / PREPROCESSING_SYNTHETIC_SMOKE_PASS / CONTAMINATION_UNVERIFIED / RIGHTS_UNVERIFIED / SEMANTIC_CHANNEL_MAP_BLOCKED / REAL_EXTRACTION_NOT_VALIDATED`
+`SPEC_FROZEN / ARCHITECTURE_SUPPORTED / CHECKPOINT_HASH_VERIFIED / SOURCE_CHANNEL_ORDER_VERIFIED / PREPROCESSING_SYNTHETIC_SMOKE_PASS / CO-N7_CLEARED_BY_V3.6 / LOCAL_RESEARCH_INFERENCE_ASSUMED_WITH_DISCLOSURE / SEMANTIC_CHANNEL_MAP_BLOCKED / RAW_UNIT_AND_FILTER_PARAMETERS_UNFROZEN / REAL_EXTRACTION_NOT_VALIDATED`
 
-A3 is still blocked for T6/K7. The CO-N7 hard veto is unresolved. No third
-backbone is substituted.
+A3 is still blocked for T6/K7 admission, but no longer by contamination or
+checkpoint-use rights. Under v3.6, LaBraM Appendix D's complete 2534.78-hour
+pretraining inventory contains neither ZuCo nor natural-reading EEG, so CO-N7
+is cleared. Local research inference/frozen extraction is the project's
+recorded working assumption; the checkpoint source/hash must be disclosed and
+the checkpoint must not be redistributed. No third backbone is substituted.
 
 ## Frozen engineering contract
 
@@ -39,9 +43,10 @@ backbone is substituted.
 | Raw geometry | Continuous MAT `chanlocs` geometry fields are empty. | EXTERNAL MONTAGE REQUIRED |
 | Summary distinction | The separate preprocessed/word-level files have 105 channels and are not the A3 continuous input. | VERIFIED; DO NOT MIX |
 | Preprocessing | A synthetic 500-to-200 smoke passes shape and finite-value assertions using an explicitly labeled candidate filter order/Q; the guide has not frozen those values and no real EEG extraction has been run. | SYNTHETIC ONLY |
-| Pretraining corpus | Published lists omit a literal ZuCo entry, but the opaque self-collected EEG portion is not resolved at paradigm level. | CO-N7 OPEN |
-| Rights | Repository code is MIT; checkpoint and pretraining-corpus rights are not established by that license. | UNKNOWN |
+| Pretraining corpus | LaBraM Appendix D's complete 2534.78-hour list covers the public datasets and five self-collected paradigms; it contains neither ZuCo nor natural-reading EEG. | CO-N7 CLEARED BY v3.6 |
+| Rights / redistribution | v3.6 authorizes local research inference/frozen extraction as a working assumption. Source/version/hash are disclosed and the original checkpoint is not redistributed with artifacts. | DISCLOSURE ITEM; NOT A T6/K7 HARD BLOCKER |
 | Semantic channel map | LaBraM requires canonical name-derived positions. No approved EGI128-to-canonical map, interpolation matrix, coverage, or map hash exists. | BLOCKED |
+| Raw units / filter parameters | The official frequency/resampling/scale convention is recorded, but ZuCo raw units, filter order, and notch Q are not scientifically frozen. Order 4/Q 30 exist only in the synthetic engineering fixture. | BLOCKED FOR REAL ADMISSION |
 
 ## Preparation self-check
 
@@ -51,21 +56,27 @@ output, unchanged model weights, the 5 s/2.5 s window contract, and 200D
 pooling. Its synthetic channel positions are an identity shape fixture and
 must not be treated as a real semantic mapping.
 
+The v3.6 rerun used seed `20260813`, fold `A3-contract-1`, method
+`A3-LaBraM-Base-preparation`, and config hash
+`1546c94a5e8dc297e5633afe6d5493f8e146526af1d4efd4175759c894151000`.
+It scanned 252 MAT files, produced synthetic preprocessing shape `[128,1600]`
+and pooled shape `[2,200]`, passed 12/12 engineering assertions in 161.671 s,
+and wrote artifact SHA256
+`c92f6f1b2cd02d3e5e88518fc8f368abcc31050da837e1747c1058f1f454b299`.
+
 ## Required resolution before DONE
 
-1. Obtain a corpus manifest or author attestation excluding ZuCo and all
-   natural-reading EEG, including the opaque self-collected set.
-2. Obtain checkpoint/underlying-corpus rights metadata suitable for the
-   project and record the decision separately from the MIT code license.
-3. Approve an authoritative HydroCel-128 geometry and exact-name or spatial
+1. Approve an authoritative HydroCel-128 geometry and exact-name or spatial
    interpolation policy; publish ordered names, matrix/indices, coverage, and
    hash.
-4. Run the real 500 Hz MAT preprocessing and mapped extraction, with an
+2. Verify the ZuCo continuous-MAT signal unit and freeze filter order and notch
+   Q; the synthetic order-4/Q-30 fixture is not author-level admission.
+3. Run the real 500 Hz MAT preprocessing and mapped extraction, with an
    end-to-end no-gradient 200D self-check, before any T6/K7 use.
 
 ## Candidate feasibility if LaBraM fails
 
-These entries are audit-only and do not alter the v3.4 A3 specification.
+These entries are audit-only and do not alter the v3.6 A1/A3 specification.
 
 | Candidate | Interface evidence | Contamination / rights | Feasibility conclusion |
 |---|---|---|---|

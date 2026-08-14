@@ -31,11 +31,11 @@ class ProjectMemoryValidatorTests(unittest.TestCase):
             (self.root / directory).mkdir(parents=True, exist_ok=True)
         shutil.copy2(PROJECT_ROOT / "PROJECT_STATE.yaml", self.root / "PROJECT_STATE.yaml")
         shutil.copy2(PROJECT_ROOT / "TASKS.yaml", self.root / "TASKS.yaml")
-        (self.root / "guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_4_2026-08-11.md").write_text(
-            "fixture spec\n", encoding="utf-8"
-        )
         state = yaml.safe_load((self.root / "PROJECT_STATE.yaml").read_text(encoding="utf-8"))
         tasks = yaml.safe_load((self.root / "TASKS.yaml").read_text(encoding="utf-8"))
+        spec_path = self.root / state["project"]["spec_path"]
+        spec_path.parent.mkdir(parents=True, exist_ok=True)
+        spec_path.write_text("fixture spec\n", encoding="utf-8")
         last_run = self.root / state["last_run"]
         last_run.parent.mkdir(parents=True, exist_ok=True)
         last_run.write_text("fixture run\n", encoding="utf-8")
