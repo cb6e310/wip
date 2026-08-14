@@ -1,0 +1,51 @@
+{
+  "assertions": {
+    "finite": true,
+    "fixed_feature_dim": true,
+    "mask_bool": true,
+    "output_shape": true,
+    "parameter_limit": true,
+    "word_feature_dim": true
+  },
+  "config_hash": "a9ff618892a29b466d48d20c933503ea509a18c6fb002e274356d1513df73cf4",
+  "elapsed_seconds": 0.41887393221259117,
+  "fold": "S0-TEXT",
+  "method": "A1",
+  "parameter_count": 1368704,
+  "ranges": {
+    "normalized_abs_max": 3.792206287384033,
+    "output_abs_max": 1.8967702388763428,
+    "word_max": 0.0677620992064476,
+    "word_min": 6.722548278048635e-05
+  },
+  "samples": {
+    "fixed_sequences": 1,
+    "synthetic_epochs": 4,
+    "word_sequences": 1
+  },
+  "seed": 20260813,
+  "shapes": {
+    "fixed_sequence": [
+      7,
+      840
+    ],
+    "mask": [
+      2,
+      7
+    ],
+    "output": [
+      2,
+      384
+    ],
+    "padded": [
+      2,
+      7,
+      840
+    ],
+    "word_sequence": [
+      4,
+      840
+    ]
+  },
+  "status": "PASS"
+}

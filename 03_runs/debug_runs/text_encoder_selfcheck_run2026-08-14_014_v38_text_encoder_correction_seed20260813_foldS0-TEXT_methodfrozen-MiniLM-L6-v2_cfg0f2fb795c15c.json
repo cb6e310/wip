@@ -1,0 +1,167 @@
+{
+  "assertions": {
+    "byte_identical_determinism": true,
+    "encoder_config_manifest_has_exact_release_files": true,
+    "loaded_safetensors_hash_complete": true,
+    "long_input_truncated": true,
+    "long_shape_finite_l2": true,
+    "model_capacity_at_least_256": true,
+    "model_config_revision_exact": true,
+    "model_eval": true,
+    "modules_transformer_pooling_normalize": true,
+    "padding_batch_finite_l2": true,
+    "padding_batch_shape_2x384": true,
+    "padding_mask_active": true,
+    "pooling_config_mean_only": true,
+    "provenance_encoder_config_complete": true,
+    "provenance_model_complete": true,
+    "provenance_tokenizer_complete": true,
+    "requested_revision_exact": true,
+    "resolved_model_max_length_256": true,
+    "resolved_revision_exact": true,
+    "sentence_transformers_max_seq_length_256": true,
+    "short_dtype_float32": true,
+    "short_finite": true,
+    "short_l2_norm": true,
+    "short_shape_1x384": true,
+    "tokenizer_capacity_at_least_256": true,
+    "trainable_parameter_count_zero": true
+  },
+  "elapsed_seconds": 6.353107295930386,
+  "environment": {
+    "device": "cpu",
+    "python_version": "3.12.3",
+    "torch_version": "2.13.0+cu130",
+    "transformers_version": "5.15.0"
+  },
+  "fold": "S0-TEXT",
+  "input_text_sha256": {
+    "long": "79ccd851da8feb6e372ae5c00b9d7e3a1d89b7484c2d74f91813f846eb68785a",
+    "other": "eaa01d417f1fb3e1e5d3cc2c9a7ffa135031f89ffa0250e6739f7cea0195a052",
+    "short": "af2daf8a25646ddf525aa27dd86c72f5341b443193ab889adac86617e83220bc"
+  },
+  "method": "frozen-MiniLM-L6-v2",
+  "model_config_resolved_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "model_id": "sentence-transformers/all-MiniLM-L6-v2",
+  "outputs": {
+    "byte_identical_determinism": true,
+    "dtype": "float32",
+    "long_norms": [
+      0.9999999403953552
+    ],
+    "long_shape": [
+      1,
+      384
+    ],
+    "padding_batch_norms": [
+      0.9999998807907104,
+      1.0000001192092896
+    ],
+    "padding_batch_shape": [
+      2,
+      384
+    ],
+    "padding_max_abs_diff_vs_single": 1.341104507446289e-07,
+    "short_norms": [
+      1.0
+    ],
+    "short_shape": [
+      1,
+      384
+    ]
+  },
+  "provenance": {
+    "cache_snapshot_path_recorded_as_external": "/home/song/.cache/huggingface/hub/models--sentence-transformers--all-MiniLM-L6-v2/snapshots/1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "encoder_config_file_sha256": {
+      "1_Pooling/config.json": "4be450dde3b0273bb9787637cfbd28fe04a7ba6ab9d36ac48e92b11e350ffc23",
+      "config.json": "953f9c0d463486b10a6871cc2fd59f223b2c70184f49815e7efbcab5d8908b41",
+      "config_sentence_transformers.json": "061ca9d39661d6c6d6de5ba27f79a1cd5770ea247f8d46412a68a498dc5ac9f3",
+      "modules.json": "84e40c8e006c9b1d6c122e02cba9b02458120b5fb0c87b746c41e0207cf642cf",
+      "sentence_bert_config.json": "fc1993fde0a95c24ec6c022539d41cf6e2f7c9721e5415d6fb6897472a9cd4b7"
+    },
+    "encoder_config_manifest_hash": "8049791e90383b0f56624a32a14852552e292bcb38ab18da1de533ad79629845",
+    "encoder_config_optional_absent": [
+      "2_Normalize/config.json"
+    ],
+    "loaded_model_weight_file": "model.safetensors",
+    "loaded_model_weight_sha256": "53aa51172d142c89d9012cce15ae4d6cc0ca6895895114379cacb4fab128d9db",
+    "model_file_hash": "c0577b9136351b1c12ba99a16f386d5c4c8c45e744941eaea15803880dd30e61",
+    "model_file_sha256": {
+      "model.safetensors": "53aa51172d142c89d9012cce15ae4d6cc0ca6895895114379cacb4fab128d9db",
+      "pytorch_model.bin": "c3a85f238711653950f6a79ece63eb0ea93d76f6a6284be04019c53733baf256"
+    },
+    "scientific_config_hash": "0f2fb795c15c7ad7ee185f44509ec86eb912aaca6abf88b78fa1560179e412af",
+    "tokenizer_file_sha256": {
+      "special_tokens_map.json": "303df45a03609e4ead04bc3dc1536d0ab19b5358db685b6f3da123d05ec200e3",
+      "tokenizer.json": "be50c3628f2bf5bb5e3a7f17b1f74611b2561a3a27eeab05e5aa30f411572037",
+      "tokenizer_config.json": "acb92769e8195aabd29b7b2137a9e6d6e25c476a4f15aa4355c233426c61576b",
+      "vocab.txt": "07eced375cec144d27c900241f3e339478dec958f92fddbc551f295c992038a3"
+    },
+    "tokenizer_manifest_hash": "78a3daa92dcec076e80baaa628a6553bcbd0b431a214eb02d72c8b5672e69e09",
+    "transformer_config_sha256": "953f9c0d463486b10a6871cc2fd59f223b2c70184f49815e7efbcab5d8908b41",
+    "weights_copied_to_repository": false
+  },
+  "release_contract": {
+    "module_types": [
+      "sentence_transformers.models.Transformer",
+      "sentence_transformers.models.Pooling",
+      "sentence_transformers.models.Normalize"
+    ],
+    "pooling_config": {
+      "pooling_mode_cls_token": false,
+      "pooling_mode_max_tokens": false,
+      "pooling_mode_mean_sqrt_len_tokens": false,
+      "pooling_mode_mean_tokens": true,
+      "word_embedding_dimension": 384
+    },
+    "sentence_bert_config": {
+      "do_lower_case": false,
+      "max_seq_length": 256
+    }
+  },
+  "requested_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "resolved_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "run_id": "2026-08-14_014_v38_text_encoder_correction",
+  "schema_version": 1,
+  "scientific_config_hash": "0f2fb795c15c7ad7ee185f44509ec86eb912aaca6abf88b78fa1560179e412af",
+  "seed": 20260813,
+  "status": "PASS",
+  "text_encoder_config": {
+    "max_seq_length": 256,
+    "model_id": "sentence-transformers/all-MiniLM-L6-v2",
+    "normalization": "l2",
+    "output_dim": 384,
+    "pooling": "attention_mask_mean",
+    "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41"
+  },
+  "tokenization": {
+    "long": {
+      "token_count_after_truncation": 256,
+      "token_count_before_truncation": 962,
+      "truncated": true
+    },
+    "model_max_length": 256,
+    "model_max_position_embeddings": 512,
+    "padding_batch": [
+      {
+        "token_count_after_truncation": 14,
+        "token_count_before_truncation": 14,
+        "truncated": false
+      },
+      {
+        "token_count_after_truncation": 7,
+        "token_count_before_truncation": 7,
+        "truncated": false
+      }
+    ],
+    "sentence_transformers_max_seq_length": 256,
+    "short": {
+      "token_count_after_truncation": 14,
+      "token_count_before_truncation": 14,
+      "truncated": false
+    },
+    "tokenizer_model_max_length": 512
+  },
+  "total_parameter_count": 22713216,
+  "trainable_parameter_count": 0
+}
