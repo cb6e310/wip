@@ -2,25 +2,21 @@
 
 ## Current decision
 
-`S0_CANDIDATES=DONE` under SPEC v3.10 with `completion_outcome=STRUCTURAL_NO_GO_N50`. This is a successfully completed structural feasibility audit, not a failed build and not a retrieval result.
+`S0_CANDIDATE_COMMON_SUPPORT=DONE/PASS_N10_COMMON_SUPPORT`. The immutable v3.10 candidate triplet remains admitted as `S0_CANDIDATES=DONE/STRUCTURAL_NO_GO_N50`; it was neither modified nor reopened.
 
-The real builder used 739 verified ZuCo2 source-slot sentences, the exact-revision frozen CPU MiniLM, the admitted outer/inner splits and exact H source identities. It retained all 18,475 target instances across 10 outer-test and 180 inner-validation scopes. Two independent temporary builds, reverse-input construction and the formal build were byte-identical.
+The v3.11 N=10 candidate-common-support scoring population is now materialized. Eligibility is exactly per-scope `legal_count>=9`; all 18,475 target instances remain ledgered, all training records remain intact, and every excluded scoring target has reason `LEGAL_NEGATIVES_LT_9` with its admitted sequential counts.
 
-## Frozen feasibility evidence
+## Admitted evidence
 
-- NR targets: outer 349, inner 8,376. Legal-count min/median/max: outer `0/24/40`, inner `0/32/53`.
-- TSR targets: outer 390, inner 9,360. Legal-count min/median/max: outer `0/25/37`, inner `0/34/54`.
-- N=10: not panel-wide available; 1,414/18,475 targets have fewer than 9 legal negatives.
-- N=50: not panel-wide available; 18,184/18,475 targets have fewer than 49 legal negatives.
-- N=100 and N=200: unavailable for all 18,475 targets.
-- Candidate lists SHA256: `51130ffc216a1f0bf50a9eeec42136555ab98ee110f3aaa265de54c3a004115a`.
-- Paired pairs SHA256: `bc37630ea3c6c870d4388ac0c16582f742e6751d533e3656a284304d09e3ec5c`.
-- Feasibility audit SHA256: `8f478fddc78ccb46df2c1a75945a3f90ec89f7c58ca456172a4874bef75f7960`.
-
-Focused candidate tests passed 15/15; affected H/text/split/source/semantic tests passed 51/51; the final complete suite passed 130/130.
+- Base physical hashes were rechecked: candidate lists `51130ffc216a1f0bf50a9eeec42136555ab98ee110f3aaa265de54c3a004115a`; paired pairs `bc37630ea3c6c870d4388ac0c16582f742e6751d533e3656a284304d09e3ec5c`; feasibility audit `8f478fddc78ccb46df2c1a75945a3f90ec89f7c58ca456172a4874bef75f7960`.
+- Common support is 17,061/18,475 (92.35%): outer NR 306/349, outer TSR 359/390; inner NR 7,553/8,376, inner TSR 8,843/9,360.
+- Minimum exact per-scope coverage is 60/70=85.71% outer and 77/93=82.80% inner. The 1,414 exclusions transition below nine at length=1,402, cosine=0, H=12.
+- Every eligible repeat uses the first nine admitted maximal-order negatives and its admitted target position. Paired AUROC uses the first negative; paired AUPRC uses the same nine negatives at prevalence 0.1.
+- Two same-order builds, one reverse-order build, and the formal artifacts are canonical-byte identical. `training_records_removed=0`; no tokenizer, encoder, EEG, training/model result or ROAMM path was read.
+- New artifact SHA256: candidate common-support lists `b3eda1c09542344e108ce162a0f414beb54a426644db18126ee1e87e36ddf097`; N=10 paired pairs `71b6b53e5686e125d067240fd6414b833ef74b46159b130d5c6097152d722771`; audit `6dfba054d8242501808e267f91efdf080f6cbd479b617819edb4baf47554c0fc`.
 
 ## Required next action
 
-There is no authorized automated next task. `recommended_next_task=null`. `B_ZUCO2_N50_STRUCTURAL_NO_GO` blocks `S0_LEAKAGE_AUDIT` and `S0_DIRECT_U_PLUS` pending `AUTHOR_REVIEW_N50_PROTOCOL` in a future SPEC revision. Do not change N, source scope, length/cosine/H filters or target retention under v3.10.
+Run only `S0_LEAKAGE_AUDIT`, the ZuCo2 V1-V5 protocol/leakage audit. Treat both the v3.10 base ledgers and v3.11 N=10 common-support artifacts as immutable admitted inputs.
 
-ROAMM remains mandatory but deferred at its preserved incomplete checkpoint. No EEG value, retrieval score, training output, Gate decision, route decision or paper conclusion was produced.
+Do not implement direct u+, A1 real admission, Stage 1, Gates, route/main experiment, or resume ROAMM in that task. ROAMM remains mandatory but deferred at its preserved incomplete checkpoint until the complete ZuCo2 first-dataset experiment is frozen.

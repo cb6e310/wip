@@ -289,6 +289,9 @@ S0_CANDIDATES:
     - artifacts are canonical-byte deterministic and bind exact outer/inner, source-join, H, encoder/model/tokenizer/config and released-text hashes
   completed_by_run: 2026-08-14_019_v310_zuco2_candidates
   completion_outcome: STRUCTURAL_NO_GO_N50
+  reviewed_by_run: 2026-08-14_020_v311_candidate_review_n10_common_support_freeze
+  reviewed_commit: 711340dc92f177ce63620ea7b4c57264f678c5f3
+  review_outcome: ADMITTED_WITH_AUTHOR_REVISION_TO_N10_COMMON_SUPPORT
   evidence_scope: REAL_ZUCO2_PROTOCOL_FEASIBILITY_NO_EEG_NO_RETRIEVAL_METRIC
   evidence:
     - 01_data_protocol/candidates/candidate_lists.json
@@ -298,6 +301,45 @@ S0_CANDIDATES:
     - 02_code/scripts/build_zuco2_candidates.py
     - 02_code/tests/test_candidates.py
   completion_note: All 739 verified source-slot sentences and all 18,475 outer-test/inner-validation target instances were retained. Two independent real CPU builds and the formal build were byte-identical. The frozen filters leave 18,184 targets below 49 legal negatives, so panel-wide N=50 is structurally unavailable; N=10 is also not panel-wide available, while N=100/200 are unavailable for every target. No source, N, hard filter or target-retention rule was changed, and no EEG value, retrieval metric, training, Gate or ROAMM path was read.
+
+S0_CANDIDATE_COMMON_SUPPORT:
+  title: Freeze the ZuCo2 N=10 candidate-common-support scoring view
+  stage: stage_0
+  status: DONE
+  critical_path: true
+  priority: 6
+  prerequisites:
+    - S0_CANDIDATES
+  produces:
+    - 01_data_protocol/candidates/candidate_lists_n10_common_support.json
+    - 01_data_protocol/candidates/paired_verification_pairs_n10.json
+    - 04_results/audits/zuco2_n10_common_support_audit.json
+    - 02_code/src/data/candidate_common_support.py
+    - 02_code/scripts/build_zuco2_n10_common_support.py
+    - 02_code/tests/test_candidate_common_support.py
+  acceptance:
+    - the three admitted v3.10 candidate artifacts are immutable inputs and their exact file and canonical hashes are validated before derivation
+    - target eligibility is exactly legal_count greater than or equal to 9 within its existing frozen outer-test or inner-validation scope; no scope, target identity, length/cosine/H filter or maximal hash ordering is recomputed or changed
+    - exact frozen support counts are reproduced: outer NR 306/349, outer TSR 359/390, outer total 665/739; inner NR 7553/8376, inner TSR 8843/9360, inner total 16396/17736; total 17061/18475
+    - minimum per-scope coverage is 85.71 percent for outer scopes and 82.80 percent for inner scopes, with all included and excluded targets retained in a deterministic audit ledger
+    - every excluded target has reason LEGAL_NEGATIVES_LT_9 plus the existing sequential exclusion counts; excluded records are omitted from validation/test scoring only and are never removed from training records
+    - every eligible repeat uses exactly the first nine negatives and the existing frozen target position from the admitted L=5 maximal ordering, without replacement, refill, borrowing or new randomness
+    - paired AUROC uses the first negative of the same N=10 list and paired AUPRC uses all nine negatives, giving a fixed 1-to-9 prevalence of 0.1
+    - the audit reports common-support coverage and included/excluded token-length and document/fold counts so the paper claim is explicitly limited to sentences with candidate common support
+    - the derivation reads only admitted candidate artifacts; it does not load the tokenizer, MiniLM, EEG, training outputs, held-out metrics or ROAMM paths
+    - two builds and reverse-input construction are canonical-byte identical, and every new artifact binds the exact base file and canonical hashes
+  blocked_reason: null
+  completed_by_run: 2026-08-14_021_v311_n10_common_support
+  completion_outcome: PASS_N10_COMMON_SUPPORT
+  evidence_scope: REAL_ZUCO2_PROTOCOL_SCORING_VIEW_NO_EEG_NO_TRAINING
+  evidence:
+    - 01_data_protocol/candidates/candidate_lists_n10_common_support.json
+    - 01_data_protocol/candidates/paired_verification_pairs_n10.json
+    - 04_results/audits/zuco2_n10_common_support_audit.json
+    - 02_code/src/data/candidate_common_support.py
+    - 02_code/scripts/build_zuco2_n10_common_support.py
+    - 02_code/tests/test_candidate_common_support.py
+  completion_note: The immutable v3.10 triplet passed exact physical/canonical/provenance admission. The JSON-only derivation retained all 18,475 target instances and froze 17,061 eligible N=10 scoring instances with all 1,414 exclusions ledgered as LEGAL_NEGATIVES_LT_9 and training_records_removed=0. Every eligible repeat uses the admitted first-nine prefix and target position; AUROC is 1:1 and AUPRC is the same 1:9 list. Two same-order builds and one reverse-order build were canonical-byte identical. No tokenizer, encoder, EEG, model output, training or ROAMM path was read.
 
 S0_JOINT_SPLIT:
   title: Build the joint held-out subject-and-stimulus outer split
@@ -328,12 +370,13 @@ S0_JOINT_SPLIT:
 S0_LEAKAGE_AUDIT:
   title: Run the ZuCo2 V1-V5 leakage and protocol audit
   stage: stage_0
-  status: BLOCKED
+  status: READY
   critical_path: true
   priority: 7
   prerequisites:
     - S0_H_DEFINITION
     - S0_CANDIDATES
+    - S0_CANDIDATE_COMMON_SUPPORT
     - S0_JOINT_SPLIT
   produces:
     - 01_data_protocol/leakage_audit.md
@@ -341,7 +384,7 @@ S0_LEAKAGE_AUDIT:
     - all preprocessing and probe fits are outer-train-only
     - H, candidates, subject/stimulus split, and test-time calibration checks are green
     - failed checks invalidate affected runs
-  blocked_reason: "Candidate engineering is complete, but its admitted outcome is STRUCTURAL_NO_GO_N50: 18,184 of 18,475 target instances cannot supply the frozen 49 legal negatives. V1-V5 leakage work must wait for an author-approved future protocol revision; deferred ROAMM remains independently paused."
+  blocked_reason: null
 
 S0_A1_FRONTEND:
   title: Implement and freeze the A1 spectral frontend and tensor contract
@@ -492,6 +535,7 @@ STAGE1_PROBES:
   prerequisites:
     - S0_A1_ADMISSION
     - S0_CANDIDATES
+    - S0_CANDIDATE_COMMON_SUPPORT
     - S0_H_DEFINITION
     - S0_JOINT_SPLIT
     - S0_LEAKAGE_AUDIT
@@ -546,7 +590,8 @@ S0_DIRECT_U_PLUS:
   status: BLOCKED
   critical_path: true
   priority: 18
-  prerequisites: []
+  prerequisites:
+    - S0_CANDIDATE_COMMON_SUPPORT
   produces:
     - 02_code/src/methods/direct_u_plus.py
     - 02_code/tests/test_direct_u_plus.py
@@ -555,7 +600,7 @@ S0_DIRECT_U_PLUS:
     - measurement-layer hyperparameters are not imposed on this non-measurement row
     - entropy, Gini, quantiles, floor-hit, and all-zero-batch diagnostics use the unique v3.7 definitions
     - all variants and dispersion diagnostics are reportable
-  blocked_reason: Section 6.16 remains frozen, but implementation is paused because the admitted ZuCo2 candidate outcome is STRUCTURAL_NO_GO_N50. AUTHOR_REVIEW_N50_PROTOCOL must resolve the evaluation protocol before downstream method work resumes; this is not permission to alter the direct-u-plus formula.
+  blocked_reason: The v3.11 N=10 common-support population is frozen, but direct-u-plus implementation remains paused by Stage-0 execution order while the recommended S0_LEAKAGE_AUDIT and required A1/Stage-1 prerequisites remain incomplete. This is not permission to alter the section 6.16 formula.
 
 S0_EQ_ANMA_CORE:
   title: Implement the EQ-ANMA weighting path after Stage-1 scores are frozen

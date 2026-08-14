@@ -1,11 +1,11 @@
 schema_version: 1
-updated_at: "2026-08-14T12:17:16+00:00"
-updated_by_run: 2026-08-14_019_v310_zuco2_candidates
+updated_at: "2026-08-14T19:30:00+00:00"
+updated_by_run: 2026-08-14_021_v311_n10_common_support
 
 project:
   name: trustworthy_subject_general_eeg_text_alignment
-  spec_version: v3.10
-  spec_path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_10_2026-08-14.md
+  spec_version: v3.11
+  spec_path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_11_2026-08-14.md
   execution_plan_path: guide/EEG_Text_Bprime_Execution_Plan_v3_2026-08-11_to_Submission.md
   server_root: /home/song/projects/trust_align
   python_path: /home/song/projects/trust_align/.venv/bin/python
@@ -51,12 +51,6 @@ gates:
     evidence_grade: null
 
 blockers:
-  - id: B_ZUCO2_N50_STRUCTURAL_NO_GO
-    reason: The complete frozen ZuCo2 outer-test and inner-validation audit retained all 18,475 targets, but 18,184 have fewer than the 49 legal negatives required for N=50 after the exact scope, inclusive token-length, strict cosine and H-source filters. This is a protocol-level structural No-Go, not a failed build.
-    blocks:
-      - S0_LEAKAGE_AUDIT
-      - S0_DIRECT_U_PLUS
-    resolution: AUTHOR_REVIEW_N50_PROTOCOL. The author must decide a new protocol in a future specification revision; do not change N, candidate sources, hard filters or target retention under v3.10, and do not start leakage or downstream method implementation meanwhile.
   - id: B_A1_REAL_SOURCE_ADMISSION
     reason: v3.8 inherits the frozen numeric band edges and 105-channel sentenceData.rawData source for ZuCo2 ET-free A1 sensitivity, but real-file sampling rate, channel order, units, finite values, and field semantics have not been admitted end to end.
     blocks:
@@ -74,23 +68,24 @@ blockers:
       - S0_A3_CONTAMINATION_CHECK
     resolution: Approve and hash an exact-name or spatial EGI128-to-canonical map with coverage, verify the raw signal unit, freeze filter order/notch Q, then run the real 500-to-200 preprocessing and no-gradient 200D extraction smoke. Preserve checkpoint provenance and do not redistribute the checkpoint.
 
-last_completed_task: S0_CANDIDATES
-recommended_next_task: null
-last_run: runs/2026-08-14_019_v310_zuco2_candidates.md
+last_completed_task: S0_CANDIDATE_COMMON_SUPPORT
+recommended_next_task: S0_LEAKAGE_AUDIT
+last_run: runs/2026-08-14_021_v311_n10_common_support.md
 
 do_not_do_yet:
   - Do not treat the ZuCo 1.0 smoke as paper evidence.
   - Do not start Stage 1, Gate A, or Gate B before all remaining protocol and A1-admission prerequisites are validated.
   - Do not lock a route or start the main experiment before ROUTE_LOCK is DONE.
-  - Do not execute CSPE or TMNRED in this paper; v3.10 limits the research route to EQ-ANMA with a negative-diagnostic fallback.
-  - Do not add a third backbone; the user and v3.10 scope are A1 plus A3 only.
+  - Do not execute CSPE or TMNRED in this paper; v3.11 limits the research route to EQ-ANMA with a negative-diagnostic fallback.
+  - Do not add a third backbone; the user and v3.11 scope are A1 plus A3 only.
   - Do not treat the A1 synthetic contract self-check as real-data admission evidence.
   - Do not run the A1 fixed-window path from 128-channel continuous files; v3.7 fixes its source to 105-channel sentenceData.rawData pending real-field admission.
   - Do not treat the admitted inner split as Stage-1 OOF evidence; it is protocol infrastructure only.
   - Do not treat the bbf8d11 512-token run as exact-revision text admission; the corrected 256-token/config-manifest run is the admitted evidence.
   - Do not resume ROAMM download, admission, candidate construction or training until the ZuCo2 MAIN_EXPERIMENT outputs and method/threshold/route decisions are frozen.
   - Do not delete or relabel the existing ROAMM checkpoint as admitted; preserve its verified partial files, manifests, logs and experiment_ready=false boundary for later resumption.
-  - Do not override the admitted STRUCTURAL_NO_GO_N50 with wrong-scope text, cross-fold borrowing, nearest-neighbor length refill, relaxed filters, replacement sampling, silent target deletion, or an unapproved N change.
+  - Do not override the admitted STRUCTURAL_NO_GO_N50 with wrong-scope text, cross-fold borrowing, nearest-neighbor length refill, relaxed filters, replacement sampling, or silent target deletion. The only approved revision is v3.11 N=10 scoring on targets with legal_count>=9 in their frozen scope.
+  - Do not delete N=10-ineligible records from any training set; common-support eligibility affects inner-validation and outer-test scoring only, and exclusions must remain explicit in the audit ledger.
   - Do not use ROAMM outcomes to change ZuCo thresholds, route selection or hyperparameters; the panels are independent.
   - Do not claim cross-dataset replication or paper completion while ROAMM remains deferred; only the ZuCo2 full-experiment milestone can be completed first.
   - Do not include A3 in T6 until its canonical channel map, raw-unit/filter parameters, and real MAT extraction admission pass; CO-N7 itself is cleared by v3.6.

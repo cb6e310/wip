@@ -10,10 +10,10 @@ This file is the mandatory entry point for every new AI session. Do not use chat
 
 ## Source of Truth
 
-1. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_10_2026-08-14.md`
+1. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_11_2026-08-14.md`
 2. `guide/EEG_Text_Bprime_Execution_Plan_v3_2026-08-11_to_Submission.md`
 
-SPEC v3.10 controls scientific definitions, candidate construction, claim boundaries and the ZuCo-first execution order. Never edit a scientific rule merely to make a task or Gate pass.
+SPEC v3.11 controls scientific definitions, the N=10 candidate-common-support scoring population, claim boundaries and the ZuCo-first execution order. Never edit a scientific rule merely to make a task or Gate pass.
 
 ## Required Recovery Sequence
 
@@ -50,12 +50,13 @@ If state and SPEC disagree, report `STATE_SPEC_CONFLICT` and stop rather than gu
 
 ## Current Boundary
 
-- `S0_INNER_SPLIT=DONE` is admitted after review of commit `d4b0830`.
-- `S0_CANDIDATES=DONE` with `completion_outcome=STRUCTURAL_NO_GO_N50`; the three canonical artifacts are admitted protocol evidence.
-- The complete audit retained 18,475 outer-test/inner-validation target instances; 18,184 have fewer than 49 legal negatives, so frozen N=50 cannot proceed.
-- `B_ZUCO2_N50_STRUCTURAL_NO_GO` blocks leakage and downstream method implementation pending `AUTHOR_REVIEW_N50_PROTOCOL`.
-- `recommended_next_task=null`: no automated engineering or experiment task is authorized until a future author-approved SPEC revision resolves the protocol.
-- Never force feasibility with wrong-scope text, length refill, relaxed cosine/H filters, replacement, target deletion or an unapproved N change.
+- Commit `711340d` and `S0_CANDIDATES=DONE/STRUCTURAL_NO_GO_N50` are admitted and must not be reopened.
+- The immutable audit covers 18,475 target instances. N=50 is structurally unavailable, but 17,061/18,475 (92.35%) have at least nine legal negatives.
+- v3.11 makes N=10 primary on the per-scope common-support population `legal_count>=9`; this is a scoring-population restriction, never a training-record deletion.
+- `S0_CANDIDATE_COMMON_SUPPORT=DONE/PASS_N10_COMMON_SUPPORT`. Its three JSON-only artifacts retain all 18,475 target instances, freeze the 17,061 eligible N=10 scoring instances, and ledger all 1,414 exclusions without deleting training records.
+- `S0_LEAKAGE_AUDIT=READY` is the sole recommended task. It must audit the admitted v3.10 candidate base and v3.11 common-support view without changing either population or candidate ordering.
+- `S0_DIRECT_U_PLUS` remains blocked by Stage-0 execution order; common-support completion is not permission to implement it in the leakage task.
+- Never force feasibility with wrong-scope text, length refill, relaxed cosine/H filters, replacement or silent target deletion. Every excluded target remains ledgered.
 - ROAMM remains mandatory but deferred until the frozen ZuCo2 main experiment is complete.
 
 ## State Discipline
@@ -75,3 +76,4 @@ After changing state:
 2. Replace `HANDOFF.md` with the current concise handoff.
 3. Add a unique `runs/YYYY-MM-DD_<id>.md` record.
 4. Run `scripts/check_project_state.py`, `scripts/project_status.py`, the relevant tests and `git diff --check`.
+5. Commit and push only after all task acceptance conditions pass.
