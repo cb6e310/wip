@@ -35,6 +35,7 @@ __pycache__/
 04_results/figures/
 04_results/tables/
 .codex_stage0_*/
+.codex_stage1_*/
 *.log
 *.tmp
 *.swp

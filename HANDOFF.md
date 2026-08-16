@@ -1,39 +1,40 @@
 # Current Handoff
 
-## Current decision
+## Completed decision
 
-Run `2026-08-16_032_v317_a1_measurement_validity` completed the only SPEC v3.17 execution budget. Its declarative outcome is `INVALID_A1_MEASUREMENT_VALIDITY_AUDIT`, so `S0_A1_FAILURE_DIAGNOSIS` remains not-DONE and is blocked for author review. `recommended_next_task=null`; there is no READY task.
+Run `2026-08-16_034_v318_a1_measurement_recovery` completed the exact SPEC v3.18 inner-only audit with declarative outcome `FAIL_A1R_RECOVERY`.
 
-The run preserved the admitted v3.14 admission evidence, the v3.15 diagnosis evidence and their implementation/tests byte-identical. All 639 admission plus 58 diagnosis V5 ledgers were revalidated with zero outer-test/calibration reads.
+- exact budget: 6 H-only plus 72 frontend-arm ridge fits, 78 total fits and 78 unique passing V5 ledgers;
+- data boundary: zero outer-test EEG/label/metric reads and zero calibration reads;
+- common observations: NR 48,347/48,347 and TSR 45,392/45,392, retention 1.0, all frozen 15 scoring subjects retained;
+- selected frontend: none; selected task scope: empty;
+- immutable history: v3.14 remains `FAIL_A1_ADMISSION` and run 032 remains `INVALID_A1_MEASUREMENT_VALIDITY_AUDIT`.
 
-## Frozen run-032 evidence
-
-- D49 added exactly 8 ridge fits/8 unique passing V5 ledgers. NR and TSR each covered the exact 15 disjoint frozen subjects with equal subject weighting and B=10000.
-- NR D49 oracle-minus-H logp gain was 4.905433, CI95 `[4.796239,5.017762]`, macro-subject full-vocabulary R@1 `1.0`.
-- TSR D49 oracle-minus-H logp gain was 4.716491, CI95 `[4.646393,4.786212]`, macro-subject full-vocabulary R@1 `1.0`.
-- Because D49 passed, D50 completed the full frozen 192 ridge fits/192 unique passing V5 ledgers. The complete run has exactly 200 new fits/V5.
-- Both tasks had `alpha_family_floor=0.01`, `alpha_legacy_floor=0.03`, and alpha-10 family/legacy detection true.
-- Both task curves had eight-point Spearman rho `0.833333`, below the frozen `0.90` minimum. This is the only completion failure and it cannot be repaired by rerun, a larger alpha, a different W/embedding, another seed/fold, a different probe/sham or subject deletion.
-- New-run outer-test/calibration reads are `0/0`. Formal outputs contain only aggregate/subject summaries, support, scope, hashes, fits/runtime, floors, rho and outcome.
-
-The admitted v3.14 `FAIL_A1_ADMISSION` remains unchanged. The artificial semantic injection is a construct-validity ruler only; it is not physiological EEG, EEG evidence, Gate evidence or paper performance.
+Neither frozen candidate passed the required combination of cross `family_detected`, recovery-delta CI lower above zero and at least 10/15 positive paired subject deltas in either task. This is a valid bounded FAIL, not an invalid run and not permission for another frontend search.
 
 ## Sole next action
 
-Stop for author review. A new user-provided governing SPEC is required before any further execution. Do not infer or implement a recovery design from run 032.
+Only `S0_A1_NEGATIVE_CONFIRMATION_FREEZE` is READY. A new governing SPEC must freeze, before any outer value is read:
+
+- the exact 6×5 outer-cell run budget and V5 scopes;
+- subject-first aggregation, multiplicity and decision rules;
+- expected-negative and unexpected-positive handling;
+- formal outputs and claim language.
+
+The freeze task must not run the negative panel. `S1_A1_NEGATIVE_CONFIRMATION` remains BLOCKED until that freeze is DONE.
 
 ## Boundaries
 
-- Do not rerun run 032 or modify its alpha grid, seed, fold, projection, embedding, probe, sham, threshold or subject population.
-- Do not modify admitted v3.14/v3.15 artifacts, implementation or tests.
-- Do not execute measurement recovery, negative confirmation, outer 6x5, alignment, direct `u+`, EQ-ANMA, Gate, A3 or ROAMM.
-- Route remains unchanged: `primary=EQ-ANMA`, `backup=NEGATIVE-DIAGNOSTIC`, `locked=null`. This does not make the failed EQ-ANMA chain admissible.
+- Do not rerun run 034, change either candidate, add a frontend, or alter the fold, seed, probe, sham, row-retention or recovery threshold.
+- Do not execute A1-R outer confirmation; no frontend was selected.
+- Do not read outer-test outcomes, run negative confirmation, alignment, direct `u+`, EQ-ANMA, Gate, A3 or ROAMM.
+- Preserve all admitted/run-032 files byte-for-byte.
 
 ## Evidence
 
-- SPEC: `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_17_2026-08-16.md`
-- Run: `runs/2026-08-16_032_v317_a1_measurement_validity.md`
-- Contract: `artifacts/a1_measurement_validity_contract.yaml`
-- Audit: `04_results/audits/a1_measurement_validity.json`
-- Markdown: `04_results/audits/a1_measurement_validity.md`
-- V5 ledger: `04_results/audits/a1_measurement_validity_run_ledger.jsonl.gz`
+- Governing SPEC: `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_18_2026-08-16.md`
+- Recovery contract: `artifacts/a1_measurement_recovery_contract.yaml`
+- Recovery audit: `04_results/audits/a1_measurement_recovery.json`
+- Human-readable audit: `04_results/audits/a1_measurement_recovery.md`
+- V5 ledger: `04_results/audits/a1_measurement_recovery_run_ledger.jsonl.gz`
+- Run record: `runs/2026-08-16_034_v318_a1_measurement_recovery.md`

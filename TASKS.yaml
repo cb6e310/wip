@@ -222,7 +222,7 @@ S0_ROAMM_ADMISSION:
     - release-native word-key item predicate and outer-train-only support ledger feasibility are recorded without retokenizing, translating or inferring sentence identity
     - each held-out article has a structural N=50 upper bound, while full near-duplicate/H/length feasibility remains explicitly delegated to S0_CANDIDATES
     - no alignment training, EEG held-out metric, Gate decision or paper-level result is read or produced
-  deferred_reason: Author-approved v3.17 execution order. Preserve the incomplete v3.8 checkpoint, but do no further ROAMM work until the ZuCo2 measurement-validity/recovery decision and resulting first-dataset package are frozen. The failed A1 admission blocks the original EQ-ANMA main experiment unless a separately pre-frozen recovery path later earns admission; this dependency update is not dataset removal or an outcome-contingent replacement.
+  deferred_reason: Author-approved v3.18 execution order. Preserve the incomplete v3.8 checkpoint, but do no further ROAMM work until the ZuCo2 measurement-recovery decision and resulting first-dataset package are frozen. The failed A1 admission blocks the original EQ-ANMA main experiment unless a separately pre-frozen recovery path later earns admission; this dependency update is not dataset removal or an outcome-contingent replacement.
 
 S0_INNER_SPLIT:
   title: Build deterministic nested inner folds inside every ZuCo2 outer-train cell
@@ -587,36 +587,104 @@ S0_A1_FAILURE_DIAGNOSIS:
 S0_A1_MEASUREMENT_RECOVERY_FREEZE:
   title: Freeze the A1 transfer-bottleneck audit and bounded measurement-recovery candidates
   stage: stage_0
-  status: BLOCKED
+  status: DONE
   critical_path: true
   priority: 11
   prerequisites:
-    - S0_A1_FAILURE_DIAGNOSIS
+    - S0_A1_SOURCE_ADMISSION
+    - S0_LEAKAGE_AUDIT
   produces:
     - artifacts/a1_measurement_recovery_freeze.yaml
   acceptance:
-    - a new governing SPEC is authored before any new outcome is read and interprets the frozen family/legacy detectability floors without changing their grid or old A1 outcome
-    - the contract freezes a seen-subject text-OOF versus subject-heldout comparison that isolates the cross-subject transfer bottleneck as far as the admitted split permits and discloses residual train-size or population asymmetry
-    - no more than two A1-R frontends are selected from mechanism-first evidence before execution; log-power or temporal-preserving candidates cannot be chosen after seeing their outcomes
-    - recovery uses inner data only, keeps the old A1 result as an immutable baseline and freezes the criteria for re-opening any EQ-ANMA-style experiment versus proceeding to negative confirmation
-    - completion releases only the separately defined measurement-recovery execution task; it does not itself run recovery, read outer tests, revive a Gate or start negative confirmation
-  blocked_reason: Run 032 completed with INVALID_A1_MEASUREMENT_VALIDITY_AUDIT because both frozen curves had rho 0.833333 below 0.90. Author review is required and no recovery freeze or execution contract is admissible.
+    - SPEC v3.18 interprets the complete immutable run-032 curve without changing its grid, rho threshold, INVALID outcome or old A1 FAIL
+    - the contract uses matched 10-subject fits and a paired 15-subject seen-text-OOF versus subjectheldout-plus-textheldout comparison with no target-subject calibration
+    - exactly two mechanism-first A1-R candidates are frozen before recovery outcomes: train-only scale-equivariant log bandpower and signed eight-bin fixation-relative time features
+    - the audit is inner-only, uses exactly 78 ridge fits/V5 and freezes common-row retention, family detection, paired recovery improvement and candidate selection before execution
+    - completion releases only S1_A1_MEASUREMENT_RECOVERY and does not read outer tests, run recovery, revive a Gate or start negative confirmation
+  blocked_reason: null
+  completion_outcome: PASS_A1R_RECOVERY_FREEZE
+  completed_by_run: 2026-08-16_033_v318_run032_author_review_and_recovery_freeze
+  evidence:
+    - artifacts/a1_measurement_recovery_freeze.yaml
+    - guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_18_2026-08-16.md
+    - runs/2026-08-16_033_v318_run032_author_review_and_recovery_freeze.md
+  completion_note: Run 032 remains INVALID because its frozen eight-point rho is 0.833333 below 0.90. Author review does not relabel it, but the low family/legacy floors, alpha-10 detection and strict rise through alpha 1 establish a saturating downstream detectability curve. SPEC v3.18 therefore freezes one independent 78-fit inner-only recovery audit with exactly two mechanism-prior candidates.
+
+S1_A1_MEASUREMENT_RECOVERY:
+  title: Audit the A1 cross-subject bottleneck and two pre-frozen A1-R frontends
+  stage: stage_1_measurement_recovery
+  status: DONE
+  critical_path: true
+  priority: 11
+  prerequisites:
+    - S0_A1_MEASUREMENT_RECOVERY_FREEZE
+  produces:
+    - artifacts/a1_measurement_recovery_contract.yaml
+    - 04_results/audits/a1_measurement_recovery.json
+    - 04_results/audits/a1_measurement_recovery.md
+    - 04_results/audits/a1_measurement_recovery_run_ledger.jsonl.gz
+    - 02_code/src/data/a1_measurement_recovery.py
+    - 02_code/scripts/run_a1_measurement_recovery.py
+    - 02_code/tests/test_a1_measurement_recovery.py
+  acceptance:
+    - baseline commit and all admitted/run-032 formal evidence reproduce their frozen hashes; no old fit, artifact, implementation or test is regenerated or modified
+    - only outer_s0_t0 outer-train records are read; each task uses t0 with three subject folds, seed 20260813, exact fit/seen/cross partitions from SPEC v3.18 and zero outer-test/calibration reads
+    - every fit uses ten training subjects and held-out text; seen and cross score sets are disjoint, their union covers all frozen fifteen subjects, and each subject has two seen plus one cross summary before equal-subject pairing
+    - frontends are exactly A1_BP_CONCAT, A1R_LOG_BP_CONCAT and A1R_T8_FIXATION with the frozen train-only epsilon, temporal bin, strict-finite and no-duration-feature contracts
+    - train/seen/cross use the exact observation-ID intersection across all three frontends; each retains at least 90 percent of old-A1 available rows and all fifteen scoring subjects
+    - each frontend independently constructs the inherited real/trial/unit/channel arms on identical rows with unchanged seed; H, support, vocabulary, ridge alpha/intercept and softmax temperature remain frozen
+    - the run has exactly 6 H-only plus 72 frontend-arm ridge fits, total 78 fits and 78 unique passing V5 ledgers; each fit scores both inner seen/cross partitions without refitting
+    - subject-first outputs report u_oof, legacy u_min, single shams, max-selection gap, H-only/sham absolute logp, transfer loss and candidate-minus-baseline recovery delta with B=10000 and frozen seeds
+    - a task recovery PASS requires candidate cross family detection plus paired recovery-delta CI lower above zero and at least ten of fifteen positive subject deltas
+    - candidate selection and PASS_BOTH/PASS_LIMITED/FAIL/INVALID outcomes follow SPEC v3.18 D59 exactly; injected signal never enters this run
+    - formal outputs are aggregate/subject summaries and hashes only with no EEG/features/observation logits/embeddings/model weights/cache
+  blocked_reason: null
+  completion_outcome: FAIL_A1R_RECOVERY
+  completed_by_run: 2026-08-16_034_v318_a1_measurement_recovery
+  evidence:
+    - artifacts/a1_measurement_recovery_contract.yaml
+    - 04_results/audits/a1_measurement_recovery.json
+    - 04_results/audits/a1_measurement_recovery.md
+    - 04_results/audits/a1_measurement_recovery_run_ledger.jsonl.gz
+    - 02_code/src/data/a1_measurement_recovery.py
+    - 02_code/scripts/run_a1_measurement_recovery.py
+    - 02_code/tests/test_a1_measurement_recovery.py
+    - runs/2026-08-16_034_v318_a1_measurement_recovery.md
+  completion_note: The exact inner-only audit completed 6 H-only plus 72 frontend-arm ridge fits and 78 unique passing V5 ledgers with zero outer-test/calibration reads. Common-row retention was 100 percent and all 15 scoring subjects were preserved. Neither frozen candidate passed cross family detection or the paired recovery-delta criteria in either task, so no frontend was selected and the valid declarative outcome is FAIL_A1R_RECOVERY.
+
+S0_A1R_OUTER_CONFIRMATION_FREEZE:
+  title: Freeze full outer confirmation for one inner-admitted A1-R frontend
+  stage: stage_0
+  status: BLOCKED
+  critical_path: true
+  priority: 12
+  prerequisites:
+    - S1_A1_MEASUREMENT_RECOVERY
+  produces:
+    - artifacts/a1r_outer_confirmation_freeze.yaml
+  acceptance:
+    - only the single frontend and task scope selected by the frozen inner audit may be carried forward
+    - before any outer outcome is read a governing SPEC freezes all 6x5 cells, fit budget, V5, subject-first inference, multiplicity, failure handling and paper claim boundary
+    - the outer confirmation keeps old A1 and H-only as baselines and cannot tune frontend, threshold, sham, support, probe or candidate population
+    - completion releases only the separately defined outer-confirmation execution task and does not itself run alignment, direct u-plus, EQ-ANMA or Gate
+  blocked_reason: The completed v3.18 inner audit returned FAIL_A1R_RECOVERY, selected no frontend and released only the negative-confirmation freeze route.
 
 S0_A1_NEGATIVE_CONFIRMATION_FREEZE:
   title: Freeze the full ZuCo2 A1 negative-confirmation run and claim contract
   stage: stage_0
-  status: BLOCKED
+  status: READY
   critical_path: true
   priority: 11
   prerequisites:
-    - S0_A1_FAILURE_DIAGNOSIS
+    - S1_A1_MEASUREMENT_RECOVERY
   produces:
     - artifacts/a1_negative_confirmation_freeze.yaml
   acceptance:
     - before any outer-test outcome is read, a governing SPEC freezes exact 6x5 run budget, subject-first aggregation, formal outputs, V5 scopes, expected-negative and unexpected-positive outcome handling, and claim language
     - the frozen contract cannot change v3.14 shams/probe/support because of diagnosis results and cannot run alignment, direct u-plus, EQ-ANMA, Gate B, A3 or ROAMM
     - completion makes only S1_A1_NEGATIVE_CONFIRMATION READY and records the exact pre-run artifact hash
-  blocked_reason: Negative confirmation is a backup only. The v3.17 measurement-validity audit and a separately frozen measurement-recovery adjudication must complete first.
+  blocked_reason: null
+  why_ready: Run 034 completed the exact 78-fit inner recovery audit with valid FAIL_A1R_RECOVERY, selected no A1-R frontend and read zero outer-test/calibration values. SPEC v3.18 D59 releases only this pre-run negative-confirmation freeze; it does not authorize the panel itself.
 
 S1_A1_NEGATIVE_CONFIRMATION:
   title: Confirm the A1 matched-null failure across all ZuCo2 outer subject-by-text cells
@@ -636,7 +704,7 @@ S1_A1_NEGATIVE_CONFIRMATION:
     - both NR and TSR use all 6x5 outer cells with train-only fitting and the frozen A1 raw/latent, H, three shams, ridge, seed, support and V5 contracts
     - subject-first results report u_oof, u_min, each single sham, text-only, max-selection gap, coverage and cell/seed/subject heterogeneity without treating nonsignificance as proof of equivalence
     - this route does not train alignment, direct u-plus, EQ-ANMA or Gate B and cannot revive the failed admission outcome
-  blocked_reason: Measurement validity/recovery and the pre-run negative-confirmation freeze are incomplete; no outer-test confirmation may start.
+  blocked_reason: The recovery decision is complete, but the pre-run negative-confirmation freeze and its new governing SPEC are still incomplete; no outer-test confirmation may start.
 
 S0_A3_CONTAMINATION_CHECK:
   title: Verify A3 LaBraM pretraining contamination, license, checkpoint, and channel map

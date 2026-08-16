@@ -1,0 +1,74 @@
+schema_version: 1
+outcome: PASS_A1R_RECOVERY_FREEZE
+task: S0_A1_MEASUREMENT_RECOVERY_FREEZE
+completed_by_run: 2026-08-16_033_v318_run032_author_review_and_recovery_freeze
+baseline_commit: 6dadf3290e38213b33074eeeb61642966db0e876
+governing_spec:
+  path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_18_2026-08-16.md
+  sha256: 94a6851a2652bc0c797591db08b28849f3b33b0cc731dbe59f446510d28cf47e
+immutable_run032:
+  outcome: INVALID_A1_MEASUREMENT_VALIDITY_AUDIT
+  interpretation: MEASUREMENT_PATH_DETECTS_INJECTED_SIGNAL_WITH_SATURATION
+  relabel_forbidden: true
+  rerun_forbidden: true
+  contract_sha256: 4c09d484cc1b09d7b1215fbf70c442ba8aaaaea57cd5ef42a66a5b25f99118b6
+  audit_json_sha256: 89d4dc7ac9b4925f60db4fdc12a059f426bd453764db685827f5ed83b4fef270
+  audit_markdown_sha256: f7b84125d56cd0e8816374d0e15ec6228b0fc52d69bc9e812e60e213d2e7ac61
+  ledger_sha256: 4cc1d14acd8c93e834a96146f63460bc8d6d231a61f8fde6549ec319fd6fc638
+execution:
+  task: S1_A1_MEASUREMENT_RECOVERY
+  dataset: zuco_2_0
+  tasks: [task1_nr, task2_tsr]
+  outer_base_cell: outer_s0_t0
+  inner_text_fold: t0
+  inner_subject_folds: [s0, s1, s2]
+  seed: 20260813
+  frontends:
+    - A1_BP_CONCAT
+    - A1R_LOG_BP_CONCAT
+    - A1R_T8_FIXATION
+  arms:
+    - real
+    - trial_shuffle
+    - within_trial_unit_assignment_shuffle
+    - channel_block_permutation
+  h_only_fits: 6
+  frontend_arm_fits: 72
+  total_ridge_fits: 78
+  unique_v5_ledgers: 78
+  outer_test_reads: 0
+  calibration_reads: 0
+  common_observation_min_retention: 0.90
+primary:
+  metric: subject_first_u_oof_real_minus_mean_three_shams
+  family_detected:
+    ci_lower_gt: 0.0
+    positive_subject_count_gte: 12
+    all_single_sham_point_estimates_gt: 0.0
+  recovery_delta:
+    definition: candidate_cross_u_oof_minus_A1_BP_CONCAT_cross_u_oof
+    ci_lower_gt: 0.0
+    positive_subject_count_gte: 10
+secondary:
+  - legacy_u_min
+  - three_single_sham_contrasts
+  - seen_minus_cross_transfer_loss
+  - h_only_and_sham_absolute_logp
+selection:
+  candidate_count: 2
+  order:
+    - recovered_task_count_descending
+    - minimum_recovery_delta_descending_for_two_task_candidates
+    - passing_task_recovery_delta_descending_for_one_task_candidates
+    - frontend_id_lexicographic
+claim_boundary:
+  - inner_selection_evidence_only
+  - no_outer_or_paper_level_EEG_claim
+  - old_A1_FAIL_and_run032_INVALID_remain_immutable
+forbidden:
+  - add_or_replace_frontend
+  - change_fold_seed_probe_sham_or_threshold
+  - target_subject_calibration
+  - delete_subject_or_relax_common_row_retention
+  - run_outer_confirmation_or_negative_panel
+  - run_alignment_direct_u_plus_EQ_ANMA_Gate_A3_or_ROAMM

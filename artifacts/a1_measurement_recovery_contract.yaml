@@ -1,0 +1,80 @@
+schema_version: 1
+algorithm_version: a1-measurement-recovery-v318-d54-d59-v1
+run_id: 2026-08-16_034_v318_a1_measurement_recovery
+task: S1_A1_MEASUREMENT_RECOVERY
+spec: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_18_2026-08-16.md#D54-D60
+claim_boundary: inner selection evidence only; no outer or paper-level EEG claim
+scope:
+  tasks:
+  - task1_nr
+  - task2_tsr
+  folds:
+  - inner_s0_t0
+  - inner_s1_t0
+  - inner_s2_t0
+  frontends:
+  - A1_BP_CONCAT
+  - A1R_LOG_BP_CONCAT
+  - A1R_T8_FIXATION
+  arms:
+  - real
+  - trial_shuffle
+  - within_trial_unit_assignment_shuffle
+  - channel_block_permutation
+  regimes:
+  - seen
+  - cross
+  seed: 20260813
+  h_only_fits: 6
+  frontend_arm_fits: 72
+  total_fits: 78
+input_artifact_hashes:
+  a1_freeze: 9c3f48ddf38bca8e75534932ebc6ea3c035a044f627e271a0348ec759bc11e30
+  h_definition: 226f92e299633997fdb9469592f6f8a36fa6c728aa24d9a7d6cb9ded8fb2ae6b
+  inner_split: 0271aba0ae9627f35e281029a8a95390513c1e92c8010e8a2795171f837575d7
+  outer_split: 20aedfd56c7c5ee41a491e5b5531ef77728344808d42ba45d72d7e30250cffa6
+  recovery_freeze: ed84ea8bb3f01178f30066ed05da5f97a161538c3723c6deecead583bd431e72
+  semantic_support: fe862ebaed2b027b4924f45c23dacfc01c5c7ad862f6917cbd0a963d2dcff32c
+  source_contract: bb03bb785dd62d8957819aa69eaa4155636e36858dcb35cf31a8e9a81bbedc3c
+  spec_v318: 94a6851a2652bc0c797591db08b28849f3b33b0cc731dbe59f446510d28cf47e
+  text_encoder: 35e18392a285c8d09ba84a934e31dd327a18fa1a0c10a3bd8550f090cd496494
+run032_immutable_hashes:
+  artifacts/a1_measurement_validity_contract.yaml: 4c09d484cc1b09d7b1215fbf70c442ba8aaaaea57cd5ef42a66a5b25f99118b6
+  04_results/audits/a1_measurement_validity.json: 89d4dc7ac9b4925f60db4fdc12a059f426bd453764db685827f5ed83b4fef270
+  04_results/audits/a1_measurement_validity.md: f7b84125d56cd0e8816374d0e15ec6228b0fc52d69bc9e812e60e213d2e7ac61
+  04_results/audits/a1_measurement_validity_run_ledger.jsonl.gz: 4cc1d14acd8c93e834a96146f63460bc8d6d231a61f8fde6549ec319fd6fc638
+  02_code/src/data/a1_measurement_validity.py: ea08228a713a03512d807e3f6c890003d558eef9fb4b58a4c69d151e856c64b9
+  02_code/scripts/run_a1_measurement_validity.py: 9a2b221d30d579758c5d5575b646db1314d09b2ddf2c515cfa42ac3a91eaf4b7
+  02_code/tests/test_a1_measurement_validity.py: d349d963902b6b08cf6bd8e99a33a91f62623d7f72a4c9df126c19f5905d5328
+  runs/2026-08-16_032_v317_a1_measurement_validity.md: 4158a0d4488b6c77dfeb0fb05b0e71503d2ac6595ac008c1a64aa20019c6fb02
+  guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_17_2026-08-16.md: e650b85a1f32c4bbccd45214584393f41b38884357bb43b2c091cb5d9924dd9a
+old_immutable_hashes:
+  artifacts/a1_admission_contract.yaml: c9c5a94b8227b6e43ecfc6d61b9b10b33f9340f7c845ca7dbaa0e0a3e65d9f4b
+  04_results/audits/a1_admission.json: b3d2b47ee21b2e777470004dbca862cb9495b59f3c68513e9001f3800b4e151e
+  04_results/audits/a1_admission.md: e187f2314ca3ee8a9d8f973c7898276ecaccd64245ce1480243c916c5c729a8e
+  04_results/audits/a1_admission_run_ledger.jsonl.gz: fe22b691795709508386d72d662cbf2feeafb3dd74d5012b46b12e5ae1d963fd
+  02_code/src/data/a1_admission.py: 14e45bc194cdfcbb03ef01a3862dfb331b916a7e425e7a74a8adffecb5ab96b4
+  02_code/scripts/run_a1_admission.py: a671a65dd4fb533cb92b820d9e723e3963c99168c96a3cf77bf9bfcd8f9fb099
+  02_code/tests/test_a1_admission.py: 3866756f6d4b56f1f33ea81b6eccaed5ffc3fe385a319795a8e425afd75aa238
+  artifacts/a1_failure_diagnosis_contract.yaml: 1796f58bd7786a682f65f944e29b975b87289fab2e944730bfe9b25ad99d9b1b
+  04_results/audits/a1_failure_diagnosis.json: 56b3e6e42d8611072ecc62f10de60badf57bfc752954ba63ebe2941af6a9a38e
+  04_results/audits/a1_failure_diagnosis.md: a3e1b735a5cfca01a320cdae5d8c92b7cc8c1f54d4af8e6be8b6b1e11e6797f6
+  04_results/audits/a1_failure_diagnosis_run_ledger.jsonl.gz: 80cb11bc7ab12b59c00eb38c6cd03318f1ac2f347505e6940d8aeab5b434e6c4
+  02_code/src/data/a1_failure_diagnosis.py: b9e85d500f4968711c3282b2207a1eb1c2cbe226c793c6deb2f821e01a2828f3
+  02_code/scripts/run_a1_failure_diagnosis.py: 13fa54fa422b7ab2a7cebb469678d5aaaecd07d2e3202790c0a07c493be92f1d
+  02_code/tests/test_a1_failure_diagnosis.py: 4499d7ae057d4080619349816c3f31c14292f25b73999e2b6b07dcefe59df0bf
+  runs/2026-08-16_029_v315_a1_failure_diagnosis.md: ee8b4b2acf8a77f641429975c2e113bb67c4611995c1878aecd2c0529cace234
+text_encoder:
+  resolved_revision: 1110a243fdf4706b3f48f1d95db1a4f5529b4d41
+  manifests:
+    tokenizer: 78a3daa92dcec076e80baaa628a6553bcbd0b431a214eb02d72c8b5672e69e09
+    encoder_config: 8049791e90383b0f56624a32a14852552e292bcb38ab18da1de533ad79629845
+    model: c0577b9136351b1c12ba99a16f386d5c4c8c45e744941eaea15803880dd30e61
+    scientific_config: 0f2fb795c15c7ad7ee185f44509ec86eb912aaca6abf88b78fa1560179e412af
+source_hashes:
+  02_code/src/data/a1_measurement_recovery.py: 68685ac35ee1a7045aa12020af44f27f2114882f465cda0e2a5d268ea514fa9f
+  02_code/scripts/run_a1_measurement_recovery.py: 7ba962ddf7b0dae0f9467b040e103e6d45a5dd5595698c1cb23acdb01a2d1f1a
+  02_code/tests/test_a1_measurement_recovery.py: 874b1bb42a9c4938bd5f03b06878352f11ad5eba47713144097653f05ee3053f
+formal_policy:
+  aggregate_subject_support_scope_hash_runtime_only: true
+  no_raw_eeg_840d_arrays_observation_vectors_logits_model_parameters_or_cache: true
