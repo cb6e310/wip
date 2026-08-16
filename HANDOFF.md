@@ -2,21 +2,22 @@
 
 ## Current decision
 
-`S0_CANDIDATE_COMMON_SUPPORT=DONE/PASS_N10_COMMON_SUPPORT`. The immutable v3.10 candidate triplet remains admitted as `S0_CANDIDATES=DONE/STRUCTURAL_NO_GO_N50`; it was neither modified nor reopened.
+`S0_LEAKAGE_AUDIT=DONE/PASS_PRE_RUN_V1_V5`. V1–V4 pass on the admitted real ZuCo2 protocol artifacts. V5 passes only as an executable, adversarially tested pre-run ledger contract: `future_run_admission_required=true`, `real_training_ledgers_audited=0`.
 
-The v3.11 N=10 candidate-common-support scoring population is now materialized. Eligibility is exactly per-scope `legal_count>=9`; all 18,475 target instances remain ledgered, all training records remain intact, and every excluded scoring target has reason `LEGAL_NEGATIVES_LT_9` with its admitted sequential counts.
+This is not evidence that a future or unrun EEG/training job is leakage-free. Every future run must provide exact fit, inner-selection, outer-test-read and calibration record IDs plus frozen input hashes, and must pass the V5 validator independently.
 
 ## Admitted evidence
 
-- Base physical hashes were rechecked: candidate lists `51130ffc216a1f0bf50a9eeec42136555ab98ee110f3aaa265de54c3a004115a`; paired pairs `bc37630ea3c6c870d4388ac0c16582f742e6751d533e3656a284304d09e3ec5c`; feasibility audit `8f478fddc78ccb46df2c1a75945a3f90ec89f7c58ca456172a4874bef75f7960`.
-- Common support is 17,061/18,475 (92.35%): outer NR 306/349, outer TSR 359/390; inner NR 7,553/8,376, inner TSR 8,843/9,360.
-- Minimum exact per-scope coverage is 60/70=85.71% outer and 77/93=82.80% inner. The 1,414 exclusions transition below nine at length=1,402, cosine=0, H=12.
-- Every eligible repeat uses the first nine admitted maximal-order negatives and its admitted target position. Paired AUROC uses the first negative; paired AUPRC uses the same nine negatives at prevalence 0.1.
-- Two same-order builds, one reverse-order build, and the formal artifacts are canonical-byte identical. `training_records_removed=0`; no tokenizer, encoder, EEG, training/model result or ROAMM path was read.
-- New artifact SHA256: candidate common-support lists `b3eda1c09542344e108ce162a0f414beb54a426644db18126ee1e87e36ddf097`; N=10 paired pairs `71b6b53e5686e125d067240fd6414b833ef74b46159b130d5c6097152d722771`; audit `6dfba054d8242501808e267f91efdf080f6cbd479b617819edb4baf47554c0fc`.
+- V1 subject/record isolation: `PASS_REAL_ARTIFACTS` across 60 outer cells and 540 inner cells.
+- V2 source-slot/text-fold/material-group isolation: `PASS_REAL_ARTIFACTS`; atomic groups do not cross train/validation/test boundaries.
+- V3 legal H boundary: `PASS_REAL_ARTIFACTS`; H_full/H_empty are restricted to the registered probe/history interface, and candidate use is source-sentence identity exclusion only.
+- V4 exact physical/canonical/provenance/scope/prefix/position/paired/scoring boundary: `PASS_REAL_ARTIFACTS` across 190 scopes, 18,475 targets and 92,375 repeats. `scoring_only=true`, `training_records_removed=0`.
+- V5 future run-ledger validator: `PASS_PRE_RUN_CONTRACT`; nonzero test calibration, illegal fit/selection scope and outer-test tuning reads are rejected.
+- Machine audit SHA256: `28f416a4470d8223294e100e2c8dbb514c05d98184a9dd7936c43267d9e8ca2c`; markdown SHA256: `8732d08d6b0145b2da9a71976ec44738ffd241e06dfdc8f6ae838080df44e09d`.
+- Focused leakage tests 19/19, affected protocol regressions 50/50, complete suite 157/157.
 
 ## Required next action
 
-Run only `S0_LEAKAGE_AUDIT`, the ZuCo2 V1-V5 protocol/leakage audit. Treat both the v3.10 base ledgers and v3.11 N=10 common-support artifacts as immutable admitted inputs.
+Run only `S0_A1_ADMISSION`. It must admit the real 105-channel `sentenceData.rawData` source contract, including sampling rate, channel order, units, finite values and field semantics, and execute its outer-train-only real/sham/subject/semantic checks under the admitted leakage contract.
 
-Do not implement direct u+, A1 real admission, Stage 1, Gates, route/main experiment, or resume ROAMM in that task. ROAMM remains mandatory but deferred at its preserved incomplete checkpoint until the complete ZuCo2 first-dataset experiment is frozen.
+`S0_ALIGN_UNIT_COST` remains BLOCKED until A1 admission is DONE. Do not implement unit cost, direct u+, Stage 1, Gates, route/main experiment, or resume ROAMM in the A1 admission task.

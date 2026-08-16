@@ -331,6 +331,9 @@ S0_CANDIDATE_COMMON_SUPPORT:
   blocked_reason: null
   completed_by_run: 2026-08-14_021_v311_n10_common_support
   completion_outcome: PASS_N10_COMMON_SUPPORT
+  reviewed_by_run: 2026-08-14_022_v312_common_support_review_leakage_freeze
+  reviewed_commit: e42b3bf5233c0226dbaf225fc1eeab0c46acc331
+  review_outcome: ADMITTED_NONBLOCKING_STORAGE_EFFICIENCY_NOTE_ONLY
   evidence_scope: REAL_ZUCO2_PROTOCOL_SCORING_VIEW_NO_EEG_NO_TRAINING
   evidence:
     - 01_data_protocol/candidates/candidate_lists_n10_common_support.json
@@ -370,7 +373,7 @@ S0_JOINT_SPLIT:
 S0_LEAKAGE_AUDIT:
   title: Run the ZuCo2 V1-V5 leakage and protocol audit
   stage: stage_0
-  status: READY
+  status: DONE
   critical_path: true
   priority: 7
   prerequisites:
@@ -380,11 +383,30 @@ S0_LEAKAGE_AUDIT:
     - S0_JOINT_SPLIT
   produces:
     - 01_data_protocol/leakage_audit.md
+    - 04_results/audits/zuco2_pre_run_leakage_audit.json
+    - 02_code/src/protocol/leakage_audit.py
+    - 02_code/scripts/audit_zuco2_leakage.py
+    - 02_code/tests/test_leakage_audit.py
   acceptance:
-    - all preprocessing and probe fits are outer-train-only
-    - H, candidates, subject/stimulus split, and test-time calibration checks are green
-    - failed checks invalidate affected runs
+    - V1 real-artifact checks prove outer and inner subject/record isolation, every inner record belongs to the corresponding outer train, and no outer-test record enters an inner split
+    - V2 real-artifact checks prove outer and inner source-slot, text-fold and atomic material-group isolation rather than relying on aggregate counts
+    - V3 reuses the admitted H validator to reject current/future/target tokens, target statistics, candidate payload and eye-tracking fields, with H use restricted to the registered probe/history interface and source-identity candidate exclusion
+    - V4 validates the exact physical/canonical/provenance bindings for the admitted base and N10 common-support artifacts, including source scope, target, five first-nine prefixes, target position, paired 1-to-1/1-to-9 derivation, scoring_only=true and training_records_removed=0
+    - V5 provides an executable model-independent run-ledger validator: fit IDs are train-only, inner validation is selection-only, outer test never enters fit/selection/threshold/tuning, and test-time calibration count is zero
+    - the current audit reports V1-V4 PASS_REAL_ARTIFACTS and V5 PASS_PRE_RUN_CONTRACT with future_run_admission_required=true and real_training_ledgers_audited=0; it never claims that unrun EEG/training jobs are leakage-free
+    - adversarial synthetic tests reject subject/record, stimulus/material, H, candidate/provenance, fit-scope, selection and calibration mutations
+    - failed checks invalidate the audit or affected future run; no input artifact, scoring population or candidate ordering is modified to obtain a pass
   blocked_reason: null
+  completed_by_run: 2026-08-15_023_v312_pre_run_leakage_audit
+  completion_outcome: PASS_PRE_RUN_V1_V5
+  evidence_scope: REAL_ZUCO2_PROTOCOL_ARTIFACTS_AND_SYNTHETIC_PRE_RUN_LEDGER_CONTRACT_NO_EEG_NO_TRAINING
+  evidence:
+    - 01_data_protocol/leakage_audit.md
+    - 04_results/audits/zuco2_pre_run_leakage_audit.json
+    - 02_code/src/protocol/leakage_audit.py
+    - 02_code/scripts/audit_zuco2_leakage.py
+    - 02_code/tests/test_leakage_audit.py
+  completion_note: V1 subject/record isolation, V2 source-slot/text-fold/material-group isolation, V3 legal H boundaries and V4 exact split/candidate/common-support/provenance/scoring boundaries pass on the immutable real protocol artifacts. V4 checked 190 scopes, 18,475 target instances and 92,375 repeats without modifying any admitted input. V5 passes only as an adversarially tested model-independent pre-run ledger contract; future_run_admission_required=true and real_training_ledgers_audited=0. This does not claim that any future or unrun EEG/training job is leakage-free.
 
 S0_A1_FRONTEND:
   title: Implement and freeze the A1 spectral frontend and tensor contract
@@ -412,7 +434,7 @@ S0_A1_FRONTEND:
 S0_A1_ADMISSION:
   title: Run the four A1 admission self-checks on outer-train data
   stage: stage_0
-  status: BLOCKED
+  status: READY
   critical_path: true
   priority: 9
   prerequisites:
@@ -421,6 +443,8 @@ S0_A1_ADMISSION:
     - S0_JOINT_SPLIT
     - S0_H_DEFINITION
     - S0_SEMANTIC_ITEM
+    - S0_CANDIDATE_COMMON_SUPPORT
+    - S0_LEAKAGE_AUDIT
   produces:
     - 04_results/audits/a1_admission.md
   acceptance:
@@ -428,7 +452,7 @@ S0_A1_ADMISSION:
     - linear subject probe and coarse semantic probe are above chance or explained
     - A1 is not uniformly worse than raw spectral features
     - all results use only outer-training data
-  blocked_reason: Reference exclusions, source join, semantic item, H, outer and inner splits, numeric bands, corrected v3.8 text admission and A1 d_align=384 integration pass. A1 admission still requires candidates/leakage, real sentenceData.rawData source checks, and outer-train sham/subject/semantic probe evidence. A 128-to-105 map is not an A1 prerequisite.
+  blocked_reason: null
 
 S0_A3_CONTAMINATION_CHECK:
   title: Verify A3 LaBraM pretraining contamination, license, checkpoint, and channel map
@@ -516,15 +540,14 @@ S0_ALIGN_UNIT_COST:
   critical_path: true
   priority: 12
   prerequisites:
-    - S0_A1_FRONTEND
-    - S0_DATA_CARD
+    - S0_A1_ADMISSION
   produces:
     - artifacts/alignment_unit_cost.yaml
   acceptance:
     - one real training run is timed and configured
     - runtime over 45 minutes triggers the guide's cut order
     - no held-out result is used to tune the protocol
-  blocked_reason: The structural data card and text/d_align integration are complete, but real A1 cost measurement remains blocked by sentenceData.rawData sampling/channel-order/unit/finite-value admission.
+  blocked_reason: Real alignment cost measurement is permitted only after S0_A1_ADMISSION has admitted the sentenceData.rawData source and A1 real-data contract. It remains blocked even when the pre-run leakage audit passes.
 
 STAGE1_PROBES:
   title: Run raw/latent real, three matched shams, text-only, OOF scores, and u_min
@@ -600,7 +623,7 @@ S0_DIRECT_U_PLUS:
     - measurement-layer hyperparameters are not imposed on this non-measurement row
     - entropy, Gini, quantiles, floor-hit, and all-zero-batch diagnostics use the unique v3.7 definitions
     - all variants and dispersion diagnostics are reportable
-  blocked_reason: The v3.11 N=10 common-support population is frozen, but direct-u-plus implementation remains paused by Stage-0 execution order while the recommended S0_LEAKAGE_AUDIT and required A1/Stage-1 prerequisites remain incomplete. This is not permission to alter the section 6.16 formula.
+  blocked_reason: The v3.12 N=10 common-support population and pre-run leakage audit are frozen, but direct-u-plus implementation remains paused by Stage-0 execution order while the recommended S0_A1_ADMISSION and required Stage-1 prerequisites remain incomplete. This is not permission to alter the section 6.16 formula.
 
 S0_EQ_ANMA_CORE:
   title: Implement the EQ-ANMA weighting path after Stage-1 scores are frozen
