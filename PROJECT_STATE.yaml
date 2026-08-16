@@ -1,11 +1,11 @@
 schema_version: 1
-updated_at: "2026-08-16T17:17:28+08:00"
-updated_by_run: 2026-08-16_029_v315_a1_failure_diagnosis
+updated_at: "2026-08-16T20:52:00+08:00"
+updated_by_run: 2026-08-16_032_v317_a1_measurement_validity
 
 project:
   name: trustworthy_subject_general_eeg_text_alignment
-  spec_version: v3.15
-  spec_path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_15_2026-08-16.md
+  spec_version: v3.17
+  spec_path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_17_2026-08-16.md
   execution_plan_path: guide/EEG_Text_Bprime_Execution_Plan_v3_2026-08-11_to_Submission.md
   server_root: /home/song/projects/trust_align
   python_path: /home/song/projects/trust_align/.venv/bin/python
@@ -31,7 +31,7 @@ scope:
 
 execution:
   stage: stage_0
-  status: BLOCKED
+  status: IN_PROGRESS
   current_gate: null
 
 route:
@@ -51,13 +51,6 @@ gates:
     evidence_grade: null
 
 blockers:
-  - id: B_A1_FAILURE_DIAGNOSIS_INVALID_AUTHOR_REVIEW
-    reason: The D42 real positive controls completed all 58 fits and 58 V5 ledgers with zero outer-test/calibration reads. Both A-A3 oracle controls pass, and both scorer controls have positive logp-gain CIs plus macro-subject R@1=1.0, but the single frozen inner_s0_t0 validation scope contains only 5 scoring subjects per task rather than the frozen 15-subject paired bootstrap. The exact 4-fit, one-cell, validation-only V5 contract therefore cannot satisfy all D42.3 requirements simultaneously.
-    blocks:
-      - S0_A1_FAILURE_DIAGNOSIS
-      - S0_A1_NEGATIVE_CONFIRMATION_FREEZE
-      - S1_A1_NEGATIVE_CONFIRMATION
-    resolution: Author review must reconcile D42.3 in a new governing SPEC/state package. Do not silently treat 5 as 15, borrow rows across inner cells, increase the 4-fit budget, relax the R@1/CI thresholds, or start the negative-confirmation freeze/panel without explicit authorization.
   - id: B_EQ_ANMA_A1_ADMISSION_FAILED
     reason: SPEC v3.15 author review admits the valid frozen outcome FAIL_A1_ADMISSION. Both tasks fail raw and latent A-A1 and A-A3, significant-negative A-A1 conditions are present, and A-A2/A-A4 PASS cannot rescue semantic incremental evidence. The original EQ-ANMA alignment, Stage-1, Gate and main route are not admissible.
     blocks:
@@ -71,12 +64,27 @@ blockers:
       - GATE_B
       - ROUTE_LOCK
       - MAIN_EXPERIMENT
-    resolution: Do not force a PASS. Run only S0_A1_FAILURE_DIAGNOSIS to validate the failed pilot's label/probe construction. If it passes, proceed only to the separately frozen NEGATIVE-DIAGNOSTIC full outer confirmation panel; the blocked EQ-ANMA chain remains closed.
+    resolution: Do not force a PASS or generalize it to all EEG. Run only the v3.17 S0_A1_FAILURE_DIAGNOSIS measurement-validity audit. A valid injection curve releases only an author-level measurement-recovery freeze; the original EQ-ANMA chain and negative outer panel remain closed.
+  - id: B_A1_MEASUREMENT_RECOVERY_NOT_FROZEN
+    reason: The failed A1 admission combines an identity-dominant backcheck signature, a large pointwise max-selection penalty and a channel-sham pattern with non-unique mechanisms. Run 032 completed the frozen measurement-validity curve but both task curves had Spearman rho 0.833333, below the pre-frozen 0.90 requirement. No measurement-recovery or negative-confirmation contract is therefore admissible without author review.
+    blocks:
+      - S0_A1_MEASUREMENT_RECOVERY_FREEZE
+      - S0_A1_NEGATIVE_CONFIRMATION_FREEZE
+      - S1_A1_NEGATIVE_CONFIRMATION
+    resolution: Author review must interpret the complete immutable run-032 curve and issue a new governing SPEC. Do not expand alpha, seed, fold, probe or sham budgets, and do not release a recovery run or negative-confirmation task.
+  - id: B_A1_MEASUREMENT_VALIDITY_INVALID
+    reason: Run 032 completed all 200 frozen ridge fits and 200 unique passing V5 ledgers. D49 passed for both exact 15-subject populations and alpha 10 family_mean_detected was true for both tasks, but the eight-point alpha-versus-u_oof Spearman rho was 0.833333 for both NR and TSR, below the frozen 0.90 completion threshold. The valid declarative outcome is INVALID_A1_MEASUREMENT_VALIDITY_AUDIT.
+    blocks:
+      - S0_A1_FAILURE_DIAGNOSIS
+      - S0_A1_MEASUREMENT_RECOVERY_FREEZE
+      - S0_A1_NEGATIVE_CONFIRMATION_FREEZE
+      - S1_A1_NEGATIVE_CONFIRMATION
+    resolution: Stop for author review with recommended_next_task null. Preserve the complete 200-fit evidence and do not rerun, enlarge the grid, replace W or the embedding, change the probe/shams/thresholds, delete subjects or reinterpret injection as EEG evidence.
   - id: B_ROAMM_DEFERRED_UNTIL_ZUCO2_FREEZE
-    reason: SPEC v3.15 preserves ROAMM ds007629 v1.3.0 as the mandatory external replication dataset but defers it until the ZuCo2 first-dataset package is frozen. Because A1 admission failed, that package now means the construct-validity diagnosis plus the separately frozen full 6x5 negative-confirmation panel, not the unavailable EQ-ANMA main experiment. The existing incomplete checkpoint remains not experiment-ready.
+    reason: SPEC v3.17 preserves ROAMM ds007629 v1.3.0 as the mandatory external replication dataset but defers it until the ZuCo2 first-dataset package is frozen. Because the A1 measurement/recovery route is not yet adjudicated, neither the eventual first-dataset method nor its claim boundary is frozen. The existing incomplete checkpoint remains not experiment-ready.
     blocks:
       - S0_ROAMM_ADMISSION
-    resolution: After the ZuCo2 negative-confirmation panel and its method/outcome/claim ledger are frozen as the complete first-dataset package, remove this scheduling blocker and resume S0_ROAMM_ADMISSION from the preserved checkpoint. Do not select, cancel or redesign replication based on the ZuCo2 outcome.
+    resolution: After the ZuCo2 measurement-validity/recovery decision and its resulting method/outcome/claim ledger are frozen as the complete first-dataset package, remove this scheduling blocker and resume S0_ROAMM_ADMISSION from the preserved checkpoint. Do not select, cancel or redesign replication based on the ZuCo2 outcome.
   - id: B_A3_NOT_VALIDATED
     reason: v3.6 clears CO-N7 and treats local checkpoint inference rights as a disclosure item; checkpoint/load/pooling/no-gradient and raw E1..E128 inventory pass, but the EGI128-to-canonical map, ZuCo raw unit, filter order/notch Q, and real MAT end-to-end extraction remain unresolved.
     blocks:
@@ -85,34 +93,37 @@ blockers:
 
 last_completed_task: S0_A1_SOURCE_ADMISSION
 recommended_next_task: null
-last_run: runs/2026-08-16_029_v315_a1_failure_diagnosis.md
+last_run: runs/2026-08-16_032_v317_a1_measurement_validity.md
 
 do_not_do_yet:
   - Do not treat the ZuCo 1.0 smoke as paper evidence.
   - Do not start Stage 1, Gate A, or Gate B before all remaining protocol and A1-admission prerequisites are validated.
   - Do not lock a route or start the main experiment before ROUTE_LOCK is DONE.
-  - Do not execute CSPE or TMNRED in this paper; v3.15 retains only the failed EQ-ANMA record and a negative-diagnostic confirmation direction.
+  - Do not execute CSPE or TMNRED in this paper; v3.17 keeps the first-dataset scope on ZuCo2 and defers ROAMM until that package is frozen.
   - Do not add a third backbone; the user and v3.13 scope are A1 plus A3 only.
   - Do not treat the A1 synthetic contract self-check as real-data admission evidence.
   - Do not run the A1 fixed-window path from 128-channel continuous files; the admitted source is the exact 105-channel sentenceData.rawData order bound by the v3.13 source contract.
   - Do not treat the admitted inner split as Stage-1 OOF evidence; it is protocol infrastructure only.
   - Do not treat the bbf8d11 512-token run as exact-revision text admission; the corrected 256-token/config-manifest run is the admitted evidence.
-  - Do not resume ROAMM download, admission, candidate construction or training until the ZuCo2 construct-validity diagnosis and full negative-confirmation first-dataset package are frozen.
+  - Do not resume ROAMM download, admission, candidate construction or training until the ZuCo2 measurement-validity/recovery decision and the resulting first-dataset package are frozen.
   - Do not delete or relabel the existing ROAMM checkpoint as admitted; preserve its verified partial files, manifests, logs and experiment_ready=false boundary for later resumption.
   - Do not override the admitted STRUCTURAL_NO_GO_N50 with wrong-scope text, cross-fold borrowing, nearest-neighbor length refill, relaxed filters, replacement sampling, or silent target deletion. The only approved revision is v3.12 N=10 scoring on targets with legal_count>=9 in their frozen scope.
   - Do not delete N=10-ineligible records from any training set; common-support eligibility affects inner-validation and outer-test scoring only, and exclusions must remain explicit in the audit ledger.
   - Do not compact, delete, rewrite or regenerate the admitted v3.10 base or v3.11 common-support artifacts merely to reduce storage or Codex usage; their large duplicated JSON is a nonblocking efficiency note.
   - Do not treat the pre-run V5 contract as evidence that future EEG/training runs are leakage-free; every future run requires its own admitted fit/selection/calibration ledger.
   - S0_A1_ADMISSION is author-reviewed FAILED/FAIL_A1_ADMISSION under the frozen SPEC v3.14 contract. Do not mark it DONE, release alignment/unit cost, or change the backbone/probe/shams/cells/seeds/thresholds/dataset.
-  - S0_A1_FAILURE_DIAGNOSIS returned INVALID because the frozen single inner_s0_t0 validation scope has 5 rather than 15 scoring subjects. Do not reinterpret the strong oracle metrics as PASS, alter the scope/fit budget, or select another task before author review.
+  - Run 032 already completed the exact SPEC v3.17 200-fit measurement-validity budget with INVALID outcome. Do not rerun it or execute another task until author review supplies a new governing SPEC.
+  - Do not treat 5 as 15, rerun old s0/A-A3/admission fits, change t0/seed/probe/alpha grid/thresholds, borrow observation rows across cells, or start measurement recovery/negative confirmation in this task.
+  - Do not treat injected MiniLM signal as EEG evidence or synthetic EEG performance. It is an aggregate-only construct-validity ruler inserted after fold normalization and before the inherited four-arm sham constructor.
+  - Do not infer that sham above chance invalidates a matched sham, or that a significant negative contrast is impossible. Report family-mean and legacy pointwise-max detectability separately without rewriting v3.14.
   - The A-A3 positive control may deliberately use the current target MiniLM item embedding only under the explicit oracle/construct-validity role. It must never enter an EEG method result, alignment input, Gate or paper performance row.
   - Do not reinterpret S0_A1_SOURCE_ADMISSION as signal/model admission; it proves source facts and deterministic 840D extraction only and does not override the subsequent FAIL_A1_ADMISSION outcome.
   - Do not rerun or rewrite the admitted A1 source artifacts. The 72 release links prove an exact min(20,T)-sample by 105-channel prefix, not an entire-array equality claim; this wording precision is admitted and nonblocking.
-  - Do not invent a word-to-fixed-window assignment or use fixed-window/A3 sensitivity to rescue the failed A1 admission. The negative-confirmation route stays on the frozen word-aligned A1 contract.
+  - Do not invent a word-to-fixed-window assignment or use fixed-window/A3 sensitivity to rescue the failed A1 admission. Any future A1-R candidates require a separate pre-run measurement-recovery SPEC.
   - Do not use pilot preflight values to change cells, seeds, sham family, support, ridge/logistic settings, temperature or thresholds. Preflight is contract/runtime-only and a fit over 300 seconds blocks rather than triggering silent cuts.
   - Do not use phase randomization as an A1 strong sham, u_min member or phase-only No-Go. Rotate phase only on the exact demeaned-and-Hann windowed rFFT analysis spectrum for the required A1 invariance diagnostic; pre-window phase randomization changes the analyzed magnitude and is not phase-only.
   - Do not use ROAMM outcomes to change ZuCo thresholds, route selection or hyperparameters; the panels are independent.
-  - Do not claim cross-dataset replication or paper completion while ROAMM remains deferred; only the ZuCo2 full negative-confirmation first-dataset package can be completed first.
+  - Do not claim cross-dataset replication or paper completion while ROAMM remains deferred; the ZuCo2 measurement-validity/recovery decision must be completed first.
   - Do not include A3 in T6 until its canonical channel map, raw-unit/filter parameters, and real MAT extraction admission pass; CO-N7 itself is cleared by v3.6.
   - Do not use the A3 synthetic identity channel positions as a semantic EGI-to-LaBraM mapping.
   - Do not substitute CBraMod or REVE-Base for the guide-frozen A3 backbone without an author-approved specification change.

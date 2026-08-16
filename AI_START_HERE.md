@@ -10,12 +10,14 @@ This file is the mandatory entry point for every new AI session. Do not use chat
 
 ## Source of Truth
 
-1. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_15_2026-08-16.md` (compact governing overlay)
-2. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_14_2026-08-16.md` (frozen A1 pilot contract inherited by v3.15)
-3. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_13_2026-08-15.md` (unchanged definitions inherited by v3.14/v3.15)
-4. `guide/EEG_Text_Bprime_Execution_Plan_v3_2026-08-11_to_Submission.md`
+1. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_17_2026-08-16.md` (governing measurement-validity overlay)
+2. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_16_2026-08-16.md` (15-subject amendment inherited by v3.17)
+3. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_15_2026-08-16.md` (frozen diagnosis base)
+4. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_14_2026-08-16.md` (frozen A1 pilot contract)
+5. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_13_2026-08-15.md` (unchanged inherited definitions)
+6. `guide/EEG_Text_Bprime_Execution_Plan_v3_2026-08-11_to_Submission.md`
 
-SPEC v3.15 author-admits the execution-valid `FAIL_A1_ADMISSION`, terminates the original EQ-ANMA admission chain, and freezes one construct-validity diagnosis before a possible full ZuCo2 negative-confirmation panel. v3.14 controls the completed A-A1 through A-A4 pilot; v3.13 controls every unchanged scientific definition, V1-V5 contract, A1 phase role, claim boundary and ZuCo-first order. Never edit a scientific rule merely to make a task or Gate pass.
+SPEC v3.17 retains the 15-subject amendment, but blocks the premature jump from a positive-control PASS to a full negative panel. The sole next task is one conditional 200-fit measurement-validity audit: 8 scorer fits complete the unchanged 15-subject oracle control, then 192 fits measure a frozen semantic-injection curve through the normalized-A1/sham/probe path. v3.15 controls the immutable 58-fit evidence, v3.14 the failed A1 pilot, and v3.13 every unchanged scientific definition. Never edit a scientific rule merely to make a task or Gate pass.
 
 ## Required Recovery Sequence
 
@@ -63,15 +65,19 @@ If state and SPEC disagree, report `STATE_SPEC_CONFLICT` and stop rather than gu
 - `31164dc3d70b00fb383862f88b6404bd616db696` is execution-valid and admitted without protocol repair. The four formal hashes reproduce, the gzip has 639 unique V5 ledgers, and outer-test/calibration reads are zero.
 - `S0_A1_ADMISSION=FAILED/FAIL_A1_ADMISSION`. The frozen NR/TSR pilot completed all 639 fits and V5 ledgers: both tasks fail raw/latent A-A1 and raw/latent A-A3, while A-A2 and A-A4 pass. Significant-negative A-A1 conditions are present. This is a scientific admission failure, not a source/runtime/V5 failure, and it never becomes DONE.
 - For A1 bandpower, phase rotation on the exact demeaned-and-Hann windowed rFFT analysis spectrum is a required invariance diagnostic, not a strong sham, `u_min` member or phase-only No-Go. Pre-window phase randomization also changes the analysis-spectrum magnitude and is not a phase-only matched null. The v3.13 identifiable strong family is trial shuffle, within-trial unit-assignment shuffle and channel-block permutation.
-- `S0_A1_FAILURE_DIAGNOSIS=BLOCKED/INVALID_A1_FAILURE_DIAGNOSIS`. All 58 fits/58 V5 ledgers completed with zero outer-test/calibration reads. Both A-A3 oracle controls pass; both scorer numerical criteria pass, but the frozen single inner_s0_t0 validation scope provides only 5 scoring subjects per task, not the required 15-subject paired bootstrap.
+- `ffd2369663eb7a0f069f75726b34a46b7e3808ad` is execution-valid. All 58 fits/58 V5 ledgers completed with zero outer-test/calibration reads; both A-A3 oracle controls and both scorer numerical thresholds pass. Its `INVALID_A1_FAILURE_DIAGNOSIS` is retained because one subject fold has 5, not 15, scoring subjects.
+- Run `2026-08-16_032_v317_a1_measurement_validity` completed the exact v3.17 budget: 8 D49 plus 192 D50 ridge fits and 200 unique passing new V5 ledgers, with 697 old ledgers revalidated and zero outer-test/calibration reads. D49 passed for both exact 15-subject populations.
+- `S0_A1_FAILURE_DIAGNOSIS=BLOCKED/INVALID_A1_MEASUREMENT_VALIDITY_AUDIT`. Both tasks had family floor 0.01, legacy floor 0.03 and alpha-10 family/legacy detection, but both frozen eight-point Spearman rho values were 0.833333 below the required 0.90. Do not rerun or expand the audit.
 - `S0_ALIGN_UNIT_COST`, `STAGE1_PROBES`, `S0_DIRECT_U_PLUS`, `S0_EQ_ANMA_CORE`, both Gates, route lock and the original main experiment remain blocked by the failed admission.
-- `recommended_next_task=null`. `B_A1_FAILURE_DIAGNOSIS_INVALID_AUTHOR_REVIEW` blocks the diagnosis, `S0_A1_NEGATIVE_CONFIRMATION_FREEZE` and `S1_A1_NEGATIVE_CONFIRMATION`; do not freeze or start the full 6x5 panel.
+- `recommended_next_task=null`; there is no READY task. Author review and a new governing SPEC are required. `S0_A1_MEASUREMENT_RECOVERY_FREEZE`, `S0_A1_NEGATIVE_CONFIRMATION_FREEZE` and `S1_A1_NEGATIVE_CONFIRMATION` remain BLOCKED.
 - Never force feasibility with wrong-scope text, length refill, relaxed cosine/H filters, replacement or silent target deletion. Every excluded target remains ledgered.
 - The A1-admission fixed-window path receives no outcome-driven word mapping and cannot be used to rescue the failed admission.
 - The preflight may inspect contracts, shapes, hashes, memory and runtime only. It cannot be used to change the frozen ridge/logistic probes, shams, cells, seeds, support or thresholds; a fit over 300 seconds blocks.
 - ROAMM remains mandatory but deferred until the frozen ZuCo2 first-dataset package is complete.
-- Do not change the backbone, probes, shams, cells, seeds, thresholds or dataset in response to `FAIL_A1_ADMISSION`. The current author-approved exception is only the explicit oracle positive-control input in SPEC v3.15 D42; it must never enter an EEG result or method.
-- Do not resolve the invalid diagnosis by treating 5 subjects as 15, scoring outside the registered validation scope, borrowing across inner cells, increasing the exact four scorer fits, or weakening CI/R@1. A new author-approved SPEC/state package is required.
+- Do not change the backbone, probes, shams, cells, seeds, thresholds or dataset in response to `FAIL_A1_ADMISSION`. The explicit oracle and graded semantic injection are construct-validity inputs only; neither may enter an EEG result, method, Gate or paper performance row.
+- Do not treat 5 as 15 or borrow observations across cells. v3.17 increases the new budget only to the exact 8-fit subject completion plus the pre-frozen 192-fit injection grid. Do not change text fold, seed, probe, alpha grid, thresholds, A-A3 fits or any old formal artifact.
+- The semantic injection is applied after the inherited fold normalizer and before inherited four-arm sham construction. It tests downstream detectability, not biological plausibility, and cannot prove that real EEG has or lacks semantic information.
+- Separate `family_mean_detected` from `legacy_full_detected`. Never drop old `u_min`, but do not treat its pointwise max-selection penalty as interchangeable with the family-mean estimand.
 
 ## State Discipline
 
@@ -80,7 +86,7 @@ If state and SPEC disagree, report `STATE_SPEC_CONFLICT` and stop rather than gu
 - Keep current state in `PROJECT_STATE.yaml`, task evidence in `TASKS.yaml`, concise handoff in `HANDOFF.md`, and history in a new `runs/` record.
 - Do not begin Gate B before Gate A PASS.
 - Do not begin the main experiment before `ROUTE_LOCK=DONE` and one route is locked.
-- The only permitted post-failure direction is a negative diagnostic, not CSPE or an outcome-driven dataset/backbone switch.
+- No post-run execution is currently permitted. Run 032 is a complete immutable INVALID measurement-validity audit; only a user-provided author-review SPEC can define the next step.
 
 ## End-of-Session Contract
 

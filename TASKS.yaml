@@ -222,7 +222,7 @@ S0_ROAMM_ADMISSION:
     - release-native word-key item predicate and outer-train-only support ledger feasibility are recorded without retokenizing, translating or inferring sentence identity
     - each held-out article has a structural N=50 upper bound, while full near-duplicate/H/length feasibility remains explicitly delegated to S0_CANDIDATES
     - no alignment training, EEG held-out metric, Gate decision or paper-level result is read or produced
-  deferred_reason: Author-approved v3.15 execution order. Preserve the incomplete v3.8 checkpoint, but do no further ROAMM work until the ZuCo2 construct-validity diagnosis and separately frozen full 6x5 negative-confirmation first-dataset package are complete. The failed A1 admission makes the original EQ-ANMA MAIN_EXPERIMENT unavailable; this dependency update is not dataset removal or an outcome-contingent replacement.
+  deferred_reason: Author-approved v3.17 execution order. Preserve the incomplete v3.8 checkpoint, but do no further ROAMM work until the ZuCo2 measurement-validity/recovery decision and resulting first-dataset package are frozen. The failed A1 admission blocks the original EQ-ANMA main experiment unless a separately pre-frozen recovery path later earns admission; this dependency update is not dataset removal or an outcome-contingent replacement.
 
 S0_INNER_SPLIT:
   title: Build deterministic nested inner folds inside every ZuCo2 outer-train cell
@@ -525,7 +525,7 @@ S0_A1_ADMISSION:
   completion_note: The preflight passed with 9 fits, 54.4343 percent validation common support and a 0.135 second maximum fit. The full pilot produced 630 additional fits; all 639 fits have passing real V5 ledgers, no outer-test EEG/features/labels/metrics or calibration were read, and formal artifacts contain aggregate/subject summaries, exclusion counts and hash-bound ledgers only. The task remains not-DONE because only the two v3.14 PASS outcomes authorize completion.
 
 S0_A1_FAILURE_DIAGNOSIS:
-  title: Validate the frozen A1 failure with real-data construct-validity positive controls
+  title: Validate the frozen A1 measurement path with 15-subject controls and graded semantic injection
   stage: stage_0
   status: BLOCKED
   critical_path: true
@@ -546,25 +546,61 @@ S0_A1_FAILURE_DIAGNOSIS:
     - 04_results/audits/a1_failure_diagnosis_run_ledger.jsonl.gz
     - 02_code/scripts/run_a1_failure_diagnosis.py
     - 02_code/tests/test_a1_failure_diagnosis.py
+    - artifacts/a1_measurement_validity_contract.yaml
+    - 04_results/audits/a1_measurement_validity.json
+    - 04_results/audits/a1_measurement_validity.md
+    - 04_results/audits/a1_measurement_validity_run_ledger.jsonl.gz
+    - 02_code/src/data/a1_measurement_validity.py
+    - 02_code/scripts/run_a1_measurement_validity.py
+    - 02_code/tests/test_a1_measurement_validity.py
   acceptance:
     - the four admitted A1 artifacts reproduce exact SPEC v3.15 D40 hashes and the existing gzip contains exactly 639 unique passing V5 ledgers with zero outer-test and calibration reads
     - no admitted A1 formal artifact or its implementation/test files are regenerated or modified; existing helpers and git-ignored caches may be reused read-only
-    - each task runs the same nine inner cells and three seeds with fold-local K=8 labels and the same fixed logistic classifier, but supplies the current target frozen MiniLM item embedding only as an explicit A-A3 oracle construct-validity input
-    - all 54 A-A3 positive-control fits pass V5; for each task the subject-cluster CI lower bound exceeds 1/8 and observed balanced accuracy exceeds the within-subject permutation q95
-    - each task inner_s0_t0 at seed 20260813 compares H-only with H plus current target item embedding using the frozen ridge/scorer; all four fits pass V5, paired logp-difference CI lower is positive, and oracle macro-subject full-vocabulary R@1 is at least 0.80
-    - the audit derives max-selection gap and existing single-sham summaries without rerunning or reinterpreting the judged EEG outcome and without claiming a mechanism for the channel-sham pattern
-    - total new fits are exactly 58 with 58 passing V5 ledgers; formal outputs contain aggregates/support/hash/scope only and no EEG/features/observation embeddings/logits/weights
-    - PASS marks this task DONE and makes only S0_A1_NEGATIVE_CONFIRMATION_FREEZE READY; INVALID changes no threshold/K/cell/seed/classifier and returns to author review with recommended_next_task null
-  blocked_reason: The real D42 run completed 54 A-A3 oracle fits and 4 scorer fits with 58/58 V5 PASS and zero outer-test/calibration reads. A-A3 passes for both tasks; both scorer numerical criteria pass, but inner_s0_t0 validation-only scoring covers 5 subjects per task, not the frozen 15-subject paired-bootstrap population. The one-cell/exact-four-fit/V5-validation-only and 15-subject requirements cannot all hold, so author review is required without tuning or scope borrowing.
-  completion_outcome: INVALID_A1_FAILURE_DIAGNOSIS
-  attempted_by_run: 2026-08-16_029_v315_a1_failure_diagnosis
+    - all immutable 54 A-A3 and four inner_s0_t0 scorer controls remain byte-identical and retain their passing numerical/V5 evidence; no old logistic, scorer or admission fit is rerun
+    - the first conditional phase adds only H-only/oracle fits for inner_s1_t0 and inner_s2_t0 at seed 20260813 in both tasks, exactly eight new ridge fits/eight V5 ledgers
+    - the three t0 subject-fold validation sets are pairwise disjoint and cover exactly the frozen 15 subjects per task; each cell preserves its own train-only support, common rows and vocabulary without observation borrowing
+    - combined equal-subject controls use the immutable five plus new ten subject summaries and pass both tasks only if paired logp-gain CI lower is positive and full-vocabulary macro-subject R@1 is at least 0.80; failure stops before injection
+    - only after the eight-fit control passes, the run applies one seed/hash-bound RMS-normalized random projection of the frozen 384D MiniLM item embedding after the inherited fold normalizer and before inherited four-arm sham construction
+    - the frozen alpha grid is exactly [0.0,0.01,0.03,0.1,0.3,1.0,3.0,10.0], with raw A1 only, seed 20260813 only, three s-star-t0 cells, both tasks and all four arms, exactly 192 new ridge fits/192 V5 ledgers
+    - alpha zero is canonical-byte identical to the unmodified normalized A1 input; the same W, scale and inherited sham assignments are used across tasks/cells/partitions/alphas, and W is hash-bound but not committed
+    - each task-alpha combines exactly 15 disjoint subjects with equal subject weights and reports u_oof, legacy u_min, all single-sham contrasts, max-selection gap, positive-subject counts, B=10000 CIs, family/legacy grid floors and eight-point Spearman rho
+    - family_mean_detected requires u_oof CI lower above zero, at least 12/15 positive subjects and all single-sham point estimates above zero; legacy_full_detected additionally requires u_min CI lower above zero and at least 12/15 positive subjects
+    - both tasks pass downstream construct validity only if alpha 10 family_mean_detected is true and Spearman rho is at least 0.90; legacy failure is reported separately and is not disguised as EEG negative evidence
+    - a passing run reports exactly 200 new ridge fits/200 unique V5 ledgers; formal outputs contain aggregate/support/hash/scope only and no EEG/features/W/observation embeddings/logits/weights; outer-test/calibration reads remain zero
+    - PASS_A1_MEASUREMENT_VALIDITY_AUDIT marks this task DONE and makes only S0_A1_MEASUREMENT_RECOVERY_FREEZE READY; INVALID changes no threshold/K/cell/seed/alpha/probe/sham and returns to author review with recommended_next_task null
+  blocked_reason: Run 032 completed the exact frozen 200-fit measurement-validity audit but both task curves had Spearman rho 0.833333, below the frozen 0.90 completion threshold. Author review and a new governing SPEC are required; rerunning or expanding the audit is forbidden.
+  previous_attempt_outcome: INVALID_A1_MEASUREMENT_VALIDITY_AUDIT
+  attempted_by_run: 2026-08-16_032_v317_a1_measurement_validity
   evidence:
     - artifacts/a1_failure_diagnosis_contract.yaml
     - 04_results/audits/a1_failure_diagnosis.json
     - 04_results/audits/a1_failure_diagnosis.md
     - 04_results/audits/a1_failure_diagnosis_run_ledger.jsonl.gz
     - runs/2026-08-16_029_v315_a1_failure_diagnosis.md
-  completion_note: Old A1 evidence remained byte-identical and all 639 old V5 ledgers revalidated. The new run produced exactly 54 logistic and 4 ridge fits with 58 unique passing V5 ledgers. NR/TSR A-A3 oracle balanced accuracy is 1.0 with CI [1.0,1.0] above the within-subject null; scorer logp gains have positive CIs and R@1=1.0. The task is not DONE because the scorer bootstrap has 5 rather than the frozen 15 subjects in each task.
+    - artifacts/a1_measurement_validity_contract.yaml
+    - 04_results/audits/a1_measurement_validity.json
+    - 04_results/audits/a1_measurement_validity.md
+    - 04_results/audits/a1_measurement_validity_run_ledger.jsonl.gz
+    - runs/2026-08-16_032_v317_a1_measurement_validity.md
+  completion_note: "Run 032 preserved all old evidence and revalidated 697 old V5 ledgers, added exactly 8 D49 and 192 D50 ridge fits with 200 unique passing new V5 ledgers, and read zero outer-test/calibration values. D49 passed for both exact 15-subject populations; both tasks had family floor 0.01, legacy floor 0.03 and alpha-10 family/legacy detection, but both eight-point Spearman rho values were 0.833333 below 0.90. The declarative INVALID outcome leaves this task not-DONE, route unchanged and recommended_next_task null."
+
+S0_A1_MEASUREMENT_RECOVERY_FREEZE:
+  title: Freeze the A1 transfer-bottleneck audit and bounded measurement-recovery candidates
+  stage: stage_0
+  status: BLOCKED
+  critical_path: true
+  priority: 11
+  prerequisites:
+    - S0_A1_FAILURE_DIAGNOSIS
+  produces:
+    - artifacts/a1_measurement_recovery_freeze.yaml
+  acceptance:
+    - a new governing SPEC is authored before any new outcome is read and interprets the frozen family/legacy detectability floors without changing their grid or old A1 outcome
+    - the contract freezes a seen-subject text-OOF versus subject-heldout comparison that isolates the cross-subject transfer bottleneck as far as the admitted split permits and discloses residual train-size or population asymmetry
+    - no more than two A1-R frontends are selected from mechanism-first evidence before execution; log-power or temporal-preserving candidates cannot be chosen after seeing their outcomes
+    - recovery uses inner data only, keeps the old A1 result as an immutable baseline and freezes the criteria for re-opening any EQ-ANMA-style experiment versus proceeding to negative confirmation
+    - completion releases only the separately defined measurement-recovery execution task; it does not itself run recovery, read outer tests, revive a Gate or start negative confirmation
+  blocked_reason: Run 032 completed with INVALID_A1_MEASUREMENT_VALIDITY_AUDIT because both frozen curves had rho 0.833333 below 0.90. Author review is required and no recovery freeze or execution contract is admissible.
 
 S0_A1_NEGATIVE_CONFIRMATION_FREEZE:
   title: Freeze the full ZuCo2 A1 negative-confirmation run and claim contract
@@ -580,7 +616,7 @@ S0_A1_NEGATIVE_CONFIRMATION_FREEZE:
     - before any outer-test outcome is read, a governing SPEC freezes exact 6x5 run budget, subject-first aggregation, formal outputs, V5 scopes, expected-negative and unexpected-positive outcome handling, and claim language
     - the frozen contract cannot change v3.14 shams/probe/support because of diagnosis results and cannot run alignment, direct u-plus, EQ-ANMA, Gate B, A3 or ROAMM
     - completion makes only S1_A1_NEGATIVE_CONFIRMATION READY and records the exact pre-run artifact hash
-  blocked_reason: S0_A1_FAILURE_DIAGNOSIS returned INVALID_A1_FAILURE_DIAGNOSIS and is awaiting author review; the freeze remains forbidden.
+  blocked_reason: Negative confirmation is a backup only. The v3.17 measurement-validity audit and a separately frozen measurement-recovery adjudication must complete first.
 
 S1_A1_NEGATIVE_CONFIRMATION:
   title: Confirm the A1 matched-null failure across all ZuCo2 outer subject-by-text cells
@@ -596,11 +632,11 @@ S1_A1_NEGATIVE_CONFIRMATION:
     - 04_results/negative_diagnostic/a1_negative_confirmation.md
     - 04_results/negative_diagnostic/a1_negative_confirmation_run_ledger.jsonl.gz
   acceptance:
-    - execution requires PASS_A1_FAILURE_DIAGNOSIS and DONE S0_A1_NEGATIVE_CONFIRMATION_FREEZE before any outer-test value is read
+    - execution requires an author-admitted measurement-recovery decision and DONE S0_A1_NEGATIVE_CONFIRMATION_FREEZE before any outer-test value is read
     - both NR and TSR use all 6x5 outer cells with train-only fitting and the frozen A1 raw/latent, H, three shams, ridge, seed, support and V5 contracts
     - subject-first results report u_oof, u_min, each single sham, text-only, max-selection gap, coverage and cell/seed/subject heterogeneity without treating nonsignificance as proof of equivalence
     - this route does not train alignment, direct u-plus, EQ-ANMA or Gate B and cannot revive the failed admission outcome
-  blocked_reason: S0_A1_FAILURE_DIAGNOSIS is INVALID and the pre-run negative-confirmation freeze is incomplete; no outer-test confirmation may start.
+  blocked_reason: Measurement validity/recovery and the pre-run negative-confirmation freeze are incomplete; no outer-test confirmation may start.
 
 S0_A3_CONTAMINATION_CHECK:
   title: Verify A3 LaBraM pretraining contamination, license, checkpoint, and channel map

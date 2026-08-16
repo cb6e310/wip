@@ -1,0 +1,105 @@
+schema_version: 1
+algorithm_version: a1-measurement-validity-v317-d49-d50-v1
+run_id: 2026-08-16_032_v317_a1_measurement_validity
+task: S0_A1_FAILURE_DIAGNOSIS
+spec: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_17_2026-08-16.md#D49-D52
+claim_boundary: construct-validity measurement audit only; artificial injection is
+  not physiological EEG, EEG evidence, Gate, or paper performance
+scope:
+  tasks:
+  - task1_nr
+  - task2_tsr
+  folds:
+  - inner_s0_t0
+  - inner_s1_t0
+  - inner_s2_t0
+  seed: 20260813
+  alphas:
+  - 0.0
+  - 0.01
+  - 0.03
+  - 0.1
+  - 0.3
+  - 1.0
+  - 3.0
+  - 10.0
+  arms:
+  - real
+  - trial_shuffle
+  - within_trial_unit_assignment_shuffle
+  - channel_block_permutation
+  D49_new_fits: 8
+  D50_new_fits: 192
+  conditional_total_fits: 200
+  outer_test_values_read: false
+  calibration_values_read: false
+projection:
+  generator: numpy.random.default_rng(seed_W).standard_normal((840,384)).astype('<f4')
+  seed_rule: stable_seed(20260813,'v3.17','graded_semantic_injection')
+  seed_W: 6749993717453156489
+  shape:
+  - 840
+  - 384
+  dtype: float32-little-endian
+  order: C
+  c_order_sha256: dba2ad5e50eb0379a9d5dec29dc3c1af0138d4a36871012d1ee8ffba9e8dba58
+item_vector_canonical_mapping_sha256: 8d871e30c41781fab484f52c8516c8842c52c7d872ed70d2e2b29ca762a0dbe7
+item_vector_hash_rule: SHA256 over sorted UTF-8 surface length+bytes followed by each
+  little-endian float32[384] C-order vector
+text_encoder:
+  requested_revision: 1110a243fdf4706b3f48f1d95db1a4f5529b4d41
+  resolved_revision: 1110a243fdf4706b3f48f1d95db1a4f5529b4d41
+  manifests:
+    tokenizer: 78a3daa92dcec076e80baaa628a6553bcbd0b431a214eb02d72c8b5672e69e09
+    encoder_config: 8049791e90383b0f56624a32a14852552e292bcb38ab18da1de533ad79629845
+    model: c0577b9136351b1c12ba99a16f386d5c4c8c45e744941eaea15803880dd30e61
+    scientific_config: 0f2fb795c15c7ad7ee185f44509ec86eb912aaca6abf88b78fa1560179e412af
+  output_dim: 384
+  trainable_parameters: 0
+input_artifact_hashes:
+  a1_freeze: 9c3f48ddf38bca8e75534932ebc6ea3c035a044f627e271a0348ec759bc11e30
+  h_definition: 226f92e299633997fdb9469592f6f8a36fa6c728aa24d9a7d6cb9ded8fb2ae6b
+  inner_split: 0271aba0ae9627f35e281029a8a95390513c1e92c8010e8a2795171f837575d7
+  outer_split: 20aedfd56c7c5ee41a491e5b5531ef77728344808d42ba45d72d7e30250cffa6
+  semantic_contract: 72b8b471a25c857b3d35a0e18ec256093b5803872cf907ab2ff4b922b285c051
+  semantic_support: fe862ebaed2b027b4924f45c23dacfc01c5c7ad862f6917cbd0a963d2dcff32c
+  source_audit: 07b3718eee0f7e6784d8d1007447ac7bdcbd92a4b85a1e6bfc504b64c9aa271f
+  source_contract: bb03bb785dd62d8957819aa69eaa4155636e36858dcb35cf31a8e9a81bbedc3c
+  source_exclusions: 250f1e2cda8f4b4c2900bb031845f0c347a75f180ca083b68401da671bb65d3c
+  source_join: eb960cd0bf2cb5016f33793813cb61fa2c77c9ce07e2037cff69b29c14c104c8
+  text_encoder: 35e18392a285c8d09ba84a934e31dd327a18fa1a0c10a3bd8550f090cd496494
+immutable_evidence_hashes:
+  artifacts/a1_admission_contract.yaml: c9c5a94b8227b6e43ecfc6d61b9b10b33f9340f7c845ca7dbaa0e0a3e65d9f4b
+  04_results/audits/a1_admission.json: b3d2b47ee21b2e777470004dbca862cb9495b59f3c68513e9001f3800b4e151e
+  04_results/audits/a1_admission.md: e187f2314ca3ee8a9d8f973c7898276ecaccd64245ce1480243c916c5c729a8e
+  04_results/audits/a1_admission_run_ledger.jsonl.gz: fe22b691795709508386d72d662cbf2feeafb3dd74d5012b46b12e5ae1d963fd
+  02_code/src/data/a1_admission.py: 14e45bc194cdfcbb03ef01a3862dfb331b916a7e425e7a74a8adffecb5ab96b4
+  02_code/scripts/run_a1_admission.py: a671a65dd4fb533cb92b820d9e723e3963c99168c96a3cf77bf9bfcd8f9fb099
+  02_code/tests/test_a1_admission.py: 3866756f6d4b56f1f33ea81b6eccaed5ffc3fe385a319795a8e425afd75aa238
+  artifacts/a1_failure_diagnosis_contract.yaml: 1796f58bd7786a682f65f944e29b975b87289fab2e944730bfe9b25ad99d9b1b
+  04_results/audits/a1_failure_diagnosis.json: 56b3e6e42d8611072ecc62f10de60badf57bfc752954ba63ebe2941af6a9a38e
+  04_results/audits/a1_failure_diagnosis.md: a3e1b735a5cfca01a320cdae5d8c92b7cc8c1f54d4af8e6be8b6b1e11e6797f6
+  04_results/audits/a1_failure_diagnosis_run_ledger.jsonl.gz: 80cb11bc7ab12b59c00eb38c6cd03318f1ac2f347505e6940d8aeab5b434e6c4
+  02_code/src/data/a1_failure_diagnosis.py: b9e85d500f4968711c3282b2207a1eb1c2cbe226c793c6deb2f821e01a2828f3
+  02_code/scripts/run_a1_failure_diagnosis.py: 13fa54fa422b7ab2a7cebb469678d5aaaecd07d2e3202790c0a07c493be92f1d
+  02_code/tests/test_a1_failure_diagnosis.py: 4499d7ae057d4080619349816c3f31c14292f25b73999e2b6b07dcefe59df0bf
+  runs/2026-08-16_029_v315_a1_failure_diagnosis.md: ee8b4b2acf8a77f641429975c2e113bb67c4611995c1878aecd2c0529cace234
+immutable_v5:
+  admission:
+    rows: 639
+    unique_fit_ids: 639
+    outer_test_reads: 0
+    calibration_reads: 0
+  diagnosis:
+    rows: 58
+    unique_fit_ids: 58
+    outer_test_reads: 0
+    calibration_reads: 0
+source_hashes:
+  02_code/src/data/a1_measurement_validity.py: ea08228a713a03512d807e3f6c890003d558eef9fb4b58a4c69d151e856c64b9
+  02_code/scripts/run_a1_measurement_validity.py: 9a2b221d30d579758c5d5575b646db1314d09b2ddf2c515cfa42ac3a91eaf4b7
+  02_code/tests/test_a1_measurement_validity.py: d349d963902b6b08cf6bd8e99a33a91f62623d7f72a4c9df126c19f5905d5328
+formal_output_policy:
+  aggregate_and_subject_summaries_only: true
+  ledger_ids_hashes_scopes_only: true
+  no_eeg_arrays_projection_array_observation_vectors_logits_model_parameters_or_cache: true
