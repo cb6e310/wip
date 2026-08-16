@@ -10,10 +10,11 @@ This file is the mandatory entry point for every new AI session. Do not use chat
 
 ## Source of Truth
 
-1. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_13_2026-08-15.md`
-2. `guide/EEG_Text_Bprime_Execution_Plan_v3_2026-08-11_to_Submission.md`
+1. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_14_2026-08-16.md` (compact governing overlay)
+2. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_13_2026-08-15.md` (unchanged definitions inherited by v3.14)
+3. `guide/EEG_Text_Bprime_Execution_Plan_v3_2026-08-11_to_Submission.md`
 
-SPEC v3.13 controls scientific definitions, the admitted N=10 candidate-common-support scoring population, V1-V5 pre-run leakage contract, A1 phase-invariance correction, real-source admission, claim boundaries and the ZuCo-first execution order. Never edit a scientific rule merely to make a task or Gate pass.
+SPEC v3.14 admits the A1 real-source result and freezes the exact A-A1 through A-A4 pilot, preflight, outcomes and state transitions. SPEC v3.13 continues to control every unchanged scientific definition, the N=10 common-support population, V1-V5 contract, A1 phase role, claim boundaries and ZuCo-first order. Never edit a scientific rule merely to make a task or Gate pass.
 
 ## Required Recovery Sequence
 
@@ -57,12 +58,16 @@ If state and SPEC disagree, report `STATE_SPEC_CONFLICT` and stop rather than gu
 - `S0_LEAKAGE_AUDIT=DONE/PASS_PRE_RUN_V1_V5`. V1-V4 passed on immutable real protocol artifacts; V5 is only `PASS_PRE_RUN_CONTRACT`, with `future_run_admission_required=true` and `real_training_ledgers_audited=0`.
 - `d9dfe51442155fbd3854d223916c519a7757fff1` is admitted without rework; its leakage artifacts and state transition are valid.
 - `S0_A1_SOURCE_ADMISSION=DONE/PASS_REAL_A1_SOURCE`. All 36 summary MATs and 252 Preprocessed EEG files passed the 500 Hz, exact ordered 105-label, D34 native-unlabelled stable-scale, strict-finite, identity, G0 and deterministic 840D source contracts; the three formal artifacts reproduce byte-identically.
-- `S0_A1_ADMISSION=READY` is the sole recommended task. It owns the frozen A-A1–A-A4 outer-training checks; source PASS is not itself signal/model admission.
+- `6cffbb68477d92463565c65024a164a40e68e840` is admitted without rework. Its 72 source links establish exact `min(20,T) x 105` prefix matches; do not overstate them as whole-array equality and do not reopen the source task for this nonblocking wording note.
+- `S0_A1_ADMISSION=BLOCKED/FAIL_A1_ADMISSION`. The frozen NR/TSR pilot completed all 639 fits and V5 ledgers: both tasks fail raw/latent A-A1 and raw/latent A-A3, while A-A2 and A-A4 pass. Significant-negative A-A1 conditions are present. This is a scientific admission failure, not a source/runtime/V5 failure.
 - For A1 bandpower, phase rotation on the exact demeaned-and-Hann windowed rFFT analysis spectrum is a required invariance diagnostic, not a strong sham, `u_min` member or phase-only No-Go. Pre-window phase randomization also changes the analysis-spectrum magnitude and is not a phase-only matched null. The v3.13 identifiable strong family is trial shuffle, within-trial unit-assignment shuffle and channel-block permutation.
-- `S0_ALIGN_UNIT_COST` stays blocked until `S0_A1_ADMISSION=DONE`.
+- `recommended_next_task=null`; author review is required by v3.14 D39. `S0_ALIGN_UNIT_COST` stays blocked because `S0_A1_ADMISSION` did not return either permitted PASS outcome.
 - `S0_DIRECT_U_PLUS` remains blocked by Stage-0 execution order; A1 source admission is not permission to implement it.
 - Never force feasibility with wrong-scope text, length refill, relaxed cosine/H filters, replacement or silent target deletion. Every excluded target remains ledgered.
+- The A1-admission fixed-window path is source/feature-admitted but receives no invented word mapping in this task. Its outcome sensitivity is deferred, not cancelled.
+- The preflight may inspect contracts, shapes, hashes, memory and runtime only. It cannot be used to change the frozen ridge/logistic probes, shams, cells, seeds, support or thresholds; a fit over 300 seconds blocks.
 - ROAMM remains mandatory but deferred until the frozen ZuCo2 main experiment is complete.
+- Do not change the backbone, probes, shams, cells, seeds, thresholds or dataset in response to `FAIL_A1_ADMISSION`. No task may be selected until an author-approved state/spec update resolves `B_A1_ADMISSION_FAILED_AUTHOR_REVIEW`.
 
 ## State Discipline
 

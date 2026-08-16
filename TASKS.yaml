@@ -480,7 +480,7 @@ S0_A1_SOURCE_ADMISSION:
 S0_A1_ADMISSION:
   title: Run the four A1 admission self-checks on outer-train data
   stage: stage_0
-  status: READY
+  status: BLOCKED
   critical_path: true
   priority: 9
   prerequisites:
@@ -493,15 +493,36 @@ S0_A1_ADMISSION:
     - S0_LEAKAGE_AUDIT
     - S0_A1_SOURCE_ADMISSION
   produces:
+    - artifacts/a1_admission_contract.yaml
+    - 04_results/audits/a1_admission.json
     - 04_results/audits/a1_admission.md
+    - 04_results/audits/a1_admission_run_ledger.jsonl.gz
+    - 02_code/src/data/a1_admission.py
+    - 02_code/scripts/run_a1_admission.py
+    - 02_code/tests/test_a1_admission.py
   acceptance:
-    - real-versus-sham incremental evidence uses only the three v3.13 identifiable A1 shams and reports both mean-sham u_oof and u_min
-    - phase rotation on the exact A1 analysis spectrum is used only as the admitted feature-invariance diagnostic, never as a strong sham, u_min member or phase-only failure condition; pre-window phase perturbation is not substituted
-    - the linear subject probe uses stimulus-group cross-validation within outer-train subjects, and the coarse semantic probe obeys nested train/selection boundaries
-    - A1 frozen-initial latent is not uniformly worse than the 840D raw spectral feature baseline across the three diagnostics
-    - all results use only outer-training data
-  blocked_reason: null
-  why_ready: S0_A1_SOURCE_ADMISSION passed the real ZuCo2 source contract. Run only the frozen A-A1 through A-A4 outer-training admission checks under v3.13 D32; source PASS is not itself signal or model admission.
+    - the pilot uses exactly task1_nr|outer_s0_t0 and task2_tsr|outer_s0_t0, all nine admitted 3x3 inner cells per task, seeds 20260813/20260814/20260815, and no outer-test EEG, feature, label, calibration or metric
+    - the judged observation path is released word-aligned content-word slots; raw is the fold-normalized 840D current-word feature and latent is the same word as a length-one token_local_frozen_initial_latent from the seed-bound frozen random A1 encoder
+    - inner-train independently fits robust normalization, semantic support, H plus EEG ridge readout and K=8 semantic clusters; validation is scoring-only, with unsupported targets and four-arm common-support exclusions explicitly ledgered
+    - A-A1 uses the fixed ridge-to-MiniLM-item-embedding probe and only trial_shuffle, within_trial_unit_assignment_shuffle and channel_block_permutation, with identical real/sham rows and capacity; it reports mean-sham u_oof, u_min, each single-sham contrast, subject-cluster CI and subject signs separately for NR/TSR and raw/latent
+    - phase is never constructed as a sham or u_min member; the admitted exact-analysis-spectrum invariance artifact is hash-bound rather than reinterpreted
+    - A-A2 uses atomic stimulus-group three-fold subject classification within all 15 outer-train subjects and passes both the 1/15 CI and within-stimulus permutation-null criteria; it is not called cross-subject generalization
+    - A-A3 uses fold-local K=8 MiniLM item clusters, joint inner OOF scoring and both 1/8 CI and within-subject permutation-null criteria
+    - A-A4 uses paired subject bootstrap for latent-minus-raw A-A1 u_min, A-A2 recall and A-A3 recall; all-three significantly negative is uniformly worse, while raw A-A1 PASS plus latent FAIL is the higher-priority CO_N1_LATENT_LOSS failure
+    - a contract/runtime-only preflight runs first on task1_nr|outer_s0_t0|inner_s0_t0 and seed 20260813; any fit over 300 seconds, OOM, V5 failure or under-50-percent four-arm observation support blocks without changing the frozen design
+    - only PASS_A1_ADMISSION_BOTH_TASKS or PASS_LIMITED_A1_ADMISSION_ONE_TASK marks DONE and releases S0_ALIGN_UNIT_COST; FAIL/INVALID records evidence, leaves gates/routes untouched and returns to author review
+    - fixed-window extraction is not assigned to words in this task; its real outcome remains mandatory in later Stage-1/T4 and main/T6 sensitivity work
+    - every real fit passes a V5 ledger, formal outputs contain aggregates and hashes only, and no EEG/features/logits/model weights are committed
+  blocked_reason: The frozen two-task pilot completed with FAIL_A1_ADMISSION. Both tasks fail raw and latent A-A1, both fail raw and latent A-A3, and significant-negative A-A1 conditions are present; A-A2 and A-A4 pass. SPEC v3.14 D39 requires author review, recommended_next_task=null, no protocol substitutions, and no release of S0_ALIGN_UNIT_COST.
+  completion_outcome: FAIL_A1_ADMISSION
+  attempted_by_run: 2026-08-16_027_v314_a1_admission
+  evidence:
+    - artifacts/a1_admission_contract.yaml
+    - 04_results/audits/a1_admission.json
+    - 04_results/audits/a1_admission.md
+    - 04_results/audits/a1_admission_run_ledger.jsonl.gz
+    - runs/2026-08-16_027_v314_a1_admission.md
+  completion_note: The preflight passed with 9 fits, 54.4343 percent validation common support and a 0.135 second maximum fit. The full pilot produced 630 additional fits; all 639 fits have passing real V5 ledgers, no outer-test EEG/features/labels/metrics or calibration were read, and formal artifacts contain aggregate/subject summaries, exclusion counts and hash-bound ledgers only. The task remains not-DONE because only the two v3.14 PASS outcomes authorize completion.
 
 S0_A3_CONTAMINATION_CHECK:
   title: Verify A3 LaBraM pretraining contamination, license, checkpoint, and channel map
@@ -596,7 +617,7 @@ S0_ALIGN_UNIT_COST:
     - one real training run is timed and configured
     - runtime over 45 minutes triggers the guide's cut order
     - no held-out result is used to tune the protocol
-  blocked_reason: The real source contract now passes, but alignment cost measurement remains permitted only after S0_A1_ADMISSION completes A-A1 through A-A4 and admits the A1 signal/representation path.
+  blocked_reason: The real source contract passes, but alignment cost measurement remains permitted only after S0_A1_ADMISSION returns PASS_A1_ADMISSION_BOTH_TASKS or PASS_LIMITED_A1_ADMISSION_ONE_TASK under v3.14 D39.
 
 STAGE1_PROBES:
   title: Run raw/latent real, three matched shams, text-only, OOF scores, and u_min

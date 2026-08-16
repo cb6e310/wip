@@ -2,20 +2,23 @@
 
 ## Current decision
 
-`S0_A1_SOURCE_ADMISSION=DONE/PASS_REAL_A1_SOURCE` under run `2026-08-15_025_v313_a1_source_admission`. All 36 ZuCo2 summary MATs and all 252 co-released Preprocessed EEG files passed the frozen source-field, 500 Hz, exact ordered 105-channel, stable native-unlabelled scale, strict finite, source-slot identity and G0 contracts. The source contract, exclusion ledger and audit were rebuilt independently and are byte-identical.
+`S0_A1_ADMISSION` completed its frozen SPEC v3.14 pilot but is not DONE. The outcome is `FAIL_A1_ADMISSION`: NR and TSR both fail A-A1 on raw and `token_local_frozen_initial_latent`, both fail A-A3 on both bases, while A-A2 and A-A4 pass. NR raw A-A1 has significantly negative `u_oof`; every task/basis has significantly negative `u_min`. There is no `CO_N1_LATENT_LOSS` and no `INVALID_BASIS_ORDER`.
 
-The A1 frontend now rejects any NaN/Inf without imputation. Bands, Hann-periodogram, nFFT, windows, stride, 840D order, normalization formula, encoder and `d_align=384` are unchanged. The 144-record real smoke was deterministic finite float32 `[T,840]`; analysis-spectrum phase rotation had zero observed feature error within the frozen tolerance.
+The preflight passed: 9 fits, maximum 0.135 seconds, validation four-arm common support 1068 observations / 54.4343%, finite raw `[7094,840]` and latent `[7094,384]`, and 9/9 V5 ledgers. The complete pilot used 93,739 released word-aligned observations and produced 639 fits/639 passing real V5 ledgers (495 ridge, 144 logistic); maximum single fit was 8.217 seconds. No outer-test EEG/features/labels/metrics or calibration were read.
 
-## Required next action
+## State boundary
 
-Run only `S0_A1_ADMISSION`, now the sole READY/recommended task. Execute the frozen A-A1 through A-A4 outer-training admission checks under SPEC v3.13 D32, using only the three identifiable strong A1 shams and treating analysis-spectrum phase rotation solely as the admitted invariance diagnostic.
+- `S0_A1_ADMISSION=BLOCKED/FAIL_A1_ADMISSION`; it must not be marked DONE.
+- `S0_ALIGN_UNIT_COST` remains BLOCKED; Stage 1, Gates, route and main experiment remain blocked.
+- `last_completed_task=S0_A1_SOURCE_ADMISSION`.
+- `recommended_next_task=null`.
+- `B_A1_ADMISSION_FAILED_AUTHOR_REVIEW` requires an author-approved specification/state update. Do not change backbone, cells, seeds, shams, probes, thresholds or dataset to force a pass.
+- ROAMM remains mandatory but deferred; do not resume it.
 
-Do not start unit-cost measurement, direct u+, Stage 1, Gates, route/main experiment or ROAMM in the same task. Source PASS is not A1 signal/model admission and is not a Gate or paper result.
+## Evidence
 
-## Evidence boundary
-
-- Formal artifact SHA256: contract `bb03bb785dd62d8957819aa69eaa4155636e36858dcb35cf31a8e9a81bbedc3c`; exclusion ledger `250f1e2cda8f4b4c2900bb031845f0c347a75f180ca083b68401da671bb65d3c`; audit `07b3718eee0f7e6784d8d1007447ac7bdcbd92a4b85a1e6bfc504b64c9aa271f`.
-- Ordered 105-label tuple SHA256: `23b8d1ee22d87560fe1a6384141b2713c450ca34ef9eeff8241e7bd3bd885ef5`; summary physical inventory SHA256: `7fc731c4ccd273e12c425ef86cdbd5b02c2546e931ed27aadc7e4b538a30bf86`.
-- NR retained 18/18 subjects with 5,915 valid sentence sources and 122,213 valid word fixations; TSR retained 18/18 with 6,588 and 109,703. The 214,496 exclusions are explicit release placeholders/missing references; no accepted matrix contained NaN/Inf.
-- Focused tests: 68/68; complete unittest suite: 180/180; 0 skipped, 0 failed.
-- No normalizer was fit on real source data; no A-A1–A-A4 probe, sham/model training, held-out metric, Gate, route, main experiment or ROAMM work was run.
+- Contract: `artifacts/a1_admission_contract.yaml` (`c9c5a94b8227b6e43ecfc6d61b9b10b33f9340f7c845ca7dbaa0e0a3e65d9f4b`)
+- Audit JSON: `04_results/audits/a1_admission.json` (`b3d2b47ee21b2e777470004dbca862cb9495b59f3c68513e9001f3800b4e151e`)
+- Audit Markdown: `04_results/audits/a1_admission.md` (`e187f2314ca3ee8a9d8f973c7898276ecaccd64245ce1480243c916c5c729a8e`)
+- V5 ledger: `04_results/audits/a1_admission_run_ledger.jsonl.gz` (`fe22b691795709508386d72d662cbf2feeafb3dd74d5012b46b12e5ae1d963fd`)
+- Run: `runs/2026-08-16_027_v314_a1_admission.md`

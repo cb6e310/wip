@@ -1,0 +1,102 @@
+schema_version: 1
+algorithm_version: a1-admission-v314-r3-v2
+run_id: 2026-08-16_027_v314_a1_admission
+task: S0_A1_ADMISSION
+spec: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_14_2026-08-16.md#D36-D39-R.3
+scope:
+  dataset: zuco_2_0
+  tasks:
+  - task1_nr
+  - task2_tsr
+  outer_cells:
+    task1_nr: task1_nr|outer_s0_t0
+    task2_tsr: task2_tsr|outer_s0_t0
+  inner_cells_per_task: 9
+  seeds:
+  - 20260813
+  - 20260814
+  - 20260815
+  outer_test_values_read: false
+  segmentation: word_aligned_content_word_only
+  fixed_window_word_mapping: forbidden_not_constructed
+config:
+  ridge_alpha: 1.0
+  softmax_temperature: 0.07
+  min_item_observations: 20
+  min_item_subjects: 5
+  bootstrap_resamples: 10000
+  permutation_resamples: 1000
+  semantic_clusters: 8
+  subject_classes: 15
+  logistic_c: 1.0
+  logistic_solver: lbfgs
+  logistic_max_iter: 1000
+  logistic_tol: 1.0e-06
+  trial_length_ratio_low: 0.75
+  trial_length_ratio_high: 1.25
+  preflight_min_common_support: 0.5
+  maximum_fit_seconds: 300.0
+  feature_dim: 840
+  latent_dim: 384
+  h_dim: 384
+  channel_blocks: 105
+  bands_per_channel: 8
+config_hash: be1c3aff4c6b89948ee18eaa03f0f0c4713cf8f2d3b6eb5f8f7d913a57bb8b84
+bases:
+  raw: inner-train-normalized current-word 840D bandpower
+  latent: token_local_frozen_initial_latent length=1 mask=true float32[384]
+probe:
+  input: '[H_full_embedding, EEG_basis]'
+  target: frozen exact-revision MiniLM item-surface embedding
+  ridge_alpha: 1.0
+  query_l2_normalized: true
+  full_supported_vocabulary_softmax: true
+  temperature: 0.07
+  hyperparameter_search: false
+shams:
+- trial_shuffle
+- within_trial_unit_assignment_shuffle
+- channel_block_permutation
+phase_role: admitted analysis-spectrum invariance hash binding only; not a sham/u_min
+  member
+statistics:
+  subject_first: true
+  cluster_bootstrap_B: 10000
+  permutation_B: 1000
+  A-A2: 15-way atomic-material three-fold subject probe
+  A-A3: fold-local K=8 MiniLM item clusters and joint-inner OOF
+  A-A4: paired latent-minus-raw subject bootstrap
+input_artifact_hashes:
+  a1_freeze: 9c3f48ddf38bca8e75534932ebc6ea3c035a044f627e271a0348ec759bc11e30
+  h_definition: 226f92e299633997fdb9469592f6f8a36fa6c728aa24d9a7d6cb9ded8fb2ae6b
+  inner_split: 0271aba0ae9627f35e281029a8a95390513c1e92c8010e8a2795171f837575d7
+  outer_split: 20aedfd56c7c5ee41a491e5b5531ef77728344808d42ba45d72d7e30250cffa6
+  semantic_contract: 72b8b471a25c857b3d35a0e18ec256093b5803872cf907ab2ff4b922b285c051
+  semantic_support: fe862ebaed2b027b4924f45c23dacfc01c5c7ad862f6917cbd0a963d2dcff32c
+  source_audit: 07b3718eee0f7e6784d8d1007447ac7bdcbd92a4b85a1e6bfc504b64c9aa271f
+  source_contract: bb03bb785dd62d8957819aa69eaa4155636e36858dcb35cf31a8e9a81bbedc3c
+  source_exclusions: 250f1e2cda8f4b4c2900bb031845f0c347a75f180ca083b68401da671bb65d3c
+  source_join: eb960cd0bf2cb5016f33793813cb61fa2c77c9ce07e2037cff69b29c14c104c8
+  text_encoder: 35e18392a285c8d09ba84a934e31dd327a18fa1a0c10a3bd8550f090cd496494
+source_contract_bindings:
+  channel_labels_sha256: 23b8d1ee22d87560fe1a6384141b2713c450ca34ef9eeff8241e7bd3bd885ef5
+  a1_config_hash: c143e3d85bdc8796f352b046f71e43e68465450f075e143fbac853ffef523edf
+  finite_policy: reject_any_nonfinite_no_imputation
+  amplitude_unit_status: release_native_amplitude_unit_unlabelled
+text_encoder:
+  model_id: sentence-transformers/all-MiniLM-L6-v2
+  requested_revision: 1110a243fdf4706b3f48f1d95db1a4f5529b4d41
+  resolved_revision: 1110a243fdf4706b3f48f1d95db1a4f5529b4d41
+  manifests:
+    tokenizer: 78a3daa92dcec076e80baaa628a6553bcbd0b431a214eb02d72c8b5672e69e09
+    encoder_config: 8049791e90383b0f56624a32a14852552e292bcb38ab18da1de533ad79629845
+    model: c0577b9136351b1c12ba99a16f386d5c4c8c45e744941eaea15803880dd30e61
+    scientific_config: 0f2fb795c15c7ad7ee185f44509ec86eb912aaca6abf88b78fa1560179e412af
+  output_dim: 384
+  max_seq_length: 256
+  pooling: attention_mask_mean_then_l2
+  trainable_parameters: 0
+formal_output_policy:
+  aggregates_and_subject_summaries_only: true
+  run_ledger_ids_hashes_scopes_only: true
+  no_eeg_feature_logit_weight_arrays: true
