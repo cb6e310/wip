@@ -17,6 +17,7 @@ from backbones.a1_spectral import (  # noqa: E402
     A1Config,
     DEFAULT_CONFIG,
     RobustFeatureNormalizer,
+    analysis_spectrum_phase_rotation_features,
     bandpower_features,
     config_hash,
     extract_fixed_window_sequence,
@@ -63,6 +64,19 @@ class A1ContractTests(unittest.TestCase):
         features = bandpower_features(epoch)
         self.assertGreater(float(features[1 * 8 + 2]), float(features[2]))
         self.assertLess(float(features[2]), float(features[1 * 8 + 2]))
+
+    def test_any_nonfinite_is_rejected_without_imputation(self) -> None:
+        self.assertEqual(DEFAULT_CONFIG.finite_policy, "reject_any_nonfinite_no_imputation")
+        for value in (np.nan, np.inf, -np.inf):
+            epoch = self.epochs[0].copy()
+            epoch[0, 0] = value
+            with self.subTest(value=value), self.assertRaisesRegex(ValueError, "forbids imputation"):
+                bandpower_features(epoch)
+
+    def test_analysis_spectrum_phase_rotation_is_invariant(self) -> None:
+        original = bandpower_features(self.epochs[0])
+        rotated = analysis_spectrum_phase_rotation_features(self.epochs[0], seed=20260813)
+        np.testing.assert_allclose(rotated, original, rtol=1e-5, atol=1e-7)
 
     def test_both_segmentation_versions_have_same_feature_contract(self) -> None:
         words = extract_word_level_sequence(self.epochs)

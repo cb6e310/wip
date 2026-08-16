@@ -1,13 +1,14 @@
 schema_version: 1
-run_id: 2026-08-14_012_v37_text_encoder
+run_id: 2026-08-15_025_v313_a1_source_admission
 backbone: A1
-status: ENGINEERING_CONTRACT_PASS_SCIENTIFIC_ADMISSION_BLOCKED
-source_spec: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_7_2026-08-13.md#4.7.1
-source_spec_sha256: ff4c123a2a55450b3f0e1d00d4f3dbd8ee8c543368a7a98ef2170645ab425a86
+status: ENGINEERING_CONTRACT_PASS_REAL_SOURCE_PASS_SIGNAL_ADMISSION_BLOCKED
+source_spec: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_13_2026-08-15.md#D32-D34-Q.3
+source_spec_sha256: 81e43dde7d150e4a21b1dce6e2444d231e43cad07a969c7c3055fd66e7f4bf87
 config:
   n_channels: 105
   feature_dim: 840
   feature_order: channel_major
+  finite_policy: reject_any_nonfinite_no_imputation
   sampling_rate_hz: 500.0
   bands:
     - {name: theta1, low_hz: 4.0, high_hz: 6.0}
@@ -43,20 +44,20 @@ config:
   initialization_seed: 20260813
   fold: S0-TEXT
   method: A1
-  config_hash: a9ff618892a29b466d48d20c933503ea509a18c6fb002e274356d1513df73cf4
+  config_hash: c143e3d85bdc8796f352b046f71e43e68465450f075e143fbac853ffef523edf
 implementation:
   files:
-    02_code/src/backbones/a1_spectral.py: 5d2aa874590f0ce3315512ede648faa00721cef8e429440068d268ca11d9ce3f
-    02_code/tests/test_a1_contract.py: 332cc56d67179002b8cd56c98a014f9f3792d314720c75b24e3c2ae744d1c1fa
-    02_code/scripts/a1_contract_selfcheck.py: a5d43b5ec4520c26f62d398ee26db0e9dab9861db36c79bf17413b5d19d5db32
-  unit_tests: 7
-  unit_tests_passed: 7
+    02_code/src/backbones/a1_spectral.py: 01962aab393853774768e1e14bc752acf633e48fc136095595f4af3b93f35042
+    02_code/tests/test_a1_contract.py: d397b53786cc57da70675d2147c712d0c253f7cbbb08c5ac580c3fa2c2f88bac
+    02_code/scripts/a1_contract_selfcheck.py: 534ae332552f11f87e5dcb1c51ff1f3fc54d55d7c37cd66bf0f4148e8e105e80
+  unit_tests: 9
+  unit_tests_passed: 9
   selfcheck_status: PASS
-  selfcheck_assertions: 6
-  selfcheck_assertions_passed: 6
-  selfcheck_elapsed_seconds: 0.42894289270043373
-  selfcheck_evidence: 03_runs/debug_runs/a1_contract_selfcheck_seed20260813_foldS0-TEXT_methodA1_cfga9ff618892a2.json
-  selfcheck_evidence_sha256: 7228527fa395f9bd1cece9e1c193e30d24bf4610c4a8e182195cc1b4f179186e
+  selfcheck_assertions: 8
+  selfcheck_assertions_passed: 8
+  selfcheck_elapsed_seconds: 0.571
+  selfcheck_evidence: 03_runs/debug_runs/a1_contract_selfcheck_seed20260813_foldS0-TEXT_methodA1_cfgc143e3d85bdc.json
+  selfcheck_evidence_sha256: 483402a6f94336f56e19076538fb68c169ef7ce51342d8d738d1863e0358feda
   selfcheck_shapes:
     word_sequence: [4, 840]
     fixed_sequence: [7, 840]
@@ -67,4 +68,6 @@ scientific_freeze_notes:
   - v3.7 D8 freezes the exact eight half-open bands and the raw-unit Hann periodogram, nFFT=max(512,nextpow2(T)), half-open integration, no-dB rule, and outer-train-only robust normalization.
   - The preferred ET-free fixed-window source is 105-channel sentenceData.rawData, which may enter A1 directly; implicit first-105 truncation of 128-channel continuous EEG remains forbidden.
   - Only d_align changed from 256 to 384; the A1 network, PSD, bands, windows, normalization and parameter ceiling are otherwise unchanged.
-  - This rerun is a new synthetic engineering contract under run 2026-08-14_012_v37_text_encoder. It is not A1 real-data admission, EEG evidence, Gate A evidence, or a paper result.
+  - The v3.7 d_align=384 synthetic engineering contract remains in force; the v3.13 rerun binds strict finite rejection and phase invariance without changing the architecture or spectral formula.
+  - v3.13 Q.3 changes only the finite policy to reject any NaN/Inf without imputation and adds the D32 analysis-spectrum phase-invariance diagnostic; bands, Hann periodogram, nFFT, windows, 840D order, normalization formula, encoder, and d_align remain unchanged.
+  - The paired real-source audit passed under run 2026-08-15_025_v313_a1_source_admission, but A-A1 through A-A4 and full A1 signal admission remain unrun and blocked from this artifact.

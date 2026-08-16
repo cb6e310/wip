@@ -399,6 +399,9 @@ S0_LEAKAGE_AUDIT:
   blocked_reason: null
   completed_by_run: 2026-08-15_023_v312_pre_run_leakage_audit
   completion_outcome: PASS_PRE_RUN_V1_V5
+  reviewed_by_run: 2026-08-15_024_v313_leakage_review_a1_source_freeze
+  reviewed_commit: d9dfe51442155fbd3854d223916c519a7757fff1
+  review_outcome: ADMITTED_NO_REWORK
   evidence_scope: REAL_ZUCO2_PROTOCOL_ARTIFACTS_AND_SYNTHETIC_PRE_RUN_LEDGER_CONTRACT_NO_EEG_NO_TRAINING
   evidence:
     - 01_data_protocol/leakage_audit.md
@@ -429,7 +432,50 @@ S0_A1_FRONTEND:
   evidence:
     - artifacts/a1_frontend_freeze.yaml
     - 03_runs/debug_runs/a1_contract_selfcheck_seed_20260813_v2.json
-  completion_note: The frontend/API contract and raw-unit Hann-periodogram formula are frozen and synthetic contract checks pass. v3.7 promotes the existing eight numeric band edges to the scientific contract and selects 105-channel sentenceData.rawData for the fixed-window sensitivity. Real-data sampling/channel-order/unit/finite-value admission and d_align=384 integration remain pending; no 128-to-105 map is required for A1.
+  completion_note: The frontend/API contract and raw-unit Hann-periodogram formula are frozen and synthetic contract checks pass. v3.7 promotes the eight numeric band edges, d_align=384 and 105-channel sentenceData.rawData fixed-window source. v3.13 binds reject_any_nonfinite_no_imputation and the analysis-spectrum phase-invariance diagnostic; the separate S0_A1_SOURCE_ADMISSION now proves the real sampling/order/native-unlabelled-scale/source contract. Full A1 signal admission remains pending.
+
+S0_A1_SOURCE_ADMISSION:
+  title: Admit the real ZuCo2 A1 EEG source and deterministic feature contract
+  stage: stage_0
+  status: DONE
+  critical_path: true
+  priority: 8
+  prerequisites:
+    - S0_A1_FRONTEND
+    - S0_DATA_CARD
+    - S0_JOINT_SPLIT
+    - S0_LEAKAGE_AUDIT
+  produces:
+    - artifacts/a1_real_source_contract.yaml
+    - artifacts/a1_frontend_freeze.yaml
+    - 01_data_protocol/a1_source_exclusions.jsonl.gz
+    - 04_results/audits/zuco2_a1_source_admission.json
+    - 02_code/src/backbones/a1_spectral.py
+    - 02_code/src/data/a1_source_admission.py
+    - 02_code/scripts/admit_zuco2_a1_source.py
+    - 02_code/tests/test_a1_contract.py
+    - 02_code/tests/test_a1_source_admission.py
+  acceptance:
+    - all 36 released ZuCo2 task-summary MAT files and the release preprocessing metadata/scripts are inventoried read-only, with exact physical hashes and source provenance
+    - sentenceData.rawData and word rawEEG fixation matrices are numeric non-placeholder arrays in the admitted 105-channel positional contract; source admission rejects wrong rank, 104/106 channels, transposed source fields, object placeholders and every NaN or Inf rather than imputing
+    - the A1 frontend paper path is corrected from accepting 95 percent finite plus zero imputation to rejecting any nonfinite sample; the finite policy and changed implementation hashes are rebound in a1_frontend_freeze.yaml
+    - 500 Hz is proven from official acquisition information plus release/preprocessing metadata or scripts, never inferred from array length alone; mixed or unverified sampling rate blocks admission
+    - one exact ordered 105-label tuple is extracted from EEG.chanlocs.labels in release Preprocessed files and cryptographically bound; release evidence must prove that summary and word arrays use that positional order, otherwise SOURCE_ORDER_UNVERIFIED blocks admission
+    - amplitude units use explicit release evidence when present; otherwise only D34 release_native_amplitude_unit_unlabelled is allowed after stable no-conversion scale/provenance is proven, with no magnitude-based microvolt inference or conversion
+    - every valid and excluded source reference is bound to the admitted task, subject and source-slot identity, with compact deterministic exclusion reasons and no silent record loss
+    - each task retains at least 12 subjects; each retained subject has at least one valid word-level source and one sentence rawData source of at least 500 samples for deterministic smoke, with exact coverage and exclusions reported
+    - stable-hash selection takes two valid word-level and two fixed-window records per retained task-by-subject where available; two feature builds are byte-identical float32 with dimension 840 and all finite
+    - synthetic and real deterministic smoke rotate phase only on the exact demeaned-and-Hann windowed rFFT analysis spectrum and confirm unchanged A1 bandpower within rtol 1e-5 and atol 1e-7; no inverse transform, second Hann window or phase-only u score is allowed
+    - the task fits no normalizer, probe, sham model or alignment model and reports no A-A1 through A-A4, held-out retrieval, Gate, route or paper-level EEG outcome
+  blocked_reason: null
+  completed_by_run: 2026-08-15_025_v313_a1_source_admission
+  completion_outcome: PASS_REAL_A1_SOURCE
+  evidence:
+    - artifacts/a1_real_source_contract.yaml
+    - 01_data_protocol/a1_source_exclusions.jsonl.gz
+    - 04_results/audits/zuco2_a1_source_admission.json
+    - runs/2026-08-15_025_v313_a1_source_admission.md
+  completion_note: All 36 summary MATs and 252 co-released Preprocessed EEG files passed the 500 Hz, exact ordered 105-label, native-unlabelled stable-scale, strict-finite, source-slot identity and G0 checks. Two independent builds produced byte-identical contract, exclusion ledger and audit; 144 selected sources produced deterministic finite float32 840D features and exact analysis-spectrum phase invariance. This is source admission only; no normalizer, A-A1 through A-A4, model, held-out metric or Gate was run.
 
 S0_A1_ADMISSION:
   title: Run the four A1 admission self-checks on outer-train data
@@ -445,14 +491,17 @@ S0_A1_ADMISSION:
     - S0_SEMANTIC_ITEM
     - S0_CANDIDATE_COMMON_SUPPORT
     - S0_LEAKAGE_AUDIT
+    - S0_A1_SOURCE_ADMISSION
   produces:
     - 04_results/audits/a1_admission.md
   acceptance:
-    - real-versus-sham incremental evidence is reported
-    - linear subject probe and coarse semantic probe are above chance or explained
-    - A1 is not uniformly worse than raw spectral features
+    - real-versus-sham incremental evidence uses only the three v3.13 identifiable A1 shams and reports both mean-sham u_oof and u_min
+    - phase rotation on the exact A1 analysis spectrum is used only as the admitted feature-invariance diagnostic, never as a strong sham, u_min member or phase-only failure condition; pre-window phase perturbation is not substituted
+    - the linear subject probe uses stimulus-group cross-validation within outer-train subjects, and the coarse semantic probe obeys nested train/selection boundaries
+    - A1 frozen-initial latent is not uniformly worse than the 840D raw spectral feature baseline across the three diagnostics
     - all results use only outer-training data
   blocked_reason: null
+  why_ready: S0_A1_SOURCE_ADMISSION passed the real ZuCo2 source contract. Run only the frozen A-A1 through A-A4 outer-training admission checks under v3.13 D32; source PASS is not itself signal or model admission.
 
 S0_A3_CONTAMINATION_CHECK:
   title: Verify A3 LaBraM pretraining contamination, license, checkpoint, and channel map
@@ -547,7 +596,7 @@ S0_ALIGN_UNIT_COST:
     - one real training run is timed and configured
     - runtime over 45 minutes triggers the guide's cut order
     - no held-out result is used to tune the protocol
-  blocked_reason: Real alignment cost measurement is permitted only after S0_A1_ADMISSION has admitted the sentenceData.rawData source and A1 real-data contract. It remains blocked even when the pre-run leakage audit passes.
+  blocked_reason: The real source contract now passes, but alignment cost measurement remains permitted only after S0_A1_ADMISSION completes A-A1 through A-A4 and admits the A1 signal/representation path.
 
 STAGE1_PROBES:
   title: Run raw/latent real, three matched shams, text-only, OOF scores, and u_min
@@ -568,8 +617,9 @@ STAGE1_PROBES:
     - 04_results/stage1_signal/stage1_run_card.md
   acceptance:
     - both raw and frozen-initial-latent bases are reported
-    - trial_shuffle, time_block_shuffle, and phase_randomization match real capacity
-    - u_oof, u_min, phase-only, text-only, null, fold, seed, and support fields exist
+    - trial_shuffle, within_trial_unit_assignment_shuffle, and channel_block_permutation match real capacity and follow the frozen v3.13 construction
+    - exact-analysis-spectrum phase rotation is reported only through run-level A1 feature-invariance errors and cannot enter the main sham mean, u_min or a Gate failure; pre-window phase perturbation is not substituted
+    - u_oof, u_min, text-only, null, fold, seed, and support fields exist
   blocked_reason: The Gate-A population rule is now frozen and tested, but Stage 1 remains forbidden until A1 admission, candidates, and the full leakage audit pass.
 
 SHAM_VALIDATION:
@@ -623,7 +673,7 @@ S0_DIRECT_U_PLUS:
     - measurement-layer hyperparameters are not imposed on this non-measurement row
     - entropy, Gini, quantiles, floor-hit, and all-zero-batch diagnostics use the unique v3.7 definitions
     - all variants and dispersion diagnostics are reportable
-  blocked_reason: The v3.12 N=10 common-support population and pre-run leakage audit are frozen, but direct-u-plus implementation remains paused by Stage-0 execution order while the recommended S0_A1_ADMISSION and required Stage-1 prerequisites remain incomplete. This is not permission to alter the section 6.16 formula.
+  blocked_reason: The N=10 common-support population, pre-run leakage audit and A1 source contract are frozen, but direct-u-plus implementation remains paused by Stage-0 execution order while the recommended S0_A1_ADMISSION and required Stage-1 prerequisites remain incomplete. This is not permission to alter the section 6.16 formula.
 
 S0_EQ_ANMA_CORE:
   title: Implement the EQ-ANMA weighting path after Stage-1 scores are frozen

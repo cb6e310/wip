@@ -23,6 +23,8 @@ from backbones.a1_spectral import (  # noqa: E402
     A1AlignmentEncoder,
     DEFAULT_CONFIG,
     RobustFeatureNormalizer,
+    analysis_spectrum_phase_rotation_features,
+    bandpower_features,
     config_hash,
     extract_fixed_window_sequence,
     extract_word_level_sequence,
@@ -53,6 +55,8 @@ def main() -> int:
     encoder = A1AlignmentEncoder(seed=args.seed)
     output = encoder(padded, mask)
     metadata = run_metadata(seed=args.seed, fold=args.fold, method=args.method)
+    phase_original = bandpower_features(epochs[0])
+    phase_rotated = analysis_spectrum_phase_rotation_features(epochs[0], seed=args.seed)
     elapsed = time.perf_counter() - started
     assertions = {
         "word_feature_dim": word_sequence.shape[1] == DEFAULT_CONFIG.feature_dim,
@@ -61,6 +65,10 @@ def main() -> int:
         "output_shape": tuple(output.shape) == (2, DEFAULT_CONFIG.d_align),
         "finite": bool(np.isfinite(word_sequence).all() and np.isfinite(fixed_sequence).all()),
         "parameter_limit": encoder.parameter_count <= DEFAULT_CONFIG.max_encoder_params,
+        "strict_finite_policy": DEFAULT_CONFIG.finite_policy == "reject_any_nonfinite_no_imputation",
+        "analysis_spectrum_phase_invariant": bool(
+            np.allclose(phase_original, phase_rotated, rtol=1e-5, atol=1e-7)
+        ),
     }
     passed = all(assertions.values())
     record = {
@@ -81,6 +89,8 @@ def main() -> int:
             "output_abs_max": float(output.detach().abs().max().item()),
         },
         "parameter_count": encoder.parameter_count,
+        "finite_policy": DEFAULT_CONFIG.finite_policy,
+        "phase_max_abs_error": float(np.max(np.abs(phase_original - phase_rotated))),
         "elapsed_seconds": elapsed,
         "assertions": assertions,
         "config_hash": config_hash(),

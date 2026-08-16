@@ -2,22 +2,20 @@
 
 ## Current decision
 
-`S0_LEAKAGE_AUDIT=DONE/PASS_PRE_RUN_V1_V5`. V1–V4 pass on the admitted real ZuCo2 protocol artifacts. V5 passes only as an executable, adversarially tested pre-run ledger contract: `future_run_admission_required=true`, `real_training_ledgers_audited=0`.
+`S0_A1_SOURCE_ADMISSION=DONE/PASS_REAL_A1_SOURCE` under run `2026-08-15_025_v313_a1_source_admission`. All 36 ZuCo2 summary MATs and all 252 co-released Preprocessed EEG files passed the frozen source-field, 500 Hz, exact ordered 105-channel, stable native-unlabelled scale, strict finite, source-slot identity and G0 contracts. The source contract, exclusion ledger and audit were rebuilt independently and are byte-identical.
 
-This is not evidence that a future or unrun EEG/training job is leakage-free. Every future run must provide exact fit, inner-selection, outer-test-read and calibration record IDs plus frozen input hashes, and must pass the V5 validator independently.
-
-## Admitted evidence
-
-- V1 subject/record isolation: `PASS_REAL_ARTIFACTS` across 60 outer cells and 540 inner cells.
-- V2 source-slot/text-fold/material-group isolation: `PASS_REAL_ARTIFACTS`; atomic groups do not cross train/validation/test boundaries.
-- V3 legal H boundary: `PASS_REAL_ARTIFACTS`; H_full/H_empty are restricted to the registered probe/history interface, and candidate use is source-sentence identity exclusion only.
-- V4 exact physical/canonical/provenance/scope/prefix/position/paired/scoring boundary: `PASS_REAL_ARTIFACTS` across 190 scopes, 18,475 targets and 92,375 repeats. `scoring_only=true`, `training_records_removed=0`.
-- V5 future run-ledger validator: `PASS_PRE_RUN_CONTRACT`; nonzero test calibration, illegal fit/selection scope and outer-test tuning reads are rejected.
-- Machine audit SHA256: `28f416a4470d8223294e100e2c8dbb514c05d98184a9dd7936c43267d9e8ca2c`; markdown SHA256: `8732d08d6b0145b2da9a71976ec44738ffd241e06dfdc8f6ae838080df44e09d`.
-- Focused leakage tests 19/19, affected protocol regressions 50/50, complete suite 157/157.
+The A1 frontend now rejects any NaN/Inf without imputation. Bands, Hann-periodogram, nFFT, windows, stride, 840D order, normalization formula, encoder and `d_align=384` are unchanged. The 144-record real smoke was deterministic finite float32 `[T,840]`; analysis-spectrum phase rotation had zero observed feature error within the frozen tolerance.
 
 ## Required next action
 
-Run only `S0_A1_ADMISSION`. It must admit the real 105-channel `sentenceData.rawData` source contract, including sampling rate, channel order, units, finite values and field semantics, and execute its outer-train-only real/sham/subject/semantic checks under the admitted leakage contract.
+Run only `S0_A1_ADMISSION`, now the sole READY/recommended task. Execute the frozen A-A1 through A-A4 outer-training admission checks under SPEC v3.13 D32, using only the three identifiable strong A1 shams and treating analysis-spectrum phase rotation solely as the admitted invariance diagnostic.
 
-`S0_ALIGN_UNIT_COST` remains BLOCKED until A1 admission is DONE. Do not implement unit cost, direct u+, Stage 1, Gates, route/main experiment, or resume ROAMM in the A1 admission task.
+Do not start unit-cost measurement, direct u+, Stage 1, Gates, route/main experiment or ROAMM in the same task. Source PASS is not A1 signal/model admission and is not a Gate or paper result.
+
+## Evidence boundary
+
+- Formal artifact SHA256: contract `bb03bb785dd62d8957819aa69eaa4155636e36858dcb35cf31a8e9a81bbedc3c`; exclusion ledger `250f1e2cda8f4b4c2900bb031845f0c347a75f180ca083b68401da671bb65d3c`; audit `07b3718eee0f7e6784d8d1007447ac7bdcbd92a4b85a1e6bfc504b64c9aa271f`.
+- Ordered 105-label tuple SHA256: `23b8d1ee22d87560fe1a6384141b2713c450ca34ef9eeff8241e7bd3bd885ef5`; summary physical inventory SHA256: `7fc731c4ccd273e12c425ef86cdbd5b02c2546e931ed27aadc7e4b538a30bf86`.
+- NR retained 18/18 subjects with 5,915 valid sentence sources and 122,213 valid word fixations; TSR retained 18/18 with 6,588 and 109,703. The 214,496 exclusions are explicit release placeholders/missing references; no accepted matrix contained NaN/Inf.
+- Focused tests: 68/68; complete unittest suite: 180/180; 0 skipped, 0 failed.
+- No normalizer was fit on real source data; no A-A1–A-A4 probe, sham/model training, held-out metric, Gate, route, main experiment or ROAMM work was run.

@@ -1,11 +1,11 @@
 schema_version: 1
-updated_at: "2026-08-16T01:41:20+00:00"
-updated_by_run: 2026-08-15_023_v312_pre_run_leakage_audit
+updated_at: "2026-08-16T11:16:00+08:00"
+updated_by_run: 2026-08-15_025_v313_a1_source_admission
 
 project:
   name: trustworthy_subject_general_eeg_text_alignment
-  spec_version: v3.12
-  spec_path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_12_2026-08-14.md
+  spec_version: v3.13
+  spec_path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_13_2026-08-15.md
   execution_plan_path: guide/EEG_Text_Bprime_Execution_Plan_v3_2026-08-11_to_Submission.md
   server_root: /home/song/projects/trust_align
   python_path: /home/song/projects/trust_align/.venv/bin/python
@@ -62,18 +62,18 @@ blockers:
       - S0_A3_CONTAMINATION_CHECK
     resolution: Approve and hash an exact-name or spatial EGI128-to-canonical map with coverage, verify the raw signal unit, freeze filter order/notch Q, then run the real 500-to-200 preprocessing and no-gradient 200D extraction smoke. Preserve checkpoint provenance and do not redistribute the checkpoint.
 
-last_completed_task: S0_LEAKAGE_AUDIT
+last_completed_task: S0_A1_SOURCE_ADMISSION
 recommended_next_task: S0_A1_ADMISSION
-last_run: runs/2026-08-15_023_v312_pre_run_leakage_audit.md
+last_run: runs/2026-08-15_025_v313_a1_source_admission.md
 
 do_not_do_yet:
   - Do not treat the ZuCo 1.0 smoke as paper evidence.
   - Do not start Stage 1, Gate A, or Gate B before all remaining protocol and A1-admission prerequisites are validated.
   - Do not lock a route or start the main experiment before ROUTE_LOCK is DONE.
-  - Do not execute CSPE or TMNRED in this paper; v3.12 limits the research route to EQ-ANMA with a negative-diagnostic fallback.
-  - Do not add a third backbone; the user and v3.12 scope are A1 plus A3 only.
+  - Do not execute CSPE or TMNRED in this paper; v3.13 limits the research route to EQ-ANMA with a negative-diagnostic fallback.
+  - Do not add a third backbone; the user and v3.13 scope are A1 plus A3 only.
   - Do not treat the A1 synthetic contract self-check as real-data admission evidence.
-  - Do not run the A1 fixed-window path from 128-channel continuous files; v3.7 fixes its source to 105-channel sentenceData.rawData pending real-field admission.
+  - Do not run the A1 fixed-window path from 128-channel continuous files; the admitted source is the exact 105-channel sentenceData.rawData order bound by the v3.13 source contract.
   - Do not treat the admitted inner split as Stage-1 OOF evidence; it is protocol infrastructure only.
   - Do not treat the bbf8d11 512-token run as exact-revision text admission; the corrected 256-token/config-manifest run is the admitted evidence.
   - Do not resume ROAMM download, admission, candidate construction or training until the ZuCo2 MAIN_EXPERIMENT outputs and method/threshold/route decisions are frozen.
@@ -82,7 +82,9 @@ do_not_do_yet:
   - Do not delete N=10-ineligible records from any training set; common-support eligibility affects inner-validation and outer-test scoring only, and exclusions must remain explicit in the audit ledger.
   - Do not compact, delete, rewrite or regenerate the admitted v3.10 base or v3.11 common-support artifacts merely to reduce storage or Codex usage; their large duplicated JSON is a nonblocking efficiency note.
   - Do not treat the pre-run V5 contract as evidence that future EEG/training runs are leakage-free; every future run requires its own admitted fit/selection/calibration ledger.
-  - Execute only S0_A1_ADMISSION next. Real MAT sampling rate, channel order, units, finite values and field semantics remain hard acceptance checks inside it; do not treat READY as admission evidence.
+  - Execute only S0_A1_ADMISSION next. It owns A-A1 through A-A4 on outer-training data under the admitted source and leakage contracts; do not start unit cost, Stage 1, Gates, route or main experiment in the same task.
+  - Do not reinterpret S0_A1_SOURCE_ADMISSION as signal/model admission; it proves source facts and deterministic 840D extraction only, and A-A1 through A-A4 remain unrun until S0_A1_ADMISSION.
+  - Do not use phase randomization as an A1 strong sham, u_min member or phase-only No-Go. Rotate phase only on the exact demeaned-and-Hann windowed rFFT analysis spectrum for the required A1 invariance diagnostic; pre-window phase randomization changes the analyzed magnitude and is not phase-only.
   - Do not use ROAMM outcomes to change ZuCo thresholds, route selection or hyperparameters; the panels are independent.
   - Do not claim cross-dataset replication or paper completion while ROAMM remains deferred; only the ZuCo2 full-experiment milestone can be completed first.
   - Do not include A3 in T6 until its canonical channel map, raw-unit/filter parameters, and real MAT extraction admission pass; CO-N7 itself is cleared by v3.6.

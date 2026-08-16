@@ -1,0 +1,1275 @@
+{
+  "algorithm_version": "zuco2-a1-source-admission-v313-q3-v1",
+  "baseline_commit": "d9dfe51442155fbd3854d223916c519a7757fff1",
+  "checks": {
+    "analysis_spectrum_phase_invariant": true,
+    "coverage_g0": true,
+    "feature_smoke_deterministic_840d": true,
+    "identity_unique_and_joined": true,
+    "native_scale_provenance": true,
+    "ordered_105_labels": true,
+    "preprocessed_files_exactly_252": true,
+    "sampling_500_hz": true,
+    "strict_finite_policy": true,
+    "summary_files_exactly_36": true,
+    "summary_sentence_word_exact_release_links": true
+  },
+  "coverage": {
+    "by_task_subject": {
+      "task1_nr": {
+        "YAC": {
+          "sentence_excluded": 102,
+          "sentence_ge_500": 247,
+          "sentence_valid": 247,
+          "word_excluded": 3458,
+          "word_valid": 4375
+        },
+        "YAG": {
+          "sentence_ge_500": 349,
+          "sentence_valid": 349,
+          "word_excluded": 3232,
+          "word_valid": 9016
+        },
+        "YAK": {
+          "sentence_excluded": 51,
+          "sentence_ge_500": 248,
+          "sentence_valid": 298,
+          "word_excluded": 4016,
+          "word_valid": 3499
+        },
+        "YDG": {
+          "sentence_ge_500": 349,
+          "sentence_valid": 349,
+          "word_excluded": 5094,
+          "word_valid": 6133
+        },
+        "YDR": {
+          "sentence_excluded": 3,
+          "sentence_ge_500": 335,
+          "sentence_valid": 346,
+          "word_excluded": 6323,
+          "word_valid": 5619
+        },
+        "YFR": {
+          "sentence_excluded": 106,
+          "sentence_ge_500": 243,
+          "sentence_valid": 243,
+          "word_excluded": 4578,
+          "word_valid": 7876
+        },
+        "YFS": {
+          "sentence_excluded": 13,
+          "sentence_ge_500": 331,
+          "sentence_valid": 336,
+          "word_excluded": 6395,
+          "word_valid": 5075
+        },
+        "YHS": {
+          "sentence_ge_500": 344,
+          "sentence_valid": 349,
+          "word_excluded": 6992,
+          "word_valid": 4132
+        },
+        "YIS": {
+          "sentence_ge_500": 349,
+          "sentence_valid": 349,
+          "word_excluded": 4402,
+          "word_valid": 7151
+        },
+        "YLS": {
+          "sentence_excluded": 6,
+          "sentence_ge_500": 343,
+          "sentence_valid": 343,
+          "word_excluded": 4822,
+          "word_valid": 6127
+        },
+        "YMD": {
+          "sentence_excluded": 7,
+          "sentence_ge_500": 342,
+          "sentence_valid": 342,
+          "word_excluded": 3053,
+          "word_valid": 9785
+        },
+        "YMS": {
+          "sentence_excluded": 3,
+          "sentence_ge_500": 346,
+          "sentence_valid": 346,
+          "word_excluded": 3613,
+          "word_valid": 9041
+        },
+        "YRH": {
+          "sentence_excluded": 52,
+          "sentence_ge_500": 296,
+          "sentence_valid": 297,
+          "word_excluded": 4368,
+          "word_valid": 5333
+        },
+        "YRK": {
+          "sentence_excluded": 10,
+          "sentence_ge_500": 339,
+          "sentence_valid": 339,
+          "word_excluded": 3411,
+          "word_valid": 8553
+        },
+        "YRP": {
+          "sentence_excluded": 6,
+          "sentence_ge_500": 342,
+          "sentence_valid": 343,
+          "word_excluded": 4270,
+          "word_valid": 7683
+        },
+        "YSD": {
+          "sentence_excluded": 1,
+          "sentence_ge_500": 348,
+          "sentence_valid": 348,
+          "word_excluded": 3939,
+          "word_valid": 6542
+        },
+        "YSL": {
+          "sentence_excluded": 6,
+          "sentence_ge_500": 343,
+          "sentence_valid": 343,
+          "word_excluded": 2377,
+          "word_valid": 8320
+        },
+        "YTL": {
+          "sentence_excluded": 1,
+          "sentence_ge_500": 344,
+          "sentence_valid": 348,
+          "word_excluded": 2715,
+          "word_valid": 7953
+        }
+      },
+      "task2_tsr": {
+        "YAC": {
+          "sentence_excluded": 119,
+          "sentence_ge_500": 271,
+          "sentence_valid": 271,
+          "word_excluded": 4431,
+          "word_valid": 4548
+        },
+        "YAG": {
+          "sentence_excluded": 3,
+          "sentence_ge_500": 387,
+          "sentence_valid": 387,
+          "word_excluded": 4679,
+          "word_valid": 11017
+        },
+        "YAK": {
+          "sentence_excluded": 3,
+          "sentence_ge_500": 387,
+          "sentence_valid": 387,
+          "word_excluded": 5899,
+          "word_valid": 6792
+        },
+        "YDG": {
+          "sentence_excluded": 2,
+          "sentence_ge_500": 388,
+          "sentence_valid": 388,
+          "word_excluded": 8432,
+          "word_valid": 5300
+        },
+        "YDR": {
+          "sentence_ge_500": 324,
+          "sentence_valid": 390,
+          "word_excluded": 11642,
+          "word_valid": 3258
+        },
+        "YFR": {
+          "sentence_excluded": 174,
+          "sentence_ge_500": 216,
+          "sentence_valid": 216,
+          "word_excluded": 6425,
+          "word_valid": 5462
+        },
+        "YFS": {
+          "sentence_excluded": 4,
+          "sentence_ge_500": 357,
+          "sentence_valid": 386,
+          "word_excluded": 10702,
+          "word_valid": 3917
+        },
+        "YHS": {
+          "sentence_ge_500": 371,
+          "sentence_valid": 390,
+          "word_excluded": 10758,
+          "word_valid": 3398
+        },
+        "YIS": {
+          "sentence_ge_500": 382,
+          "sentence_valid": 390,
+          "word_excluded": 11018,
+          "word_valid": 3709
+        },
+        "YLS": {
+          "sentence_excluded": 8,
+          "sentence_ge_500": 382,
+          "sentence_valid": 382,
+          "word_excluded": 7260,
+          "word_valid": 7096
+        },
+        "YMD": {
+          "sentence_excluded": 12,
+          "sentence_ge_500": 378,
+          "sentence_valid": 378,
+          "word_excluded": 5324,
+          "word_valid": 9279
+        },
+        "YMS": {
+          "sentence_excluded": 1,
+          "sentence_ge_500": 378,
+          "sentence_valid": 389,
+          "word_excluded": 10246,
+          "word_valid": 4505
+        },
+        "YRH": {
+          "sentence_excluded": 83,
+          "sentence_ge_500": 304,
+          "sentence_valid": 307,
+          "word_excluded": 6323,
+          "word_valid": 4933
+        },
+        "YRK": {
+          "sentence_excluded": 4,
+          "sentence_ge_500": 386,
+          "sentence_valid": 386,
+          "word_excluded": 4323,
+          "word_valid": 9626
+        },
+        "YRP": {
+          "sentence_excluded": 9,
+          "sentence_ge_500": 381,
+          "sentence_valid": 381,
+          "word_excluded": 4631,
+          "word_valid": 9883
+        },
+        "YSD": {
+          "sentence_excluded": 1,
+          "sentence_ge_500": 385,
+          "sentence_valid": 389,
+          "word_excluded": 9781,
+          "word_valid": 4312
+        },
+        "YSL": {
+          "sentence_excluded": 9,
+          "sentence_ge_500": 381,
+          "sentence_valid": 381,
+          "word_excluded": 4137,
+          "word_valid": 8621
+        },
+        "YTL": {
+          "sentence_ge_500": 383,
+          "sentence_valid": 390,
+          "word_excluded": 10628,
+          "word_valid": 4047
+        }
+      }
+    },
+    "diagnostic_quantiles_bounded_sample": {
+      "0.0": -84.17418689446632,
+      "0.01": -14.007531663550878,
+      "0.5": 0.0,
+      "0.99": 14.790551894606732,
+      "1.0": 89.4250115804391
+    },
+    "g0_minimum_subjects_per_task": 12,
+    "g0_pass": true,
+    "retained_subjects": {
+      "task1_nr": [
+        "YAC",
+        "YAG",
+        "YAK",
+        "YDG",
+        "YDR",
+        "YFR",
+        "YFS",
+        "YHS",
+        "YIS",
+        "YLS",
+        "YMD",
+        "YMS",
+        "YRH",
+        "YRK",
+        "YRP",
+        "YSD",
+        "YSL",
+        "YTL"
+      ],
+      "task2_tsr": [
+        "YAC",
+        "YAG",
+        "YAK",
+        "YDG",
+        "YDR",
+        "YFR",
+        "YFS",
+        "YHS",
+        "YIS",
+        "YLS",
+        "YMD",
+        "YMS",
+        "YRH",
+        "YRK",
+        "YRP",
+        "YSD",
+        "YSL",
+        "YTL"
+      ]
+    }
+  },
+  "exclusion_reason_counts": {
+    "OBJECT_PLACEHOLDER_1X1": 1741,
+    "OBJECT_PLACEHOLDER_OR_DANGLING_REFERENCE": 212228,
+    "WORD_GROUP_OR_RAWeeg_MISSING": 527
+  },
+  "exclusion_record_count": 214496,
+  "feature_smoke": {
+    "dtype": "float32",
+    "feature_bytes_sha256": "2d2f1b8b185d634323b46d7bdee8a98b08988e705c13d04cafa9af6f86415565",
+    "feature_dim": 840,
+    "finite": true,
+    "retained_subjects": {
+      "task1_nr": [
+        "YAC",
+        "YAG",
+        "YAK",
+        "YDG",
+        "YDR",
+        "YFR",
+        "YFS",
+        "YHS",
+        "YIS",
+        "YLS",
+        "YMD",
+        "YMS",
+        "YRH",
+        "YRK",
+        "YRP",
+        "YSD",
+        "YSL",
+        "YTL"
+      ],
+      "task2_tsr": [
+        "YAC",
+        "YAG",
+        "YAK",
+        "YDG",
+        "YDR",
+        "YFR",
+        "YFS",
+        "YHS",
+        "YIS",
+        "YLS",
+        "YMD",
+        "YMS",
+        "YRH",
+        "YRK",
+        "YRP",
+        "YSD",
+        "YSL",
+        "YTL"
+      ]
+    },
+    "seed": 20260813,
+    "selected_record_count": 144,
+    "selection_manifest_sha256": "9c6865cbb2f0eeff2fdd3c72df06b477548d686722e6a86dc3d5ec4dcd71eb75",
+    "selection_rule": "SHA256(canonical identity plus seed), first two",
+    "sequence_shape_counts": {
+      "[1, 840]": 72,
+      "[10, 840]": 3,
+      "[11, 840]": 5,
+      "[12, 840]": 4,
+      "[13, 840]": 4,
+      "[15, 840]": 3,
+      "[16, 840]": 3,
+      "[17, 840]": 1,
+      "[19, 840]": 1,
+      "[2, 840]": 6,
+      "[22, 840]": 1,
+      "[23, 840]": 1,
+      "[26, 840]": 1,
+      "[27, 840]": 1,
+      "[29, 840]": 2,
+      "[3, 840]": 8,
+      "[39, 840]": 1,
+      "[4, 840]": 2,
+      "[5, 840]": 8,
+      "[6, 840]": 8,
+      "[7, 840]": 2,
+      "[8, 840]": 2,
+      "[9, 840]": 5
+    },
+    "two_calls_byte_identical": true
+  },
+  "input_bindings": {
+    "a1_config_hash": "c143e3d85bdc8796f352b046f71e43e68465450f075e143fbac853ffef523edf",
+    "baseline_commit": "d9dfe51442155fbd3854d223916c519a7757fff1",
+    "official_acquisition_evidence": {
+      "statement": "EEG acquired with a 128-channel Geodesic Hydrocel system at 500 Hz",
+      "title": "ZuCo 2.0: A Dataset of Physiological Recordings During Natural Reading and Annotation",
+      "url": "https://www.research-collection.ethz.ch/handle/20.500.11850/353427"
+    },
+    "preprocessed_metadata_manifest_sha256": "388270f304672cf29e8f0900b72a8c296ba35fcaabe1fa8e0ad823f45f596854",
+    "release_reader_hashes": {
+      "scripts/python_reader/data_loading_helpers.py": "90e3bab7d082891b4b53fcb154286d8a73eea0f3fa89a312176025f035cfa71c",
+      "scripts/python_reader/read_matlab_files.py": "daf147dee64cf53ae55050a3d19d0ea37d8811057cd9de3cfb2bc7f29fb91712"
+    },
+    "source_join_hashes": {
+      "task1_nr": "97f3a0bd695d482ceff409b85414790c5f9877fcba28049572f354de61366f12",
+      "task2_tsr": "7a3bc1cb3f41557b7f13cb76f44833de0f4b72726849024378ec0935e98a5060"
+    },
+    "summary_file_count": 36,
+    "summary_inventory_sha256": "7fc731c4ccd273e12c425ef86cdbd5b02c2546e931ed27aadc7e4b538a30bf86"
+  },
+  "limitations": [
+    "Physical amplitude unit is not labelled; values remain release-native with no conversion.",
+    "Source admission is not normalization, signal admission, training, Gate evidence, or a paper result.",
+    "Diagnostic quantiles use a fixed bounded sample and never select thresholds."
+  ],
+  "no_eeg_array_committed": true,
+  "no_heldout_metric": true,
+  "no_model_or_probe_training": true,
+  "no_normalizer_fit": true,
+  "overall_outcome": "PASS_REAL_A1_SOURCE",
+  "phase_invariance": {
+    "atol": 1e-07,
+    "maximum_absolute_error": 0.0,
+    "maximum_relative_error": 0.0,
+    "method": "analysis-spectrum rotation; no irfft; no second Hann",
+    "pass": true,
+    "rtol": 1e-05
+  },
+  "run_id": "2026-08-15_025_v313_a1_source_admission",
+  "schema_version": 1,
+  "seed": 20260813,
+  "summary_inventory": [
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task1 - NR/Preprocessed/YAC/gip_YAC_NR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 1021
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task1 - NR/Preprocessed/YAC/gip_YAC_NR1_EEG.mat",
+          "reference_locator": "sentence:1/word:1/fixation:1",
+          "start_sample": 1251
+        }
+      ],
+      "path": "task1 - NR/Matlab files/resultsYAC_NR.mat",
+      "sha256": "0fbe472ed81fd80697c051e89d2af72ec12ebd2b4ec25f65ce47460aec26d8f5",
+      "size_bytes": 1340390157,
+      "subject": "YAC",
+      "task": "task1_nr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task1 - NR/Preprocessed/YAG/gip_YAG_NR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 1051
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task1 - NR/Preprocessed/YAG/gip_YAG_NR1_EEG.mat",
+          "reference_locator": "sentence:1/word:1/fixation:1",
+          "start_sample": 1348
+        }
+      ],
+      "path": "task1 - NR/Matlab files/resultsYAG_NR.mat",
+      "sha256": "aaa9ce8a8a615d3af2eafcf756f8a7fb5fc010d54d7485151b104ef585a94ce7",
+      "size_bytes": 2426102526,
+      "subject": "YAG",
+      "task": "task1_nr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task1 - NR/Preprocessed/YAK/oip_YAK_NR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 1013
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task1 - NR/Preprocessed/YAK/oip_YAK_NR1_EEG.mat",
+          "reference_locator": "sentence:3/word:3/fixation:1",
+          "start_sample": 1431
+        }
+      ],
+      "path": "task1 - NR/Matlab files/resultsYAK_NR.mat",
+      "sha256": "07d877e639b899bdc9cb8f63d3250a9cbe3495eccad50a9e6226280d8fba533b",
+      "size_bytes": 1235552076,
+      "subject": "YAK",
+      "task": "task1_nr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task1 - NR/Preprocessed/YDG/gip_YDG_NR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 1037
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task1 - NR/Preprocessed/YDG/gip_YDG_NR1_EEG.mat",
+          "reference_locator": "sentence:1/word:2/fixation:1",
+          "start_sample": 1218
+        }
+      ],
+      "path": "task1 - NR/Matlab files/resultsYDG_NR.mat",
+      "sha256": "e7fc40698f3c87f31100b2f3f85278b56c498d00bf162a32c9b6bbd89ac6bf09",
+      "size_bytes": 1748510042,
+      "subject": "YDG",
+      "task": "task1_nr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task1 - NR/Preprocessed/YDR/gip_YDR_NR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 1036
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task1 - NR/Preprocessed/YDR/gip_YDR_NR1_EEG.mat",
+          "reference_locator": "sentence:1/word:2/fixation:1",
+          "start_sample": 1209
+        }
+      ],
+      "path": "task1 - NR/Matlab files/resultsYDR_NR.mat",
+      "sha256": "5143ecd17a1942aed705da78d857e1551d1a211fc1a0827de098b6cce06840f5",
+      "size_bytes": 1541159278,
+      "subject": "YDR",
+      "task": "task1_nr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task1 - NR/Preprocessed/YFR/oip_YFR_NR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 1029
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task1 - NR/Preprocessed/YFR/oip_YFR_NR1_EEG.mat",
+          "reference_locator": "sentence:1/word:1/fixation:1",
+          "start_sample": 1124
+        }
+      ],
+      "path": "task1 - NR/Matlab files/resultsYFR_NR.mat",
+      "sha256": "523bb9f407de077547e658cc173b6ab9d57d5bcdb17e470cba6141d611cb259a",
+      "size_bytes": 1892890796,
+      "subject": "YFR",
+      "task": "task1_nr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task1 - NR/Preprocessed/YFS/gip_YFS_NR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 1049
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task1 - NR/Preprocessed/YFS/gip_YFS_NR1_EEG.mat",
+          "reference_locator": "sentence:1/word:1/fixation:1",
+          "start_sample": 7398
+        }
+      ],
+      "path": "task1 - NR/Matlab files/resultsYFS_NR.mat",
+      "sha256": "db464aa7df52464979b6346a45183b3dc203882cfa9b3caa887b5d858bc389b3",
+      "size_bytes": 1404067839,
+      "subject": "YFS",
+      "task": "task1_nr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task1 - NR/Preprocessed/YHS/gip_YHS_NR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 1039
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task1 - NR/Preprocessed/YHS/gip_YHS_NR1_EEG.mat",
+          "reference_locator": "sentence:1/word:1/fixation:1",
+          "start_sample": 1335
+        }
+      ],
+      "path": "task1 - NR/Matlab files/resultsYHS_NR.mat",
+      "sha256": "f92093dfcfb39ddf142d28c24644ba63379fdd123407432c8fd9d15c24576857",
+      "size_bytes": 1290663769,
+      "subject": "YHS",
+      "task": "task1_nr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task1 - NR/Preprocessed/YIS/gip_YIS_NR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 1034
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task1 - NR/Preprocessed/YIS/gip_YIS_NR1_EEG.mat",
+          "reference_locator": "sentence:1/word:1/fixation:1",
+          "start_sample": 1229
+        }
+      ],
+      "path": "task1 - NR/Matlab files/resultsYIS_NR.mat",
+      "sha256": "bee4253689232fb54b1780db17e7e2799e37ef5ac9ea355068e7b6a59051a3c9",
+      "size_bytes": 2026534731,
+      "subject": "YIS",
+      "task": "task1_nr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task1 - NR/Preprocessed/YLS/gip_YLS_NR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 1051
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task1 - NR/Preprocessed/YLS/gip_YLS_NR1_EEG.mat",
+          "reference_locator": "sentence:1/word:1/fixation:1",
+          "start_sample": 1190
+        }
+      ],
+      "path": "task1 - NR/Matlab files/resultsYLS_NR.mat",
+      "sha256": "a1b2e948c3cdd5712ef86ac0509fcc4ccb58ecdeb8d727b563d52c2ddd0c5d5a",
+      "size_bytes": 1923277772,
+      "subject": "YLS",
+      "task": "task1_nr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task1 - NR/Preprocessed/YMD/oip_YMD_NR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 1038
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task1 - NR/Preprocessed/YMD/oip_YMD_NR1_EEG.mat",
+          "reference_locator": "sentence:1/word:1/fixation:1",
+          "start_sample": 1123
+        }
+      ],
+      "path": "task1 - NR/Matlab files/resultsYMD_NR.mat",
+      "sha256": "ef2933eb003d89c156db4977504336550c99f8d4a0e16dd71d8a8378e94a55af",
+      "size_bytes": 2415535960,
+      "subject": "YMD",
+      "task": "task1_nr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task1 - NR/Preprocessed/YMS/gip_YMS_NR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 1036
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task1 - NR/Preprocessed/YMS/gip_YMS_NR1_EEG.mat",
+          "reference_locator": "sentence:1/word:1/fixation:1",
+          "start_sample": 1145
+        }
+      ],
+      "path": "task1 - NR/Matlab files/resultsYMS_NR.mat",
+      "sha256": "f5584c11b11b02db7ef027108d33527b5f7ffe104b1586533e2aee1584730c10",
+      "size_bytes": 2446833984,
+      "subject": "YMS",
+      "task": "task1_nr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task1 - NR/Preprocessed/YRH/gip_YRH_NR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 1033
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task1 - NR/Preprocessed/YRH/gip_YRH_NR1_EEG.mat",
+          "reference_locator": "sentence:1/word:2/fixation:1",
+          "start_sample": 1230
+        }
+      ],
+      "path": "task1 - NR/Matlab files/resultsYRH_NR.mat",
+      "sha256": "95cdcf44cd03dad9ad93a8bf74b5bfd22faf09ca59c12ffc82925548737d93a7",
+      "size_bytes": 1544909024,
+      "subject": "YRH",
+      "task": "task1_nr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task1 - NR/Preprocessed/YRK/gip_YRK_NR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 1029
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task1 - NR/Preprocessed/YRK/gip_YRK_NR1_EEG.mat",
+          "reference_locator": "sentence:1/word:1/fixation:1",
+          "start_sample": 1288
+        }
+      ],
+      "path": "task1 - NR/Matlab files/resultsYRK_NR.mat",
+      "sha256": "a91c4548e1caee4c6125aee5fefc25b361ca4fac2e4cb593c417ef5fc826dda6",
+      "size_bytes": 2347425489,
+      "subject": "YRK",
+      "task": "task1_nr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task1 - NR/Preprocessed/YRP/gip_YRP_NR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 1034
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task1 - NR/Preprocessed/YRP/gip_YRP_NR1_EEG.mat",
+          "reference_locator": "sentence:1/word:1/fixation:1",
+          "start_sample": 1221
+        }
+      ],
+      "path": "task1 - NR/Matlab files/resultsYRP_NR.mat",
+      "sha256": "729df8d66c3151b853fe820cebdfadf9ffb5b4ae9c394ff63f1d723a8ad4a849",
+      "size_bytes": 2319904154,
+      "subject": "YRP",
+      "task": "task1_nr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task1 - NR/Preprocessed/YSD/gip_YSD_NR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 1024
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task1 - NR/Preprocessed/YSD/gip_YSD_NR1_EEG.mat",
+          "reference_locator": "sentence:1/word:1/fixation:1",
+          "start_sample": 1186
+        }
+      ],
+      "path": "task1 - NR/Matlab files/resultsYSD_NR.mat",
+      "sha256": "d71b0c8e78955c8768b680aa29c3ddee38dd45781456caee7566cb66b0703f13",
+      "size_bytes": 1835711329,
+      "subject": "YSD",
+      "task": "task1_nr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task1 - NR/Preprocessed/YSL/oip_YSL_NR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 1027
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task1 - NR/Preprocessed/YSL/oip_YSL_NR1_EEG.mat",
+          "reference_locator": "sentence:1/word:1/fixation:1",
+          "start_sample": 1124
+        }
+      ],
+      "path": "task1 - NR/Matlab files/resultsYSL_NR.mat",
+      "sha256": "dd006115a6817df048bb816e95f748f42583687eccb47cfd12f44999a1353ce2",
+      "size_bytes": 2356341298,
+      "subject": "YSL",
+      "task": "task1_nr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task1 - NR/Preprocessed/YTL/gip_YTL_NR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 1025
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task1 - NR/Preprocessed/YTL/gip_YTL_NR1_EEG.mat",
+          "reference_locator": "sentence:1/word:1/fixation:1",
+          "start_sample": 1222
+        }
+      ],
+      "path": "task1 - NR/Matlab files/resultsYTL_NR.mat",
+      "sha256": "b168d543a8f66f50276645fdbd662fcec6ee01370d986315fea1b12aa8cb8b73",
+      "size_bytes": 2495299295,
+      "subject": "YTL",
+      "task": "task1_nr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YAC/gip_YAC_TSR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 2017
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YAC/gip_YAC_TSR1_EEG.mat",
+          "reference_locator": "sentence:1/word:2/fixation:1",
+          "start_sample": 2266
+        }
+      ],
+      "path": "task2 - TSR/Matlab files/resultsYAC_TSR.mat",
+      "sha256": "30d620bb053d3d66458db817fbd951a170691f923a0ac19bedfc04c060d46b16",
+      "size_bytes": 1407410272,
+      "subject": "YAC",
+      "task": "task2_tsr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YAG/gip_YAG_TSR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 2042
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YAG/gip_YAG_TSR1_EEG.mat",
+          "reference_locator": "sentence:1/word:1/fixation:1",
+          "start_sample": 3678
+        }
+      ],
+      "path": "task2 - TSR/Matlab files/resultsYAG_TSR.mat",
+      "sha256": "d59a332620c20afe75cec5d52e20141c93e347db9988a569d27a5aa5d180e583",
+      "size_bytes": 2996142078,
+      "subject": "YAG",
+      "task": "task2_tsr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YAK/oip_YAK_TSR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 2036
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YAK/oip_YAK_TSR1_EEG.mat",
+          "reference_locator": "sentence:1/word:2/fixation:1",
+          "start_sample": 2194
+        }
+      ],
+      "path": "task2 - TSR/Matlab files/resultsYAK_TSR.mat",
+      "sha256": "fa130ad0ec15a2784bd4dbb40d140c101168881a76e3c4ac949a2522c014b715",
+      "size_bytes": 2312561381,
+      "subject": "YAK",
+      "task": "task2_tsr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YDG/gip_YDG_TSR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 2039
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YDG/gip_YDG_TSR1_EEG.mat",
+          "reference_locator": "sentence:1/word:2/fixation:1",
+          "start_sample": 2133
+        }
+      ],
+      "path": "task2 - TSR/Matlab files/resultsYDG_TSR.mat",
+      "sha256": "94739e91988308acb4e52c0e40bf288ba336f00014efb874a7f5f647a8880255",
+      "size_bytes": 1633663055,
+      "subject": "YDG",
+      "task": "task2_tsr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YDR/gip_YDR_TSR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 2026
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YDR/gip_YDR_TSR1_EEG.mat",
+          "reference_locator": "sentence:1/word:2/fixation:1",
+          "start_sample": 2185
+        }
+      ],
+      "path": "task2 - TSR/Matlab files/resultsYDR_TSR.mat",
+      "sha256": "e5a21f877cf1f6164b77db0a1c0e1723bbd5bd995594c76a169ff79400b08f1a",
+      "size_bytes": 1085815679,
+      "subject": "YDR",
+      "task": "task2_tsr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YFR/oip_YFR_TSR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 2038
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YFR/oip_YFR_TSR1_EEG.mat",
+          "reference_locator": "sentence:1/word:1/fixation:1",
+          "start_sample": 3289
+        }
+      ],
+      "path": "task2 - TSR/Matlab files/resultsYFR_TSR.mat",
+      "sha256": "d3649a8848fb64e62c23e46a01a9ac1d876e97a9de8de243475531dce56d300c",
+      "size_bytes": 1360044291,
+      "subject": "YFR",
+      "task": "task2_tsr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YFS/gip_YFS_TSR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 2032
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YFS/gip_YFS_TSR1_EEG.mat",
+          "reference_locator": "sentence:1/word:2/fixation:1",
+          "start_sample": 4420
+        }
+      ],
+      "path": "task2 - TSR/Matlab files/resultsYFS_TSR.mat",
+      "sha256": "316d945f3b78cdcd7b268c3fd4fe5c210210eeaee672d48159496ebf63bb92c1",
+      "size_bytes": 1229897585,
+      "subject": "YFS",
+      "task": "task2_tsr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YHS/gip_YHS_TSR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 2016
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YHS/gip_YHS_TSR1_EEG.mat",
+          "reference_locator": "sentence:1/word:3/fixation:1",
+          "start_sample": 2284
+        }
+      ],
+      "path": "task2 - TSR/Matlab files/resultsYHS_TSR.mat",
+      "sha256": "0542a06442af06af43223f8f762da5d18e3661ccf83f52aa306c598208bf6403",
+      "size_bytes": 1150306278,
+      "subject": "YHS",
+      "task": "task2_tsr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YIS/gip_YIS_TSR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 2027
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YIS/gip_YIS_TSR1_EEG.mat",
+          "reference_locator": "sentence:1/word:2/fixation:1",
+          "start_sample": 2208
+        }
+      ],
+      "path": "task2 - TSR/Matlab files/resultsYIS_TSR.mat",
+      "sha256": "d94b546d293a41f02f7847e7ce2f494b4832ca08c2663a3f2a0bfe6feb7a1359",
+      "size_bytes": 1165791154,
+      "subject": "YIS",
+      "task": "task2_tsr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YLS/gip_YLS_TSR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 2039
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YLS/gip_YLS_TSR1_EEG.mat",
+          "reference_locator": "sentence:1/word:2/fixation:1",
+          "start_sample": 2158
+        }
+      ],
+      "path": "task2 - TSR/Matlab files/resultsYLS_TSR.mat",
+      "sha256": "8a8a39e6dd97e9d951f1bd5c770adcf753fc1a9db88ed0cf886e9e32d7eee296",
+      "size_bytes": 2221142916,
+      "subject": "YLS",
+      "task": "task2_tsr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YMD/oip_YMD_TSR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 2046
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YMD/oip_YMD_TSR1_EEG.mat",
+          "reference_locator": "sentence:1/word:2/fixation:1",
+          "start_sample": 2545
+        }
+      ],
+      "path": "task2 - TSR/Matlab files/resultsYMD_TSR.mat",
+      "sha256": "2916e061219b587d9047399cf611a0cee8fe20d672c83896259b412961b3f79c",
+      "size_bytes": 2356417371,
+      "subject": "YMD",
+      "task": "task2_tsr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YMS/gip_YMS_TSR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 2024
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YMS/gip_YMS_TSR1_EEG.mat",
+          "reference_locator": "sentence:1/word:2/fixation:1",
+          "start_sample": 2181
+        }
+      ],
+      "path": "task2 - TSR/Matlab files/resultsYMS_TSR.mat",
+      "sha256": "4006c39fa208d10f389e0f0bb04a421a11bc4586570833d6d4fe5ef69a1734b1",
+      "size_bytes": 1426923587,
+      "subject": "YMS",
+      "task": "task2_tsr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YRH/gip_YRH_TSR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 2040
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YRH/gip_YRH_TSR1_EEG.mat",
+          "reference_locator": "sentence:1/word:2/fixation:1",
+          "start_sample": 2206
+        }
+      ],
+      "path": "task2 - TSR/Matlab files/resultsYRH_TSR.mat",
+      "sha256": "41ab03603e026865ab5c0fbe58c24cc1a181d366485d4fea120d6d48737e3b7b",
+      "size_bytes": 1437915198,
+      "subject": "YRH",
+      "task": "task2_tsr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YRK/gip_YRK_TSR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 2043
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YRK/gip_YRK_TSR1_EEG.mat",
+          "reference_locator": "sentence:1/word:2/fixation:1",
+          "start_sample": 2201
+        }
+      ],
+      "path": "task2 - TSR/Matlab files/resultsYRK_TSR.mat",
+      "sha256": "36d20c474a2efdb457af6d864931e8f9e33ab944268c7650054065145ca14ecd",
+      "size_bytes": 2776819250,
+      "subject": "YRK",
+      "task": "task2_tsr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YRP/gip_YRP_TSR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 2029
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YRP/gip_YRP_TSR1_EEG.mat",
+          "reference_locator": "sentence:1/word:2/fixation:1",
+          "start_sample": 2254
+        }
+      ],
+      "path": "task2 - TSR/Matlab files/resultsYRP_TSR.mat",
+      "sha256": "1a1f85e741e9593897bb331606b63ff5c9e9f75a34c7967170ea9d5a6d4ea8b9",
+      "size_bytes": 3011751829,
+      "subject": "YRP",
+      "task": "task2_tsr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YSD/oip_YSD_TSR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 2024
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YSD/oip_YSD_TSR1_EEG.mat",
+          "reference_locator": "sentence:1/word:2/fixation:1",
+          "start_sample": 2436
+        }
+      ],
+      "path": "task2 - TSR/Matlab files/resultsYSD_TSR.mat",
+      "sha256": "95d7fe3b96aacab7fc3ac27cde0f1f9ed964bf96d224573b2af4d4ecc98bdedf",
+      "size_bytes": 1319792203,
+      "subject": "YSD",
+      "task": "task2_tsr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YSL/oip_YSL_TSR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 2040
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YSL/oip_YSL_TSR1_EEG.mat",
+          "reference_locator": "sentence:1/word:1/fixation:1",
+          "start_sample": 2276
+        }
+      ],
+      "path": "task2 - TSR/Matlab files/resultsYSL_TSR.mat",
+      "sha256": "67d9cd71388ff385d8f674137df7dee0ecd4e470e9ca69c5acf6759c4228f6dd",
+      "size_bytes": 2459455361,
+      "subject": "YSL",
+      "task": "task2_tsr"
+    },
+    {
+      "exact_release_slice_links": [
+        {
+          "exact": true,
+          "kind": "sentence",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YTL/oip_YTL_TSR1_EEG.mat",
+          "reference_locator": "sentence:1",
+          "start_sample": 2016
+        },
+        {
+          "exact": true,
+          "kind": "word",
+          "preprocessed_path": "task2 - TSR/Preprocessed/YTL/oip_YTL_TSR1_EEG.mat",
+          "reference_locator": "sentence:1/word:1/fixation:1",
+          "start_sample": 3630
+        }
+      ],
+      "path": "task2 - TSR/Matlab files/resultsYTL_TSR.mat",
+      "sha256": "2e42e6e6f54b7a140237a95d62ff43c1187bd9f9924b26d4c63a29533ee19f94",
+      "size_bytes": 1393320346,
+      "subject": "YTL",
+      "task": "task2_tsr"
+    }
+  ]
+}

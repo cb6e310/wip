@@ -73,6 +73,7 @@ class A1Config:
     max_encoder_params: int = 20_000_000
     # ``np.stack(..., axis=1).reshape`` emits all eight bands per channel.
     feature_order: str = "channel_major"
+    finite_policy: str = "reject_any_nonfinite_no_imputation"
 
     def __post_init__(self) -> None:
         if self.n_channels < 1:
@@ -95,6 +96,8 @@ class A1Config:
             raise ValueError("encoder dimensions must be positive")
         if self.feature_order != "channel_major":
             raise ValueError("A1 feature order is frozen to channel_major")
+        if self.finite_policy != "reject_any_nonfinite_no_imputation":
+            raise ValueError("A1 finite policy is frozen to strict rejection")
 
     @property
     def feature_dim(self) -> int:
@@ -266,10 +269,8 @@ def bandpower_features(
     if fs <= 2.0 * max(band.high_hz for band in config.bands):
         raise ValueError("sampling rate is too low for the configured bands")
     x = _orient_epoch(epoch, config.n_channels)
-    finite_fraction = float(np.isfinite(x).mean())
-    if finite_fraction < 0.95:
-        raise ValueError("epoch contains fewer than 95% finite samples")
-    x = np.nan_to_num(x, nan=0.0, posinf=0.0, neginf=0.0)
+    if not np.isfinite(x).all():
+        raise ValueError("epoch contains NaN/Inf; A1 forbids imputation")
     x = x - x.mean(axis=1, keepdims=True)
     window = np.hanning(x.shape[1])
     if not np.any(window):
@@ -290,6 +291,64 @@ def bandpower_features(
     result = np.stack(features, axis=1).reshape(-1).astype(np.float32)
     if result.shape != (config.feature_dim,) or not np.isfinite(result).all():
         raise ValueError("bandpower feature computation produced an invalid result")
+    return result
+
+
+def analysis_spectrum_phase_rotation_features(
+    epoch: object,
+    *,
+    seed: int,
+    config: A1Config = DEFAULT_CONFIG,
+    sampling_rate_hz: float | None = None,
+) -> np.ndarray:
+    """Recompute A1 features after rotating only the analysis-spectrum phase.
+
+    This is the v3.13 D32 implementation diagnostic, not a sham generator.
+    It performs the same demean/Hann/rFFT analysis as :func:`bandpower_features`,
+    rotates legal complex bins, preserves DC and Nyquist reality, and integrates
+    the rotated magnitude squared directly.  It deliberately performs no
+    inverse transform and no second Hann window.
+    """
+
+    if seed < 0:
+        raise ValueError("seed must be non-negative")
+    fs = config.sampling_rate_hz if sampling_rate_hz is None else float(sampling_rate_hz)
+    if fs <= 2.0 * max(band.high_hz for band in config.bands):
+        raise ValueError("sampling rate is too low for the configured bands")
+    x = _orient_epoch(epoch, config.n_channels)
+    if not np.isfinite(x).all():
+        raise ValueError("epoch contains NaN/Inf; A1 forbids imputation")
+    x = x - x.mean(axis=1, keepdims=True)
+    window = np.hanning(x.shape[1])
+    if not np.any(window):
+        raise ValueError("epoch window is degenerate")
+    n_fft = max(512, 1 << int(math.ceil(math.log2(x.shape[1]))))
+    spectrum = np.fft.rfft(x * window[None, :], n=n_fft, axis=1)
+    magnitude = np.abs(spectrum)
+    phase = np.angle(spectrum)
+    rotation = np.random.default_rng(seed).uniform(-math.pi, math.pi, size=spectrum.shape)
+    rotation[:, 0] = 0.0
+    if n_fft % 2 == 0:
+        rotation[:, -1] = 0.0
+    rotated = magnitude * np.exp(1j * (phase + rotation))
+    rotated[:, 0] = spectrum[:, 0].real
+    if n_fft % 2 == 0:
+        rotated[:, -1] = spectrum[:, -1].real
+    frequencies = np.fft.rfftfreq(n_fft, d=1.0 / fs)
+    psd = (np.abs(rotated) ** 2) / (fs * float(np.sum(window**2)))
+    frequency_step = float(frequencies[1] - frequencies[0])
+    features: list[np.ndarray] = []
+    for band in config.bands:
+        selected = (frequencies >= band.low_hz) & (frequencies < band.high_hz)
+        values = (
+            np.sum(psd[:, selected], axis=1) * frequency_step
+            if np.any(selected)
+            else np.zeros(config.n_channels, dtype=np.float64)
+        )
+        features.append(np.asarray(values, dtype=np.float32))
+    result = np.stack(features, axis=1).reshape(-1).astype(np.float32)
+    if result.shape != (config.feature_dim,) or not np.isfinite(result).all():
+        raise ValueError("phase diagnostic produced an invalid result")
     return result
 
 

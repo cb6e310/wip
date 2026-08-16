@@ -1,0 +1,459 @@
+schema_version: 1
+algorithm_version: zuco2-a1-source-admission-v313-q3-v1
+run_id: 2026-08-15_025_v313_a1_source_admission
+spec: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_13_2026-08-15.md#Q.3
+baseline_commit: d9dfe51442155fbd3854d223916c519a7757fff1
+outcome: PASS_REAL_A1_SOURCE
+seed: 20260813
+source_fields:
+  sentence: sentenceData.rawData [samples,105]
+  word: sentenceData.word.rawEEG fixation [samples,105]
+sampling_rate_hz: 500.0
+sampling_status: PASS
+channel_labels:
+- E2
+- E3
+- E4
+- E5
+- E6
+- E7
+- E9
+- E10
+- E11
+- E12
+- E13
+- E15
+- E16
+- E18
+- E19
+- E20
+- E22
+- E23
+- E24
+- E26
+- E27
+- E28
+- E29
+- E30
+- E31
+- E33
+- E34
+- E35
+- E36
+- E37
+- E38
+- E39
+- E40
+- E41
+- E42
+- E43
+- E44
+- E45
+- E46
+- E47
+- E50
+- E51
+- E52
+- E53
+- E54
+- E55
+- E57
+- E58
+- E59
+- E60
+- E61
+- E62
+- E64
+- E65
+- E66
+- E67
+- E69
+- E70
+- E71
+- E72
+- E74
+- E75
+- E76
+- E77
+- E78
+- E79
+- E80
+- E82
+- E83
+- E84
+- E85
+- E86
+- E87
+- E89
+- E90
+- E91
+- E92
+- E93
+- E95
+- E96
+- E97
+- E98
+- E100
+- E101
+- E102
+- E103
+- E104
+- E105
+- E106
+- E108
+- E109
+- E110
+- E111
+- E112
+- E114
+- E115
+- E116
+- E117
+- E118
+- E120
+- E121
+- E122
+- E123
+- E124
+- Cz
+channel_labels_sha256: 23b8d1ee22d87560fe1a6384141b2713c450ca34ef9eeff8241e7bd3bd885ef5
+channel_order_status: PASS
+amplitude_unit_status: release_native_amplitude_unit_unlabelled
+amplitude_policy: no V/uV inference or conversion; PSD native-unit^2; future normalization
+  outer-train only
+finite_policy: reject_any_nonfinite_no_imputation
+input_bindings:
+  baseline_commit: d9dfe51442155fbd3854d223916c519a7757fff1
+  summary_inventory_sha256: 7fc731c4ccd273e12c425ef86cdbd5b02c2546e931ed27aadc7e4b538a30bf86
+  summary_file_count: 36
+  preprocessed_metadata_manifest_sha256: 388270f304672cf29e8f0900b72a8c296ba35fcaabe1fa8e0ad823f45f596854
+  release_reader_hashes:
+    scripts/python_reader/data_loading_helpers.py: 90e3bab7d082891b4b53fcb154286d8a73eea0f3fa89a312176025f035cfa71c
+    scripts/python_reader/read_matlab_files.py: daf147dee64cf53ae55050a3d19d0ea37d8811057cd9de3cfb2bc7f29fb91712
+  source_join_hashes:
+    task1_nr: 97f3a0bd695d482ceff409b85414790c5f9877fcba28049572f354de61366f12
+    task2_tsr: 7a3bc1cb3f41557b7f13cb76f44833de0f4b72726849024378ec0935e98a5060
+  a1_config_hash: c143e3d85bdc8796f352b046f71e43e68465450f075e143fbac853ffef523edf
+  official_acquisition_evidence:
+    title: 'ZuCo 2.0: A Dataset of Physiological Recordings During Natural Reading
+      and Annotation'
+    url: https://www.research-collection.ethz.ch/handle/20.500.11850/353427
+    statement: EEG acquired with a 128-channel Geodesic Hydrocel system at 500 Hz
+coverage:
+  by_task_subject:
+    task1_nr:
+      YAC:
+        sentence_valid: 247
+        sentence_ge_500: 247
+        word_valid: 4375
+        word_excluded: 3458
+        sentence_excluded: 102
+      YAG:
+        sentence_valid: 349
+        sentence_ge_500: 349
+        word_valid: 9016
+        word_excluded: 3232
+      YAK:
+        sentence_valid: 298
+        word_excluded: 4016
+        word_valid: 3499
+        sentence_excluded: 51
+        sentence_ge_500: 248
+      YDG:
+        sentence_valid: 349
+        sentence_ge_500: 349
+        word_excluded: 5094
+        word_valid: 6133
+      YDR:
+        sentence_valid: 346
+        sentence_ge_500: 335
+        word_excluded: 6323
+        word_valid: 5619
+        sentence_excluded: 3
+      YFR:
+        sentence_valid: 243
+        sentence_ge_500: 243
+        word_valid: 7876
+        word_excluded: 4578
+        sentence_excluded: 106
+      YFS:
+        sentence_valid: 336
+        sentence_ge_500: 331
+        word_valid: 5075
+        word_excluded: 6395
+        sentence_excluded: 13
+      YHS:
+        sentence_valid: 349
+        sentence_ge_500: 344
+        word_valid: 4132
+        word_excluded: 6992
+      YIS:
+        sentence_valid: 349
+        sentence_ge_500: 349
+        word_valid: 7151
+        word_excluded: 4402
+      YLS:
+        sentence_valid: 343
+        sentence_ge_500: 343
+        word_valid: 6127
+        word_excluded: 4822
+        sentence_excluded: 6
+      YMD:
+        sentence_valid: 342
+        sentence_ge_500: 342
+        word_valid: 9785
+        word_excluded: 3053
+        sentence_excluded: 7
+      YMS:
+        sentence_valid: 346
+        sentence_ge_500: 346
+        word_valid: 9041
+        word_excluded: 3613
+        sentence_excluded: 3
+      YRH:
+        sentence_valid: 297
+        sentence_ge_500: 296
+        word_excluded: 4368
+        word_valid: 5333
+        sentence_excluded: 52
+      YRK:
+        sentence_valid: 339
+        sentence_ge_500: 339
+        word_valid: 8553
+        word_excluded: 3411
+        sentence_excluded: 10
+      YRP:
+        sentence_valid: 343
+        sentence_ge_500: 342
+        word_valid: 7683
+        word_excluded: 4270
+        sentence_excluded: 6
+      YSD:
+        sentence_valid: 348
+        sentence_ge_500: 348
+        word_valid: 6542
+        word_excluded: 3939
+        sentence_excluded: 1
+      YSL:
+        sentence_valid: 343
+        sentence_ge_500: 343
+        word_valid: 8320
+        word_excluded: 2377
+        sentence_excluded: 6
+      YTL:
+        sentence_valid: 348
+        sentence_ge_500: 344
+        word_valid: 7953
+        word_excluded: 2715
+        sentence_excluded: 1
+    task2_tsr:
+      YAC:
+        sentence_valid: 271
+        sentence_ge_500: 271
+        word_excluded: 4431
+        word_valid: 4548
+        sentence_excluded: 119
+      YAG:
+        sentence_valid: 387
+        sentence_ge_500: 387
+        word_valid: 11017
+        word_excluded: 4679
+        sentence_excluded: 3
+      YAK:
+        sentence_valid: 387
+        sentence_ge_500: 387
+        word_excluded: 5899
+        word_valid: 6792
+        sentence_excluded: 3
+      YDG:
+        sentence_valid: 388
+        sentence_ge_500: 388
+        word_excluded: 8432
+        word_valid: 5300
+        sentence_excluded: 2
+      YDR:
+        sentence_valid: 390
+        sentence_ge_500: 324
+        word_excluded: 11642
+        word_valid: 3258
+      YFR:
+        sentence_valid: 216
+        sentence_ge_500: 216
+        word_valid: 5462
+        word_excluded: 6425
+        sentence_excluded: 174
+      YFS:
+        sentence_valid: 386
+        sentence_ge_500: 357
+        word_excluded: 10702
+        word_valid: 3917
+        sentence_excluded: 4
+      YHS:
+        sentence_valid: 390
+        sentence_ge_500: 371
+        word_excluded: 10758
+        word_valid: 3398
+      YIS:
+        sentence_valid: 390
+        sentence_ge_500: 382
+        word_excluded: 11018
+        word_valid: 3709
+      YLS:
+        sentence_valid: 382
+        sentence_ge_500: 382
+        word_excluded: 7260
+        word_valid: 7096
+        sentence_excluded: 8
+      YMD:
+        sentence_valid: 378
+        sentence_ge_500: 378
+        word_excluded: 5324
+        word_valid: 9279
+        sentence_excluded: 12
+      YMS:
+        sentence_valid: 389
+        sentence_ge_500: 378
+        word_excluded: 10246
+        word_valid: 4505
+        sentence_excluded: 1
+      YRH:
+        sentence_valid: 307
+        sentence_ge_500: 304
+        word_excluded: 6323
+        word_valid: 4933
+        sentence_excluded: 83
+      YRK:
+        sentence_valid: 386
+        sentence_ge_500: 386
+        word_excluded: 4323
+        word_valid: 9626
+        sentence_excluded: 4
+      YRP:
+        sentence_valid: 381
+        sentence_ge_500: 381
+        word_excluded: 4631
+        word_valid: 9883
+        sentence_excluded: 9
+      YSD:
+        sentence_valid: 389
+        sentence_ge_500: 385
+        word_excluded: 9781
+        word_valid: 4312
+        sentence_excluded: 1
+      YSL:
+        sentence_valid: 381
+        sentence_ge_500: 381
+        word_valid: 8621
+        word_excluded: 4137
+        sentence_excluded: 9
+      YTL:
+        sentence_valid: 390
+        sentence_ge_500: 383
+        word_valid: 4047
+        word_excluded: 10628
+  retained_subjects: &id001
+    task1_nr:
+    - YAC
+    - YAG
+    - YAK
+    - YDG
+    - YDR
+    - YFR
+    - YFS
+    - YHS
+    - YIS
+    - YLS
+    - YMD
+    - YMS
+    - YRH
+    - YRK
+    - YRP
+    - YSD
+    - YSL
+    - YTL
+    task2_tsr:
+    - YAC
+    - YAG
+    - YAK
+    - YDG
+    - YDR
+    - YFR
+    - YFS
+    - YHS
+    - YIS
+    - YLS
+    - YMD
+    - YMS
+    - YRH
+    - YRK
+    - YRP
+    - YSD
+    - YSL
+    - YTL
+  g0_minimum_subjects_per_task: 12
+  g0_pass: true
+  diagnostic_quantiles_bounded_sample:
+    '0.0': -84.17418689446632
+    '0.01': -14.007531663550878
+    '0.5': 0.0
+    '0.99': 14.790551894606732
+    '1.0': 89.4250115804391
+exclusions_sha256_uncompressed: 8b03126ee521ad654699a32f6f22079dcab64307c14e4685e69751b98418fb13
+feature_smoke:
+  seed: 20260813
+  selection_rule: SHA256(canonical identity plus seed), first two
+  selected_record_count: 144
+  retained_subjects: *id001
+  selection_manifest_sha256: 9c6865cbb2f0eeff2fdd3c72df06b477548d686722e6a86dc3d5ec4dcd71eb75
+  feature_bytes_sha256: 2d2f1b8b185d634323b46d7bdee8a98b08988e705c13d04cafa9af6f86415565
+  sequence_shape_counts:
+    '[11, 840]': 5
+    '[6, 840]': 8
+    '[1, 840]': 72
+    '[8, 840]': 2
+    '[2, 840]': 6
+    '[4, 840]': 2
+    '[9, 840]': 5
+    '[5, 840]': 8
+    '[13, 840]': 4
+    '[3, 840]': 8
+    '[12, 840]': 4
+    '[29, 840]': 2
+    '[26, 840]': 1
+    '[19, 840]': 1
+    '[39, 840]': 1
+    '[7, 840]': 2
+    '[17, 840]': 1
+    '[15, 840]': 3
+    '[16, 840]': 3
+    '[23, 840]': 1
+    '[10, 840]': 3
+    '[27, 840]': 1
+    '[22, 840]': 1
+  dtype: float32
+  feature_dim: 840
+  finite: true
+  two_calls_byte_identical: true
+phase_invariance:
+  method: analysis-spectrum rotation; no irfft; no second Hann
+  rtol: 1.0e-05
+  atol: 1.0e-07
+  maximum_absolute_error: 0.0
+  maximum_relative_error: 0.0
+  pass: true
+checks:
+  summary_files_exactly_36: true
+  preprocessed_files_exactly_252: true
+  sampling_500_hz: true
+  ordered_105_labels: true
+  summary_sentence_word_exact_release_links: true
+  native_scale_provenance: true
+  strict_finite_policy: true
+  identity_unique_and_joined: true
+  coverage_g0: true
+  feature_smoke_deterministic_840d: true
+  analysis_spectrum_phase_invariant: true
+no_normalizer_fit: true
+no_model_or_probe_training: true
+no_heldout_metric: true
+no_eeg_array_committed: true
