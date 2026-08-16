@@ -1,0 +1,80 @@
+schema_version: 1
+algorithm_version: a1-failure-diagnosis-v315-d42-v1
+run_id: 2026-08-16_029_v315_a1_failure_diagnosis
+task: S0_A1_FAILURE_DIAGNOSIS
+spec: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_15_2026-08-16.md#D40-D42
+claim_boundary: construct-validity positive controls only; not EEG evidence, alignment,
+  Gate, route lock, or paper performance
+scope:
+  tasks:
+  - task1_nr
+  - task2_tsr
+  outer_cells:
+  - task1_nr|outer_s0_t0
+  - task2_tsr|outer_s0_t0
+  a_a3_inner_cells_per_task: 9
+  a_a3_seeds:
+  - 20260813
+  - 20260814
+  - 20260815
+  scorer_inner_cell_per_task: inner_s0_t0
+  scorer_seed: 20260813
+  outer_test_values_read: false
+positive_controls:
+  A-A3:
+    input: current target frozen MiniLM item embedding oracle
+    fit_type: fixed multinomial logistic
+    fit_count: 54
+    K: 8
+    pass: subject CI lower >1/8 and observed > within-subject permutation q95
+  A-A1-scorer:
+    inputs:
+    - H-only
+    - '[H,current target frozen MiniLM item embedding] oracle'
+    fit_type: ridge alpha=1 intercept + cosine-softmax temperature=0.07
+    fit_count: 4
+    pass: paired subject CI lower >0 and oracle macro-subject full-vocabulary R@1
+      >=0.80
+expected_fit_counts:
+  logistic: 54
+  ridge: 4
+  total: 58
+old_artifact_hashes:
+  artifacts/a1_admission_contract.yaml: c9c5a94b8227b6e43ecfc6d61b9b10b33f9340f7c845ca7dbaa0e0a3e65d9f4b
+  04_results/audits/a1_admission.json: b3d2b47ee21b2e777470004dbca862cb9495b59f3c68513e9001f3800b4e151e
+  04_results/audits/a1_admission.md: e187f2314ca3ee8a9d8f973c7898276ecaccd64245ce1480243c916c5c729a8e
+  04_results/audits/a1_admission_run_ledger.jsonl.gz: fe22b691795709508386d72d662cbf2feeafb3dd74d5012b46b12e5ae1d963fd
+old_implementation_hashes:
+  02_code/src/data/a1_admission.py: 14e45bc194cdfcbb03ef01a3862dfb331b916a7e425e7a74a8adffecb5ab96b4
+  02_code/scripts/run_a1_admission.py: a671a65dd4fb533cb92b820d9e723e3963c99168c96a3cf77bf9bfcd8f9fb099
+  02_code/tests/test_a1_admission.py: 3866756f6d4b56f1f33ea81b6eccaed5ffc3fe385a319795a8e425afd75aa238
+input_artifact_hashes:
+  a1_freeze: 9c3f48ddf38bca8e75534932ebc6ea3c035a044f627e271a0348ec759bc11e30
+  h_definition: 226f92e299633997fdb9469592f6f8a36fa6c728aa24d9a7d6cb9ded8fb2ae6b
+  inner_split: 0271aba0ae9627f35e281029a8a95390513c1e92c8010e8a2795171f837575d7
+  outer_split: 20aedfd56c7c5ee41a491e5b5531ef77728344808d42ba45d72d7e30250cffa6
+  semantic_contract: 72b8b471a25c857b3d35a0e18ec256093b5803872cf907ab2ff4b922b285c051
+  semantic_support: fe862ebaed2b027b4924f45c23dacfc01c5c7ad862f6917cbd0a963d2dcff32c
+  source_audit: 07b3718eee0f7e6784d8d1007447ac7bdcbd92a4b85a1e6bfc504b64c9aa271f
+  source_contract: bb03bb785dd62d8957819aa69eaa4155636e36858dcb35cf31a8e9a81bbedc3c
+  source_exclusions: 250f1e2cda8f4b4c2900bb031845f0c347a75f180ca083b68401da671bb65d3c
+  source_join: eb960cd0bf2cb5016f33793813cb61fa2c77c9ce07e2037cff69b29c14c104c8
+  text_encoder: 35e18392a285c8d09ba84a934e31dd327a18fa1a0c10a3bd8550f090cd496494
+text_encoder:
+  requested_revision: 1110a243fdf4706b3f48f1d95db1a4f5529b4d41
+  resolved_revision: 1110a243fdf4706b3f48f1d95db1a4f5529b4d41
+  manifests:
+    tokenizer: 78a3daa92dcec076e80baaa628a6553bcbd0b431a214eb02d72c8b5672e69e09
+    encoder_config: 8049791e90383b0f56624a32a14852552e292bcb38ab18da1de533ad79629845
+    model: c0577b9136351b1c12ba99a16f386d5c4c8c45e744941eaea15803880dd30e61
+    scientific_config: 0f2fb795c15c7ad7ee185f44509ec86eb912aaca6abf88b78fa1560179e412af
+  output_dim: 384
+  trainable_parameters: 0
+source_hashes:
+  02_code/src/data/a1_failure_diagnosis.py: b9e85d500f4968711c3282b2207a1eb1c2cbe226c793c6deb2f821e01a2828f3
+  02_code/scripts/run_a1_failure_diagnosis.py: 13fa54fa422b7ab2a7cebb469678d5aaaecd07d2e3202790c0a07c493be92f1d
+  02_code/tests/test_a1_failure_diagnosis.py: 4499d7ae057d4080619349816c3f31c14292f25b73999e2b6b07dcefe59df0bf
+formal_output_policy:
+  aggregates_subject_summaries_class_counts_only: true
+  ledger_ids_hashes_scopes_only: true
+  no_eeg_features_observation_embeddings_logits_weights: true

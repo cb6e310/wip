@@ -2,23 +2,26 @@
 
 ## Current decision
 
-`S0_A1_ADMISSION` completed its frozen SPEC v3.14 pilot but is not DONE. The outcome is `FAIL_A1_ADMISSION`: NR and TSR both fail A-A1 on raw and `token_local_frozen_initial_latent`, both fail A-A3 on both bases, while A-A2 and A-A4 pass. NR raw A-A1 has significantly negative `u_oof`; every task/basis has significantly negative `u_min`. There is no `CO_N1_LATENT_LOSS` and no `INVALID_BASIS_ORDER`.
+`S0_A1_FAILURE_DIAGNOSIS` completed exactly 58 new fits and 58 passing real V5 ledgers but returned `INVALID_A1_FAILURE_DIAGNOSIS`. This is a frozen population-contract conflict, not a model/runtime/V5 failure.
 
-The preflight passed: 9 fits, maximum 0.135 seconds, validation four-arm common support 1068 observations / 54.4343%, finite raw `[7094,840]` and latent `[7094,384]`, and 9/9 V5 ledgers. The complete pilot used 93,739 released word-aligned observations and produced 639 fits/639 passing real V5 ledgers (495 ridge, 144 logistic); maximum single fit was 8.217 seconds. No outer-test EEG/features/labels/metrics or calibration were read.
+Both task A-A3 oracle controls pass with balanced accuracy 1.0 and subject CI `[1.0,1.0]`. Both scorer controls have strongly positive oracle-minus-H logp CIs and full-vocabulary macro-subject R@1=1.0. However, the sole frozen `inner_s0_t0` validation scope contains 5 scoring subjects per task. It cannot supply the D42.3 15-subject paired bootstrap while also retaining exactly two fits per task, validation-only scoring and the registered V5 inner scope.
+
+The admitted `FAIL_A1_ADMISSION` is unchanged. Oracle controls are construct-validity diagnostics only and are not EEG evidence, alignment input, Gate evidence or paper performance.
 
 ## State boundary
 
-- `S0_A1_ADMISSION=BLOCKED/FAIL_A1_ADMISSION`; it must not be marked DONE.
-- `S0_ALIGN_UNIT_COST` remains BLOCKED; Stage 1, Gates, route and main experiment remain blocked.
-- `last_completed_task=S0_A1_SOURCE_ADMISSION`.
-- `recommended_next_task=null`.
-- `B_A1_ADMISSION_FAILED_AUTHOR_REVIEW` requires an author-approved specification/state update. Do not change backbone, cells, seeds, shams, probes, thresholds or dataset to force a pass.
-- ROAMM remains mandatory but deferred; do not resume it.
+- `S0_A1_FAILURE_DIAGNOSIS=BLOCKED/INVALID_A1_FAILURE_DIAGNOSIS`; it is not DONE.
+- Route remains unlocked with `primary=EQ-ANMA`, `backup=NEGATIVE-DIAGNOSTIC`; no direction migration or route lock occurred.
+- `recommended_next_task=null`; `last_completed_task=S0_A1_SOURCE_ADMISSION`.
+- `S0_A1_NEGATIVE_CONFIRMATION_FREEZE` and `S1_A1_NEGATIVE_CONFIRMATION` remain BLOCKED.
+- Author review must reconcile D42.3. Do not treat 5 as 15, borrow cross-cell rows, change the four-fit budget, weaken thresholds, or start any downstream task.
 
 ## Evidence
 
-- Contract: `artifacts/a1_admission_contract.yaml` (`c9c5a94b8227b6e43ecfc6d61b9b10b33f9340f7c845ca7dbaa0e0a3e65d9f4b`)
-- Audit JSON: `04_results/audits/a1_admission.json` (`b3d2b47ee21b2e777470004dbca862cb9495b59f3c68513e9001f3800b4e151e`)
-- Audit Markdown: `04_results/audits/a1_admission.md` (`e187f2314ca3ee8a9d8f973c7898276ecaccd64245ce1480243c916c5c729a8e`)
-- V5 ledger: `04_results/audits/a1_admission_run_ledger.jsonl.gz` (`fe22b691795709508386d72d662cbf2feeafb3dd74d5012b46b12e5ae1d963fd`)
-- Run: `runs/2026-08-16_027_v314_a1_admission.md`
+- Contract: `artifacts/a1_failure_diagnosis_contract.yaml` (`1796f58bd7786a682f65f944e29b975b87289fab2e944730bfe9b25ad99d9b1b`)
+- Audit JSON: `04_results/audits/a1_failure_diagnosis.json` (`56b3e6e42d8611072ecc62f10de60badf57bfc752954ba63ebe2941af6a9a38e`)
+- Audit Markdown: `04_results/audits/a1_failure_diagnosis.md` (`a3e1b735a5cfca01a320cdae5d8c92b7cc8c1f54d4af8e6be8b6b1e11e6797f6`)
+- New V5 ledger: `04_results/audits/a1_failure_diagnosis_run_ledger.jsonl.gz` (`80cb11bc7ab12b59c00eb38c6cd03318f1ac2f347505e6940d8aeab5b434e6c4`)
+- Run: `runs/2026-08-16_029_v315_a1_failure_diagnosis.md`
+
+All four old formal artifact hashes, three admitted implementation hashes and 639 old V5 ledgers remain unchanged.
