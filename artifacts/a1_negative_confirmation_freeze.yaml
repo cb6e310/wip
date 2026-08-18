@@ -1,0 +1,103 @@
+schema_version: 1
+outcome: PASS_A1_NEGATIVE_CONFIRMATION_FREEZE
+task: S0_A1_NEGATIVE_CONFIRMATION_FREEZE
+completed_by_run: 2026-08-16_035_v319_a1_recovery_review_and_negative_confirmation_freeze
+baseline_commit: d10446537b3e6cb460abc652100a3978eabc0a3c
+governing_spec:
+  path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_19_2026-08-16.md
+  sha256: e0993ffeb593fdb46f5de7d12bede836cebd0e37f46e5fb72c2ab81c1c551bbd
+immutable_run034:
+  outcome: FAIL_A1R_RECOVERY
+  relabel_forbidden: true
+  rerun_forbidden: true
+  selected_frontend: null
+  selected_task_scope: []
+  total_ridge_fits: 78
+  unique_v5_ledgers: 78
+  outer_test_reads: 0
+  calibration_reads: 0
+  contract_sha256: fb711a799de5e9346f244f4c0942f19ecf8a26f35a0df26a6f9391e05e7cd01e
+  audit_json_sha256: cf68c0ca170152a79f163ed001706df80ea649ea854da85b09fef1f638e8b51a
+  audit_markdown_sha256: fc039ae77043619e562eb942898287321882189736bdd8219fc3c6a71cc87004
+  ledger_sha256: 90326ad6ed2bb981df0c0d8559102dd73c56a16ce7de6923973bad42529debc7
+execution:
+  task: S1_A1_NEGATIVE_CONFIRMATION
+  dataset: zuco_2_0
+  seed: 20260813
+  primary_panel:
+    tasks: [task1_nr, task2_tsr]
+    frontend: A1_BP_CONCAT
+    outer_subject_folds: [s0, s1, s2, s3, s4, s5]
+    outer_text_folds: [t0, t1, t2, t3, t4]
+    cells_per_task: 30
+  secondary_panel:
+    role: independent_inner_selected_transfer_collapse_confirmation
+    task: task2_tsr
+    frontend: A1R_T8_FIXATION
+    outer_subject_folds: [s0, s1, s2, s3, s4, s5]
+    outer_text_folds: [t0]
+    cells: 6
+    score_records_disjoint_from_run034: required
+  regimes: [seen, cross]
+  arms:
+    - real
+    - trial_shuffle
+    - within_trial_unit_assignment_shuffle
+    - channel_block_permutation
+  h_only_fits: 60
+  a1_arm_fits: 240
+  t8_arm_fits: 24
+  total_ridge_fits: 324
+  unique_v5_ledgers: 324
+  calibration_reads: 0
+  common_observation_min_retention: 0.90
+statistics:
+  bootstrap_resamples: 10000
+  subject_count: 18
+  subject_first: true
+  family_detected:
+    u_oof_ci_lower_gt: 0.0
+    u_oof_positive_subject_count_gte: 13
+    all_single_sham_point_estimates_gt: 0.0
+  legacy_detected:
+    u_min_ci_lower_gt: 0.0
+    u_min_positive_subject_count_gte: 13
+  negative_confirmation:
+    family_detected: false
+    legacy_detected: false
+    u_oof_positive_subject_count_lte: 12
+    ci_upper_lt_task_anchor: true
+  transfer_collapse:
+    seen_family_detected: true
+    cross_family_detected: false
+    cross_u_oof_positive_subject_count_lte: 12
+    transfer_loss_ci_lower_gt: 0.0
+    transfer_loss_positive_subject_count_gte: 13
+  run032_alpha_0_01_u_oof_point_anchors:
+    task1_nr: 0.2544154070261288
+    task2_tsr: 0.21283211421761614
+  sham_safety:
+    assertion: sham_absolute_logp_not_significantly_above_H_only
+    multiplicity: Holm_0.05_within_each_predefined_panel
+claim_boundary:
+  - negative_result_is_not_equivalence_or_proof_of_zero
+  - t8_transfer_collapse_is_not_cross_subject_recovery
+  - no_alignment_direct_u_plus_EQ_ANMA_Gate_A3_or_ROAMM
+  - roamm_resumes_only_after_zuco2_package_freeze
+formal_outputs:
+  - 02_code/src/data/a1_negative_confirmation.py
+  - 02_code/scripts/run_a1_negative_confirmation.py
+  - 02_code/tests/test_a1_negative_confirmation.py
+  - artifacts/a1_negative_confirmation_contract.yaml
+  - 04_results/negative_diagnostic/a1_negative_confirmation.json
+  - 04_results/negative_diagnostic/a1_negative_confirmation.md
+  - 04_results/negative_diagnostic/a1_negative_confirmation_run_ledger.jsonl.gz
+  - runs/2026-08-16_036_v319_a1_negative_confirmation.md
+forbidden:
+  - rerun_or_relabel_run034
+  - add_frontend_task_or_outer_text_fold_to_t8_panel
+  - run_latent_or_log_bandpower
+  - change_probe_sham_support_candidate_seed_threshold_or_population
+  - target_subject_calibration
+  - outer_outcome_driven_rerun_or_tuning
+  - alignment_direct_u_plus_EQ_ANMA_Gate_A3_or_ROAMM

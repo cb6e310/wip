@@ -1,0 +1,83 @@
+schema_version: 1
+contract_status: FROZEN_BEFORE_FORMAL_FINAL_TEST
+task: S1_EQ_ANMA_SYNTHETIC_BENCHMARK
+evidence_scope: SYNTHETIC_METHOD_VALIDITY
+governing_spec:
+  path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_20_2026-08-16.md
+  sha256: b3fadab38be711b8f55b6fa57fded9cece1bea3ba8ac69488242701798a8350a
+freeze_artifact:
+  path: artifacts/eq_anma_synthetic_benchmark_freeze.yaml
+  sha256: 7cb64cd10a8ec7bc68a7b6ec1c2343de1e71f61dc554ed8bbd082a7a92f8dcf4
+baseline_commit: d10446537b3e6cb460abc652100a3978eabc0a3c
+algorithm_version: eq_anma_synthetic_v320_1
+execution_parallelism: scenario_independent_workers_up_to_four_gpus
+generator:
+  replicate_seeds: [20260813, 20260814, 20260815, 20260816, 20260817, 20260818, 20260819, 20260820, 20260821, 20260822, 20260823, 20260824]
+  regimes: [STRUCTURED_FISHER, MONOTONE_DIRECT]
+  alphas: [0.0, 0.01, 0.03, 0.1, 0.3, 1.0, 3.0, 10.0]
+  subjects: {total: 30, train: 18, selection: 6, final_test: 6}
+  items: {total: 120, train: 72, selection: 24, final_test: 24}
+  sentences_per_subject: 120
+  items_per_sentence: 4
+  sentence_item_fold_balance: two_items_from_each_hash_item_fold
+  text_dim: 384
+  feature_dim: 840
+  projection_sha256: dba2ad5e50eb0379a9d5dec29dc3c1af0138d4a36871012d1ee8ffba9e8dba58
+  canonical_dtype: float32-little-endian-C
+measurement:
+  subject_folds: 2
+  item_folds: 2
+  ridge_alpha: 1.0
+  intercept: true
+  solver: torch_float32_primal_cholesky_with_residual_check
+  temperature: 0.07
+  h_version: H_empty_intercept_only
+  arms: [H_only, real, trial_shuffle, within_trial_unit_assignment_shuffle, channel_block_permutation]
+  fits_per_scenario: 25
+alignment:
+  projection: linear_840_to_384
+  output_normalization: l2
+  loss: batch_InfoNCE
+  temperature: 0.07
+  optimizer: Adam
+  learning_rate: 0.003
+  batch_size: 64
+  steps: 32
+  early_stopping: disabled_fixed_steps
+  initialization_std: 0.02
+  candidate_n: 10
+  eta: 0.1
+  epsilon: 1.0e-8
+  measurement_hidden_dim: 64
+  lambda_a: 0.01
+  a_max: 10.0
+  rankfit_evaluation_every_steps: 4
+  rankfit_plateau_improvement_lt: 0.005
+  rankfit_plateau_consecutive: 2
+  eq_matched_warmup_source: maximum_observed_V1_plateau_step_across_four_lambda_m
+  direct_gamma: [0.5, 1.0, 2.0]
+  direct_score: [u_oof, u_min]
+  direct_warmup: [none, EQ_matched]
+  eq_lambda_m: [0.1, 0.3, 1.0, 3.0]
+  fit_rows_per_scenario: {uniform: 1, direct: 12, gated_direct: 12, V0: 4, V1: 4, V2: 4}
+  fits_per_scenario: 37
+selection:
+  source: selection_subjects_and_items_only
+  primary: R_at_1_N10
+  tie_break: [lower_complexity, lexicographic_method_id]
+  final_test_read: exactly_once_after_all_choices_frozen
+statistics:
+  bootstrap_resamples: 10000
+  independent_unit: replicate
+  thresholds_from_spec: unchanged
+accounting:
+  scenarios: 192
+  ridge_fits: 4800
+  alignment_fits: 7104
+  total_fits: 11904
+  unique_passing_synthetic_v5_ledgers: 11904
+forbidden_inputs:
+  - real_EEG
+  - real_outer_test_label
+  - real_outer_test_metric
+  - true_a_b_q_I_stable_mask_in_fitted_methods

@@ -1,0 +1,113 @@
+schema_version: 1
+outcome: PASS_EQ_ANMA_SYNTHETIC_BENCHMARK_FREEZE
+task: S0_EQ_ANMA_SYNTHETIC_BENCHMARK_FREEZE
+completed_by_run: 2026-08-16_036_v320_eq_anma_method_rescue_freeze
+baseline_commit: d10446537b3e6cb460abc652100a3978eabc0a3c
+governing_spec:
+  path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_20_2026-08-16.md
+  sha256: b3fadab38be711b8f55b6fa57fded9cece1bea3ba8ac69488242701798a8350a
+evidence_scope: SYNTHETIC_METHOD_VALIDITY
+real_eeg_claim: forbidden
+real_outer_test_reads: 0
+immutable_real_decisions:
+  a1_admission: FAIL_A1_ADMISSION
+  a1_recovery: FAIL_A1R_RECOVERY
+  a1_negative_confirmation: frozen_not_yet_run
+  gate_a_b_released: false
+simulation:
+  replicate_seeds: [20260813, 20260814, 20260815, 20260816, 20260817, 20260818, 20260819, 20260820, 20260821, 20260822, 20260823, 20260824]
+  regimes: [STRUCTURED_FISHER, MONOTONE_DIRECT]
+  alphas: [0.0, 0.01, 0.03, 0.1, 0.3, 1.0, 3.0, 10.0]
+  scenarios: 192
+  subjects:
+    total: 30
+    train: 18
+    selection: 6
+    final_test: 6
+  items:
+    total: 120
+    train: 72
+    selection: 24
+    final_test: 24
+  sentences_per_subject: 120
+  items_per_sentence: 4
+  item_text_dim: 384
+  eeg_feature_dim: 840
+  channel_blocks: 105
+  units_per_channel: 8
+  candidate_n: 10
+  alpha_zero_cross_regime_byte_equality: required
+  structured_stable_items: 90
+  structured_unstable_items: 30
+  monotone_all_items_stable: true
+measurement:
+  train_crossfit_subject_folds: 2
+  train_crossfit_item_folds: 2
+  crossfit_cells: 4
+  final_train_fit_groups: 1
+  fits_per_group: 5
+  ridge_fits_per_scenario: 25
+  total_ridge_fits: 4800
+  arms: [H_only, real, trial_shuffle, within_trial_unit_assignment_shuffle, channel_block_permutation]
+  normalizer_probe_support_fit_only: true
+  gate_fit_only: true
+methods:
+  uniform_fits_per_scenario: 1
+  direct_variants_per_scenario: 12
+  gated_direct_variants_per_scenario: 12
+  v0_variants_per_scenario: 4
+  v1_variants_per_scenario: 4
+  v2_variants_per_scenario: 4
+  alignment_fits_per_scenario: 37
+  total_alignment_fits: 7104
+  total_fits: 11904
+  unique_synthetic_v5_ledgers: 11904
+  direct_gamma: [0.5, 1.0, 2.0]
+  direct_score: [u_oof, u_min]
+  direct_warmup: [none, EQ_matched]
+  eq_lambda_m: [0.1, 0.3, 1.0, 3.0]
+  eq_main: V1
+  eq_sensitivity: [V0, V2]
+  alignment: linear_840_to_384_l2_normalized_batch_InfoNCE
+statistics:
+  bootstrap_resamples: 10000
+  independent_unit: replicate
+  replicate_count: 12
+  positive_replicates_gte: 10
+  primary_metric: R_at_1_N10
+  minimum_method_gain: 0.01
+  parameter_recovery_median_spearman_gte: 0.70
+  alpha_star_rule: smallest_nonzero_alpha_with_structured_advantage_at_it_and_next_grid_point
+controls:
+  alpha_zero_ci_contains_zero: true
+  alpha_zero_absolute_gain_lt: 0.01
+  monotone_direct_forbids_two_consecutive_EQ_positive_CIs: true
+  full_curve_reporting: true
+claim_boundary:
+  - synthetic_method_validity_only
+  - no_real_EEG_or_Gate_B_claim
+  - no_claim_that_A3_or_ROAMM_failed
+  - no_real_alpha_star_interpretation
+  - real_negative_confirmation_still_required
+formal_outputs:
+  - 02_code/src/methods/direct_u_plus.py
+  - 02_code/src/methods/eq_anma.py
+  - 02_code/src/data/eq_anma_synthetic_benchmark.py
+  - 02_code/scripts/run_eq_anma_synthetic_benchmark.py
+  - 02_code/tests/test_direct_u_plus.py
+  - 02_code/tests/test_eq_anma.py
+  - 02_code/tests/test_eq_anma_synthetic_benchmark.py
+  - artifacts/eq_anma_synthetic_benchmark_contract.yaml
+  - 04_results/synthetic_method/eq_anma_synthetic_benchmark.json
+  - 04_results/synthetic_method/eq_anma_synthetic_benchmark.md
+  - 04_results/synthetic_method/eq_anma_synthetic_benchmark_run_ledger.jsonl.gz
+  - runs/2026-08-16_037_v320_eq_anma_synthetic_benchmark.md
+forbidden:
+  - read_real_outer_test
+  - use_true_a_b_q_I_as_model_input
+  - change_generator_after_outcome
+  - drop_direct_friendly_or_alpha_zero_control
+  - weaken_direct_search_space
+  - select_on_final_test
+  - claim_real_EEG_method_superiority
+  - run_real_negative_panel_in_same_task

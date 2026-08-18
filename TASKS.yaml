@@ -672,7 +672,7 @@ S0_A1R_OUTER_CONFIRMATION_FREEZE:
 S0_A1_NEGATIVE_CONFIRMATION_FREEZE:
   title: Freeze the full ZuCo2 A1 negative-confirmation run and claim contract
   stage: stage_0
-  status: READY
+  status: DONE
   critical_path: true
   priority: 11
   prerequisites:
@@ -680,31 +680,135 @@ S0_A1_NEGATIVE_CONFIRMATION_FREEZE:
   produces:
     - artifacts/a1_negative_confirmation_freeze.yaml
   acceptance:
-    - before any outer-test outcome is read, a governing SPEC freezes exact 6x5 run budget, subject-first aggregation, formal outputs, V5 scopes, expected-negative and unexpected-positive outcome handling, and claim language
-    - the frozen contract cannot change v3.14 shams/probe/support because of diagnosis results and cannot run alignment, direct u-plus, EQ-ANMA, Gate B, A3 or ROAMM
-    - completion makes only S1_A1_NEGATIVE_CONFIRMATION READY and records the exact pre-run artifact hash
+    - before any outer-test outcome is read, SPEC v3.19 freezes the exact A1 6x5 panel plus the disjoint outer-t0 TSR-T8 transfer panel, 324-fit budget, subject-first aggregation, formal outputs, V5 scopes and all outcome rules
+    - the primary panel keeps the v3.14 raw A1, H, three shams, probe, support and N=10 contracts; no latent, log-BP, alignment, direct u-plus, EQ-ANMA, Gate, A3 or ROAMM is run
+    - the TSR-T8 secondary hypothesis is explicitly selected from run 034 and must score only outer-t0 records reconstructed to have zero overlap with every run-034 record
+    - completion makes only S1_A1_NEGATIVE_CONFIRMATION READY and records the exact pre-run SPEC and freeze hashes
   blocked_reason: null
-  why_ready: Run 034 completed the exact 78-fit inner recovery audit with valid FAIL_A1R_RECOVERY, selected no A1-R frontend and read zero outer-test/calibration values. SPEC v3.18 D59 releases only this pre-run negative-confirmation freeze; it does not authorize the panel itself.
+  completion_outcome: PASS_A1_NEGATIVE_CONFIRMATION_FREEZE
+  completed_by_run: 2026-08-16_035_v319_a1_recovery_review_and_negative_confirmation_freeze
+  evidence:
+    - artifacts/a1_negative_confirmation_freeze.yaml
+    - guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_19_2026-08-16.md
+    - runs/2026-08-16_035_v319_a1_recovery_review_and_negative_confirmation_freeze.md
+  completion_note: Commit d104465 and all run-034 formal statistics/hashes were independently audited and its valid FAIL was admitted. The full outer A1 negative panel is frozen, while the only salvage diagnostic is TSR-T8 seen-to-cross transfer collapse on outer text fold t0, whose score records are disjoint from the inner development audit.
 
 S1_A1_NEGATIVE_CONFIRMATION:
   title: Confirm the A1 matched-null failure across all ZuCo2 outer subject-by-text cells
   stage: stage_1_negative_diagnostic
-  status: BLOCKED
+  status: READY
   critical_path: true
   priority: 11
   prerequisites:
     - S0_A1_NEGATIVE_CONFIRMATION_FREEZE
   produces:
+    - 02_code/src/data/a1_negative_confirmation.py
+    - 02_code/scripts/run_a1_negative_confirmation.py
+    - 02_code/tests/test_a1_negative_confirmation.py
     - artifacts/a1_negative_confirmation_contract.yaml
     - 04_results/negative_diagnostic/a1_negative_confirmation.json
     - 04_results/negative_diagnostic/a1_negative_confirmation.md
     - 04_results/negative_diagnostic/a1_negative_confirmation_run_ledger.jsonl.gz
   acceptance:
-    - execution requires an author-admitted measurement-recovery decision and DONE S0_A1_NEGATIVE_CONFIRMATION_FREEZE before any outer-test value is read
-    - both NR and TSR use all 6x5 outer cells with train-only fitting and the frozen A1 raw/latent, H, three shams, ridge, seed, support and V5 contracts
-    - subject-first results report u_oof, u_min, each single sham, text-only, max-selection gap, coverage and cell/seed/subject heterogeneity without treating nonsignificance as proof of equivalence
-    - this route does not train alignment, direct u-plus, EQ-ANMA or Gate B and cannot revive the failed admission outcome
-  blocked_reason: The recovery decision is complete, but the pre-run negative-confirmation freeze and its new governing SPEC are still incomplete; no outer-test confirmation may start.
+    - baseline is exact d104465; immutable admitted/run-032/run-034 evidence reproduces and no old artifact, implementation, test or fit is regenerated or modified
+    - NR and TSR primary A1 use every 6x5 outer cell; fit is exact train_record_ids, cross is exact test_record_ids, seen is train-subject plus held-text held_out_only records, and every normalizer/support/vocabulary/ridge is fit-only
+    - the secondary panel is only TSR A1R_T8_FIXATION on all six subject folds at outer text fold t0; its score IDs have zero overlap with reconstructed run-034 records, use A1-T8 common rows, retain at least 90 percent of old-A1 rows and retain all 18 subjects
+    - H, MiniLM, N=10 candidates, A1/T8 frontends, three shams, ridge alpha/intercept, temperature, seed, support and V5 follow SPEC v3.19 without tuning, calibration, latent or log-BP
+    - the exact budget is 60 H-only plus 240 A1-arm plus 24 T8-arm fits, total 324 fits and 324 unique passing V5 ledgers; each fit scores seen/cross without refitting
+    - subject-first aggregation yields paired 18-subject seen/cross summaries and reports u_oof, legacy u_min, all single shams, max-selection gap, H/sham absolute logp, transfer loss, cells, heterogeneity, coverage and B=10000 CIs
+    - primary negative confirmation, independent TSR-T8 transfer collapse, A-S1 Holm safety and all outcomes/state transitions follow SPEC v3.19 D67-D69 exactly; nonsignificance is never called equivalence or proof of zero
+    - formal outputs contain only aggregate/subject summaries, IDs/hashes/counts and outcome, with no raw EEG, feature arrays, observation logits/embeddings, weights or cache
+    - no alignment, direct u-plus, EQ-ANMA, Gate, A3 or ROAMM is run; no unexpected positive result automatically revives the failed admission
+  blocked_reason: null
+  why_ready: SPEC v3.19 and the pre-run freeze were completed without reading outer outcomes. Run 034 is admitted as valid FAIL, and exactly one 324-fit outer negative/transfer confirmation task is now authorized.
+
+S0_ZUCO2_NEGATIVE_PACKAGE_FREEZE:
+  title: Freeze the complete ZuCo2 negative-result package and claim ledger
+  stage: stage_0
+  status: BLOCKED
+  critical_path: true
+  priority: 12
+  prerequisites:
+    - S1_A1_NEGATIVE_CONFIRMATION
+    - S1_EQ_ANMA_SYNTHETIC_BENCHMARK
+    - S0_A3_CONTAMINATION_CHECK
+  produces:
+    - artifacts/zuco2_negative_package_freeze.yaml
+  acceptance:
+    - the valid outer outcome, tables, plots, claim boundary, deviations and exact artifact hashes are frozen as the complete first-dataset package
+    - no null or inconclusive result is described as equivalence, proof of zero, all-EEG failure or cross-dataset replication
+    - the package records why real alignment/direct u-plus/EQ-ANMA were not scientifically admitted and separately reports the bounded synthetic-method outcome without calling it real EEG evidence
+    - the independent ZuCo2 A3 chain has a valid PASS or bounded source/admission No-Go and is not silently omitted as an A1 replacement decision
+    - only after this package is frozen may the preserved ROAMM admission checkpoint resume
+  blocked_reason: S1_A1_NEGATIVE_CONFIRMATION, S1_EQ_ANMA_SYNTHETIC_BENCHMARK and independent A3 admission resolution are incomplete. Unexpected-positive or INVALID outcomes require author review before this task may become READY.
+
+S0_EQ_ANMA_SYNTHETIC_BENCHMARK_FREEZE:
+  title: Freeze a falsifiable EQ-ANMA synthetic method-validity benchmark
+  stage: stage_0
+  status: DONE
+  critical_path: true
+  priority: 10
+  prerequisites:
+    - S0_ANMA_ORIG
+  produces:
+    - artifacts/eq_anma_synthetic_benchmark_freeze.yaml
+    - guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_20_2026-08-16.md
+  acceptance:
+    - before any synthetic final-test result is read, the generator, two opposing regimes, alpha grid, splits, strongest direct/gated-direct controls, EQ variants, exact 11904-fit budget, endpoints, alpha-star rule, controls and outcomes are frozen
+    - the benchmark uses no real EEG or real outer-test value and cannot alter the immutable A1 failures, v3.19 negative panel, Gate or unfinished A3/ROAMM status
+    - STRUCTURED_FISHER tests the claimed 2PL/Fisher mechanism while MONOTONE_DIRECT and byte-identical alpha-zero controls make the benchmark capable of rejecting an unconditional EQ advantage
+    - completion releases only S1_EQ_ANMA_SYNTHETIC_BENCHMARK and records the exact SPEC/freeze hashes
+  blocked_reason: null
+  completion_outcome: PASS_EQ_ANMA_SYNTHETIC_BENCHMARK_FREEZE
+  completed_by_run: 2026-08-16_036_v320_eq_anma_method_rescue_freeze
+  evidence:
+    - artifacts/eq_anma_synthetic_benchmark_freeze.yaml
+    - guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_20_2026-08-16.md
+    - runs/2026-08-16_036_v320_eq_anma_method_rescue_freeze.md
+  completion_note: SPEC v3.20 decouples real measurement qualification from synthetic method validity. It freezes a controlled 2PL/Fisher regime, a direct-friendly monotone regime and alpha-zero false-positive control before any synthetic final-test curve is produced.
+
+S1_EQ_ANMA_SYNTHETIC_BENCHMARK:
+  title: Validate EQ-ANMA against strongest direct u-plus in a controlled synthetic benchmark
+  stage: stage_1_synthetic_method
+  status: DONE
+  critical_path: true
+  priority: 10
+  prerequisites:
+    - S0_ANMA_ORIG
+    - S0_EQ_ANMA_SYNTHETIC_BENCHMARK_FREEZE
+  produces:
+    - 02_code/src/methods/direct_u_plus.py
+    - 02_code/src/methods/eq_anma.py
+    - 02_code/src/data/eq_anma_synthetic_benchmark.py
+    - 02_code/scripts/run_eq_anma_synthetic_benchmark.py
+    - 02_code/tests/test_direct_u_plus.py
+    - 02_code/tests/test_eq_anma.py
+    - 02_code/tests/test_eq_anma_synthetic_benchmark.py
+    - artifacts/eq_anma_synthetic_benchmark_contract.yaml
+    - 04_results/synthetic_method/eq_anma_synthetic_benchmark.json
+    - 04_results/synthetic_method/eq_anma_synthetic_benchmark.md
+    - 04_results/synthetic_method/eq_anma_synthetic_benchmark_run_ledger.jsonl.gz
+  acceptance:
+    - baseline is exact d104465 and all immutable real evidence reproduces; no real outer-test EEG/label/metric or old formal artifact is read as an outcome or modified
+    - the exact v3.20 generator uses 12 replicate seeds, 30 disjoint train/selection/test subjects, 120 disjoint train/selection/test items, two regimes, eight alphas and byte-identical cross-regime alpha-zero features
+    - true a/b/q/I/stable-mask values are used only by the generator and final diagnostics, never as fitted-method inputs; all method observations come through the inherited cross-fitted real/three-sham ridge path
+    - direct u-plus and EQ-ANMA V0/V1/V2 implement the v3.13 formulas, floors, all-zero fallback, gate, identification, amortization, stop-gradient and L1/L2/L3 fairness rules with adversarial unit tests
+    - strongest direct and gated-direct each receive all 12 frozen variants and selection-only tuning; EQ receives the four lambda-m variants and selection-only tuning; final test subjects/items are read once after choice freeze
+    - exact accounting is 192 scenarios, 4800 measurement ridge fits, 7104 alignment fits and 11904 unique passing synthetic V5 ledgers
+    - replicate-first B=10000 inference reports detectability, R@1/MRR, direct contrasts, parameter/weight/gate recovery, dispersion, floor/all-zero and confound diagnostics
+    - alpha-star, structured advantage, alpha-zero and monotone-direct controls plus PASS/MECHANISM_ONLY/FAIL/INVALID outcomes follow SPEC v3.20 D77-D78 exactly without threshold or generator changes
+    - formal outputs contain formulas/hashes/counts/aggregate and replicate summaries only, with no feature/embedding/logit/model/projection arrays
+    - completion never changes real Gate A/B or calls a synthetic alpha a real EEG threshold; S1_A1_NEGATIVE_CONFIRMATION remains the required next real-data task
+  blocked_reason: null
+  completion_outcome: FAIL_EQ_ANMA_SYNTHETIC_ADVANTAGE
+  completed_by_run: 2026-08-16_037_v320_eq_anma_synthetic_benchmark
+  evidence:
+    - artifacts/eq_anma_synthetic_benchmark_contract.yaml
+    - 04_results/synthetic_method/eq_anma_synthetic_benchmark.json
+    - 04_results/synthetic_method/eq_anma_synthetic_benchmark.md
+    - 04_results/synthetic_method/eq_anma_synthetic_benchmark_run_ledger.jsonl.gz
+    - runs/2026-08-16_037_v320_eq_anma_synthetic_benchmark.md
+  completion_note: The exact 192-scenario benchmark completed with 4,800 ridge fits, 7,104 alignment fits and 11,904 unique passing synthetic V5 ledgers. Alpha-zero and MONOTONE_DIRECT controls passed, but parameter, oracle-weight and gate recovery were insufficient and no alpha_star existed. This is a valid synthetic method-boundary result only; it does not alter real A1 decisions or release real Gate/alignment.
 
 S0_A3_CONTAMINATION_CHECK:
   title: Verify A3 LaBraM pretraining contamination, license, checkpoint, and channel map
@@ -861,7 +965,7 @@ GATE_A:
   blocked_reason: The population rule is frozen and tested, but Gate A has no valid real OOF/sham evidence and Stage 1/A1 admission remain blocked.
 
 S0_DIRECT_U_PLUS:
-  title: Implement the preregistered strongest direct u+ weighting control
+  title: Instantiate the preregistered strongest direct u+ control on admitted real Stage-1 scores
   stage: stage_2
   status: BLOCKED
   critical_path: true
@@ -876,10 +980,11 @@ S0_DIRECT_U_PLUS:
     - measurement-layer hyperparameters are not imposed on this non-measurement row
     - entropy, Gini, quantiles, floor-hit, and all-zero-batch diagnostics use the unique v3.7 definitions
     - all variants and dispersion diagnostics are reportable
-  blocked_reason: The N=10 common-support population, pre-run leakage audit and A1 source contract are frozen, but direct-u-plus implementation remains paused by Stage-0 execution order while the recommended S0_A1_ADMISSION and required Stage-1 prerequisites remain incomplete. This is not permission to alter the section 6.16 formula.
+    - a synthetically tested reusable direct_u_plus module does not by itself satisfy this real-score instantiation task
+  blocked_reason: SPEC v3.20 permits the reusable direct-u-plus module inside the synthetic method benchmark, but real instantiation remains blocked because A1 admission/Stage-1 real scores failed. Synthetic code or results cannot be relabeled as this task's real evidence.
 
 S0_EQ_ANMA_CORE:
-  title: Implement the EQ-ANMA weighting path after Stage-1 scores are frozen
+  title: Instantiate the EQ-ANMA weighting path on admitted real Stage-1 scores
   stage: stage_2
   status: BLOCKED
   critical_path: true
@@ -895,7 +1000,8 @@ S0_EQ_ANMA_CORE:
     - raw u_min-derived G_k is the only training weight source
     - item-to-sentence aggregation is mean with floor eta 0.1
     - weights are stop-gradient, computed once per outer fold, and shared fairness rules pass
-  blocked_reason: The semantic item and ANMA-orig reference baseline now pass, but EQ-ANMA weights cannot be built before frozen real Stage-1 observations exist.
+    - a synthetically tested reusable eq_anma module does not by itself satisfy this real-score instantiation task
+  blocked_reason: SPEC v3.20 permits the reusable EQ-ANMA module inside the synthetic method benchmark, but real weights remain blocked because no admitted real Stage-1 u_min observations exist. Synthetic method validity cannot release real Gate B.
 
 GATE_B:
   title: Decide whether EQ-ANMA has independent value over direct u+ weighting

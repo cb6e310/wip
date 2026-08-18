@@ -2,103 +2,55 @@
 
 This file is the mandatory entry point for every new AI session. Do not use chat history as project state.
 
-## Verified Project Location
+## Project
 
-- Server: `song@10.244.144.87`
-- Project root: `/home/song/projects/trust_align`
+- Root: `/home/song/projects/trust_align`
 - Python: `/home/song/projects/trust_align/.venv/bin/python`
+- Baseline remote commit: `d10446537b3e6cb460abc652100a3978eabc0a3c`
 
-## Source of Truth
+## Source of truth
 
-1. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_18_2026-08-16.md` (governing bounded A1-R recovery overlay)
-2. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_17_2026-08-16.md` (immutable measurement-validity audit contract)
-3. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_16_2026-08-16.md` (15-subject amendment)
-4. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_15_2026-08-16.md` (frozen diagnosis base)
-5. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_14_2026-08-16.md` (frozen A1 pilot contract)
-6. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_13_2026-08-15.md` (unchanged inherited definitions)
-7. `guide/EEG_Text_Bprime_Execution_Plan_v3_2026-08-11_to_Submission.md`
+1. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_20_2026-08-16.md` — synthetic EQ-ANMA method-validity overlay
+2. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_19_2026-08-16.md` — inherited real A1 outer negative/transfer confirmation
+3. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_18_2026-08-16.md` — immutable A1-R recovery
+4. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_17_2026-08-16.md` — immutable measurement-validity audit
+5. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_14_2026-08-16.md` — immutable A1 admission
+6. `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_13_2026-08-15.md` — inherited method/fairness definitions
 
-SPEC v3.18 admits run 032 exactly as `INVALID_A1_MEASUREMENT_VALIDITY_AUDIT`; it never changes the frozen rho threshold or reruns the curve. Author review records that both tasks detect injected signal at low alpha and saturate after alpha 1, then freezes one independent 78-fit inner-only recovery audit. It compares matched seen-subject versus subject-heldout scoring and exactly two mechanism-prior frontends. Never edit a scientific rule merely to make a task or Gate pass.
+Never change a scientific rule to make a task pass.
 
-## Required Recovery Sequence
+## Startup
 
-Read, in order:
-
-1. `PROJECT_STATE.yaml`
-2. `HANDOFF.md`
-3. `TASKS.yaml`
-4. Relevant guide sections
-
-Then run:
+Read `PROJECT_STATE.yaml`, `HANDOFF.md`, `TASKS.yaml`, then the relevant SPEC. Run:
 
 ```bash
 .venv/bin/python scripts/check_project_state.py
 .venv/bin/python scripts/project_status.py
 ```
 
-Before implementation print:
+Print the project snapshot. If state/SPEC disagree, report `STATE_SPEC_CONFLICT` and stop.
 
-```text
-PROJECT SNAPSHOT
+## Immutable facts
 
-Current stage:
-Current route:
-Completed prerequisites:
-Active blockers:
-Ready tasks:
-Recommended next task:
-Why:
-Do not do yet:
-```
+- Real ZuCo2+A1 admission is `FAILED/FAIL_A1_ADMISSION`; real alignment, direct weighting, EQ-ANMA and Gate B are not admitted.
+- Run 032 remains `INVALID_A1_MEASUREMENT_VALIDITY_AUDIT`, with bounded interpretation `MEASUREMENT_PATH_DETECTS_INJECTED_SIGNAL_WITH_SATURATION`.
+- Commit `d104465` run 034 is admitted as valid `FAIL_A1R_RECOVERY`: 78 fits/V5, 100% row retention, zero outer/calibration reads, no selected frontend.
+- SPEC v3.19 freezes a later real 324-fit A1 negative/TSR-T8 transfer panel. It remains READY and unchanged.
+- A3 and ROAMM have not failed; they remain unfinished independent real-data routes.
 
-If state and SPEC disagree, report `STATE_SPEC_CONFLICT` and stop rather than guessing.
+## Current recommended task
 
-## Current Boundary
+Only execute `S1_EQ_ANMA_SYNTHETIC_BENCHMARK` in the current Codex task. `S1_A1_NEGATIVE_CONFIRMATION` is also READY but must not run concurrently in the same working tree/task.
 
-- Commits `711340d` and `e42b3bf` are admitted: `S0_CANDIDATES=DONE/STRUCTURAL_NO_GO_N50` and `S0_CANDIDATE_COMMON_SUPPORT=DONE/PASS_N10_COMMON_SUPPORT`. Neither task may be reopened.
-- The immutable audit covers 18,475 target instances. N=50 is structurally unavailable, but 17,061/18,475 (92.35%) have at least nine legal negatives.
-- v3.12 keeps N=10 primary on the per-scope common-support population `legal_count>=9`; this is a scoring-population restriction, never a training-record deletion.
-- The common-support artifacts retain all 18,475 target instances, freeze the 17,061 eligible N=10 scoring instances and ledger all 1,414 exclusions. Their large duplicated JSON is an admitted nonblocking efficiency issue; do not compact, delete, regenerate or modify them.
-- `S0_LEAKAGE_AUDIT=DONE/PASS_PRE_RUN_V1_V5`. V1-V4 passed on immutable real protocol artifacts; V5 is only `PASS_PRE_RUN_CONTRACT`, with `future_run_admission_required=true` and `real_training_ledgers_audited=0`.
-- `d9dfe51442155fbd3854d223916c519a7757fff1` is admitted without rework; its leakage artifacts and state transition are valid.
-- `S0_A1_SOURCE_ADMISSION=DONE/PASS_REAL_A1_SOURCE`. All 36 summary MATs and 252 Preprocessed EEG files passed the 500 Hz, exact ordered 105-label, D34 native-unlabelled stable-scale, strict-finite, identity, G0 and deterministic 840D source contracts; the three formal artifacts reproduce byte-identically.
-- `6cffbb68477d92463565c65024a164a40e68e840` is admitted without rework. Its 72 source links establish exact `min(20,T) x 105` prefix matches; do not overstate them as whole-array equality and do not reopen the source task for this nonblocking wording note.
-- `31164dc3d70b00fb383862f88b6404bd616db696` is execution-valid and admitted without protocol repair. The four formal hashes reproduce, the gzip has 639 unique V5 ledgers, and outer-test/calibration reads are zero.
-- `S0_A1_ADMISSION=FAILED/FAIL_A1_ADMISSION`. The frozen NR/TSR pilot completed all 639 fits and V5 ledgers: both tasks fail raw/latent A-A1 and raw/latent A-A3, while A-A2 and A-A4 pass. Significant-negative A-A1 conditions are present. This is a scientific admission failure, not a source/runtime/V5 failure, and it never becomes DONE.
-- For A1 bandpower, phase rotation on the exact demeaned-and-Hann windowed rFFT analysis spectrum is a required invariance diagnostic, not a strong sham, `u_min` member or phase-only No-Go. Pre-window phase randomization also changes the analysis-spectrum magnitude and is not a phase-only matched null. The v3.13 identifiable strong family is trial shuffle, within-trial unit-assignment shuffle and channel-block permutation.
-- `ffd2369663eb7a0f069f75726b34a46b7e3808ad` is execution-valid. All 58 fits/58 V5 ledgers completed with zero outer-test/calibration reads; both A-A3 oracle controls and both scorer numerical thresholds pass. Its `INVALID_A1_FAILURE_DIAGNOSIS` is retained because one subject fold has 5, not 15, scoring subjects.
-- Run `2026-08-16_032_v317_a1_measurement_validity` completed the exact v3.17 budget: 8 D49 plus 192 D50 ridge fits and 200 unique passing new V5 ledgers, with 697 old ledgers revalidated and zero outer-test/calibration reads. D49 passed for both exact 15-subject populations.
-- `S0_A1_FAILURE_DIAGNOSIS=BLOCKED/INVALID_A1_MEASUREMENT_VALIDITY_AUDIT`. Both tasks had family floor 0.01, legacy floor 0.03 and alpha-10 family/legacy detection, but both frozen eight-point Spearman rho values were 0.833333 below the required 0.90. Do not rerun or expand the audit.
-- v3.18 author review preserves that INVALID and records only `MEASUREMENT_PATH_DETECTS_INJECTED_SIGNAL_WITH_SATURATION`: both curves rise strictly through alpha 1 and then saturate. This is a deviation-log interpretation, not an EEG result or retroactive PASS.
-- `S0_A1_MEASUREMENT_RECOVERY_FREEZE=DONE/PASS_A1R_RECOVERY_FREEZE`. The only candidates are train-only log bandpower on the old concatenated-fixation PSD and signed eight-bin fixation-relative time features; the old A1 is a paired baseline.
-- `S1_A1_MEASUREMENT_RECOVERY=DONE/FAIL_A1R_RECOVERY`. Run 034 completed exactly 78 ridge fits and 78 unique passing V5 ledgers using inner data only, matched ten-subject training, paired 15-subject seen/cross summaries and zero outer/calibration reads.
-- NR retained 48,347/48,347 and TSR retained 45,392/45,392 common T8 observations. Neither `A1R_LOG_BP_CONCAT` nor `A1R_T8_FIXATION` passed cross family detection plus paired recovery-delta acceptance in either task; no frontend or task scope was selected.
-- `S0_ALIGN_UNIT_COST`, `STAGE1_PROBES`, `S0_DIRECT_U_PLUS`, `S0_EQ_ANMA_CORE`, both Gates, route lock and the original main experiment remain blocked by the failed admission.
-- `recommended_next_task=S0_A1_NEGATIVE_CONFIRMATION_FREEZE`. This task must freeze the complete outer negative-confirmation contract before any outer-test value is read. A1-R outer confirmation and `S1_A1_NEGATIVE_CONFIRMATION` remain BLOCKED.
-- Never force feasibility with wrong-scope text, length refill, relaxed cosine/H filters, replacement or silent target deletion. Every excluded target remains ledgered.
-- The A1-admission fixed-window path receives no outcome-driven word mapping and cannot be used to rescue the failed admission.
-- The preflight may inspect contracts, shapes, hashes, memory and runtime only. It cannot be used to change the frozen ridge/logistic probes, shams, cells, seeds, support or thresholds; a fit over 300 seconds blocks.
-- ROAMM remains mandatory but deferred until the frozen ZuCo2 first-dataset package is complete.
-- Do not change the old backbone, probes, shams, cells, seeds, thresholds or dataset in response to `FAIL_A1_ADMISSION`. Run 032 injection is construct-validity evidence only and never enters recovery or paper performance.
-- Do not treat 5 as 15 or borrow observations across cells. v3.18 permits only the exact 78-fit matched seen/cross audit and two frozen A1-R candidates; do not change t0, seed, probe, row-retention threshold, outcome criteria or old artifacts.
-- The semantic injection is applied after the inherited fold normalizer and before inherited four-arm sham construction. It tests downstream detectability, not biological plausibility, and cannot prove that real EEG has or lacks semantic information.
-- Separate `family_mean_detected` from `legacy_full_detected`. Never drop old `u_min`, but do not treat its pointwise max-selection penalty as interchangeable with the family-mean estimand.
+The synthetic benchmark uses no real EEG or real outer-test metric. Exact scope is 192 scenarios, 4,800 measurement ridge fits, 7,104 alignment fits and 11,904 unique passing synthetic V5 ledgers. It must implement the reusable direct-u-plus and EQ-ANMA modules, the structured-Fisher regime, the direct-friendly monotone regime and byte-identical alpha-zero controls exactly as SPEC v3.20 D73–D79.
 
-## State Discipline
+True generator `a/b/q/I/stable-mask` values are forbidden method inputs. Hyperparameters select on synthetic selection populations only; synthetic final-test subjects/items are read once. No outcome may be called real EEG evidence, Gate B, real retrieval performance or a real alpha threshold.
 
-- `READY` requires every prerequisite `DONE` and no active blocker naming the task.
-- `DONE` requires existing evidence files and `completed_by_run`.
-- Keep current state in `PROJECT_STATE.yaml`, task evidence in `TASKS.yaml`, concise handoff in `HANDOFF.md`, and history in a new `runs/` record.
-- Do not begin Gate B before Gate A PASS.
-- Do not begin the main experiment before `ROUTE_LOCK=DONE` and one route is locked.
-- The only currently permitted execution is `S0_A1_NEGATIVE_CONFIRMATION_FREEZE`. It is a pre-run author/spec task only: do not execute the negative panel, read outer-test values, rerun recovery, or release alignment/Gate work.
+## Execution discipline
 
-## End-of-Session Contract
-
-After changing state:
-
-1. Update `PROJECT_STATE.yaml` and affected `TASKS.yaml` entries.
-2. Replace `HANDOFF.md` with the current concise handoff.
-3. Add a unique `runs/YYYY-MM-DD_<id>.md` record.
-4. Run `scripts/check_project_state.py`, `scripts/project_status.py`, the relevant tests and `git diff --check`.
-5. Commit and push only after all task acceptance conditions pass.
+- Safely import the complete v3.19+v3.20 control bundle before implementation.
+- Prefer existing W, sham, ridge, V5, ANMA and statistic helpers; keep old behavior/tests compatible.
+- Preflight is contract/runtime only and may not read the formal final-test curve.
+- Run focused, related and full tests, compile, state/status and `git diff --check`.
+- For any legal PASS/MECHANISM_ONLY/FAIL/INVALID outcome, follow SPEC v3.20 exactly, update state/handoff/run record, commit and push.
+- After any valid non-INVALID outcome, recommend `S1_A1_NEGATIVE_CONFIRMATION`; never release real Gate/alignment.

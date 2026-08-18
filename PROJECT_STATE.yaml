@@ -1,11 +1,11 @@
 schema_version: 1
-updated_at: "2026-08-16T22:29:00+08:00"
-updated_by_run: 2026-08-16_034_v318_a1_measurement_recovery
+updated_at: "2026-08-18T11:20:00+08:00"
+updated_by_run: 2026-08-16_037_v320_eq_anma_synthetic_benchmark
 
 project:
   name: trustworthy_subject_general_eeg_text_alignment
-  spec_version: v3.18
-  spec_path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_18_2026-08-16.md
+  spec_version: v3.20
+  spec_path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_20_2026-08-16.md
   execution_plan_path: guide/EEG_Text_Bprime_Execution_Plan_v3_2026-08-11_to_Submission.md
   server_root: /home/song/projects/trust_align
   python_path: /home/song/projects/trust_align/.venv/bin/python
@@ -30,7 +30,7 @@ scope:
     pending_definition: []
 
 execution:
-  stage: stage_0
+  stage: stage_1_synthetic_method
   status: IN_PROGRESS
   current_gate: null
 
@@ -64,38 +64,38 @@ blockers:
       - GATE_B
       - ROUTE_LOCK
       - MAIN_EXPERIMENT
-    resolution: Do not force a PASS or generalize it to all EEG. The v3.18 recovery audit also returned valid FAIL_A1R_RECOVERY. The old EQ-ANMA chain and all outer panels remain closed; only the pre-run negative-confirmation freeze is now permitted.
+    resolution: Do not force a real PASS or generalize it to all EEG. The v3.18 recovery audit also returned valid FAIL_A1R_RECOVERY. SPEC v3.20 separately permits a synthetic EQ-ANMA method-validity benchmark and the frozen 324-fit real negative/transfer confirmation; neither can relabel the failed A1 real chain or release real Gate B.
   - id: B_A1_MEASUREMENT_VALIDITY_INVALID
     reason: Run 032 completed all 200 frozen ridge fits and 200 unique passing V5 ledgers. D49 passed for both exact 15-subject populations and alpha 10 family_mean_detected was true for both tasks, but the eight-point alpha-versus-u_oof Spearman rho was 0.833333 for both NR and TSR, below the frozen 0.90 completion threshold. The valid declarative outcome is INVALID_A1_MEASUREMENT_VALIDITY_AUDIT.
     blocks:
       - S0_A1_FAILURE_DIAGNOSIS
     resolution: Preserve the complete 200-fit evidence and its INVALID label. SPEC v3.18 separately records MEASUREMENT_PATH_DETECTS_INJECTED_SIGNAL_WITH_SATURATION and permits only the bounded inner A1-R recovery task; no run-032 threshold or artifact changes.
   - id: B_ROAMM_DEFERRED_UNTIL_ZUCO2_FREEZE
-    reason: SPEC v3.18 preserves ROAMM ds007629 v1.3.0 as the mandatory external replication dataset but defers it until the ZuCo2 first-dataset package is frozen. The valid FAIL_A1R_RECOVERY routes only to a not-yet-frozen negative-confirmation panel, so the first-dataset outcome and claim boundary remain incomplete. The existing incomplete checkpoint remains not experiment-ready.
+    reason: SPEC v3.20 preserves ROAMM ds007629 v1.3.0 as the mandatory external replication dataset but defers it until the ZuCo2 first-dataset package is frozen. The synthetic method benchmark completed with valid FAIL_EQ_ANMA_SYNTHETIC_ADVANTAGE, while the real A1 negative/transfer confirmation and independent A3 admission resolution remain incomplete. The existing ROAMM checkpoint remains not experiment-ready.
     blocks:
       - S0_ROAMM_ADMISSION
-    resolution: After the ZuCo2 measurement-validity/recovery decision and its resulting method/outcome/claim ledger are frozen as the complete first-dataset package, remove this scheduling blocker and resume S0_ROAMM_ADMISSION from the preserved checkpoint. Do not select, cancel or redesign replication based on the ZuCo2 outcome.
+    resolution: Complete S1_A1_NEGATIVE_CONFIRMATION, independently resolve the ZuCo2 A3 admission chain as PASS or bounded No-Go, then freeze the valid synthetic FAIL and real measurement outcomes in S0_ZUCO2_NEGATIVE_PACKAGE_FREEZE. Only afterward resume ROAMM; do not redesign replication from any outcome.
   - id: B_A3_NOT_VALIDATED
     reason: v3.6 clears CO-N7 and treats local checkpoint inference rights as a disclosure item; checkpoint/load/pooling/no-gradient and raw E1..E128 inventory pass, but the EGI128-to-canonical map, ZuCo raw unit, filter order/notch Q, and real MAT end-to-end extraction remain unresolved.
     blocks:
       - S0_A3_CONTAMINATION_CHECK
     resolution: Approve and hash an exact-name or spatial EGI128-to-canonical map with coverage, verify the raw signal unit, freeze filter order/notch Q, then run the real 500-to-200 preprocessing and no-gradient 200D extraction smoke. Preserve checkpoint provenance and do not redistribute the checkpoint.
 
-last_completed_task: S1_A1_MEASUREMENT_RECOVERY
-recommended_next_task: S0_A1_NEGATIVE_CONFIRMATION_FREEZE
-last_run: runs/2026-08-16_034_v318_a1_measurement_recovery.md
+last_completed_task: S1_EQ_ANMA_SYNTHETIC_BENCHMARK
+recommended_next_task: S1_A1_NEGATIVE_CONFIRMATION
+last_run: runs/2026-08-16_037_v320_eq_anma_synthetic_benchmark.md
 
 do_not_do_yet:
   - Do not treat the ZuCo 1.0 smoke as paper evidence.
   - Do not start Stage 1, Gate A, or Gate B before all remaining protocol and A1-admission prerequisites are validated.
   - Do not lock a route or start the main experiment before ROUTE_LOCK is DONE.
-  - Do not execute CSPE or TMNRED in this paper; v3.18 keeps the first-dataset scope on ZuCo2 and defers ROAMM until that package is frozen.
+  - Do not execute CSPE or TMNRED in this paper; v3.20 keeps the first-dataset scope on ZuCo2 plus synthetic method validity and defers ROAMM until that package is frozen.
   - Do not add a third backbone; the user and v3.13 scope are A1 plus A3 only.
   - Do not treat the A1 synthetic contract self-check as real-data admission evidence.
   - Do not run the A1 fixed-window path from 128-channel continuous files; the admitted source is the exact 105-channel sentenceData.rawData order bound by the v3.13 source contract.
   - Do not treat the admitted inner split as Stage-1 OOF evidence; it is protocol infrastructure only.
   - Do not treat the bbf8d11 512-token run as exact-revision text admission; the corrected 256-token/config-manifest run is the admitted evidence.
-  - Do not resume ROAMM download, admission, candidate construction or training until the ZuCo2 measurement-validity/recovery decision and the resulting first-dataset package are frozen.
+  - Do not resume ROAMM download, admission, candidate construction or training until the ZuCo2 negative-confirmation outcome and resulting first-dataset package are frozen.
   - Do not delete or relabel the existing ROAMM checkpoint as admitted; preserve its verified partial files, manifests, logs and experiment_ready=false boundary for later resumption.
   - Do not override the admitted STRUCTURAL_NO_GO_N50 with wrong-scope text, cross-fold borrowing, nearest-neighbor length refill, relaxed filters, replacement sampling, or silent target deletion. The only approved revision is v3.12 N=10 scoring on targets with legal_count>=9 in their frozen scope.
   - Do not delete N=10-ineligible records from any training set; common-support eligibility affects inner-validation and outer-test scoring only, and exclusions must remain explicit in the audit ledger.
@@ -103,8 +103,8 @@ do_not_do_yet:
   - Do not treat the pre-run V5 contract as evidence that future EEG/training runs are leakage-free; every future run requires its own admitted fit/selection/calibration ledger.
   - S0_A1_ADMISSION is author-reviewed FAILED/FAIL_A1_ADMISSION under the frozen SPEC v3.14 contract. Do not mark it DONE, release alignment/unit cost, or change the backbone/probe/shams/cells/seeds/thresholds/dataset.
   - Run 032 already completed the exact SPEC v3.17 200-fit measurement-validity budget with immutable INVALID outcome. Do not rerun or relabel it; SPEC v3.18 releases only S1_A1_MEASUREMENT_RECOVERY as a new independent audit.
-  - Do not treat 5 as 15, rerun old s0/A-A3/admission fits, change t0/seed/probe/alpha grid/thresholds, borrow observation rows across cells, or start measurement recovery/negative confirmation in this task.
-  - Do not treat injected MiniLM signal as EEG evidence or synthetic EEG performance. It is an aggregate-only construct-validity ruler inserted after fold normalization and before the inherited four-arm sham constructor.
+  - Do not treat 5 as 15, rerun old s0/A-A3/admission fits, change the run-032 alpha grid/thresholds, or borrow observations across cells; the immutable recovery audit is complete.
+  - Do not treat run-032 injected MiniLM signal as EEG evidence or as the v3.20 synthetic method benchmark. Run 032 is only an aggregate construct-validity ruler; v3.20 is a separate pre-frozen generator/method/control experiment.
   - Do not infer that sham above chance invalidates a matched sham, or that a significant negative contrast is impossible. Report family-mean and legacy pointwise-max detectability separately without rewriting v3.14.
   - The A-A3 positive control may deliberately use the current target MiniLM item embedding only under the explicit oracle/construct-validity role. It must never enter an EEG method result, alignment input, Gate or paper performance row.
   - Do not reinterpret S0_A1_SOURCE_ADMISSION as signal/model admission; it proves source facts and deterministic 840D extraction only and does not override the subsequent FAIL_A1_ADMISSION outcome.
@@ -112,11 +112,16 @@ do_not_do_yet:
   - Do not invent a word-to-fixed-window assignment or use fixed-window/A3 sensitivity to rescue the failed A1 admission. The only permitted candidates are v3.18 A1R_LOG_BP_CONCAT and A1R_T8_FIXATION.
   - The v3.18 recovery audit is complete with valid FAIL_A1R_RECOVERY after exactly 78 fits/V5. Do not rerun it, add a frontend, change its fold/seed/probe/sham/threshold, or select a candidate post hoc.
   - Seen scoring uses the same ten subjects as fit but held-out t0 text; cross scoring uses the held-out five subjects and t0 text. Both are inner evidence, share the frozen common observation intersection, and never authorize an outer claim by themselves.
-  - Do not read outer-test outcomes or execute negative confirmation before S0_A1_NEGATIVE_CONFIRMATION_FREEZE is completed by a new governing SPEC. A1-R outer confirmation, alignment, direct u-plus, EQ-ANMA, Gate, A3 and ROAMM remain blocked.
+  - "SPEC v3.19 permits only S1_A1_NEGATIVE_CONFIRMATION: raw A1 on all NR/TSR 6x5 cells plus TSR-T8 on the six outer-t0 subject folds. Do not add latent, log-BP, NR-T8, T8 t1-t4, another frontend or an outcome-driven rerun."
+  - The TSR-T8 outer-t0 panel is an inner-selected, score-disjoint transfer-collapse confirmation. It cannot be described as cross-subject recovery, and an unexpected positive cross result requires author review rather than automatic Gate/alignment release.
+  - Do not treat a nonsignificant or bounded negative result as equivalence, proof of zero, failure of all EEG representations or cross-dataset replication.
+  - The v3.20 synthetic benchmark may implement reusable direct-u-plus and EQ-ANMA modules, but it must not read real outer-test EEG, run the v3.19 negative panel in the same task, mark real S0_DIRECT_U_PLUS/S0_EQ_ANMA_CORE DONE, release Gate B or call a synthetic alpha threshold real.
+  - Do not remove the MONOTONE_DIRECT or alpha-zero controls, weaken the strongest direct/gated-direct search, expose true a/b/q/I to fitted methods, or change the generator/seed/threshold after outcomes.
+  - Do not claim A3 or ROAMM has failed; both remain unfinished independent real-data routes.
   - Do not use pilot preflight values to change cells, seeds, sham family, support, ridge/logistic settings, temperature or thresholds. Preflight is contract/runtime-only and a fit over 300 seconds blocks rather than triggering silent cuts.
   - Do not use phase randomization as an A1 strong sham, u_min member or phase-only No-Go. Rotate phase only on the exact demeaned-and-Hann windowed rFFT analysis spectrum for the required A1 invariance diagnostic; pre-window phase randomization changes the analyzed magnitude and is not phase-only.
   - Do not use ROAMM outcomes to change ZuCo thresholds, route selection or hyperparameters; the panels are independent.
-  - Do not claim cross-dataset replication or paper completion while ROAMM remains deferred; the ZuCo2 measurement-validity/recovery decision must be completed first.
+  - Do not claim cross-dataset replication or paper completion while ROAMM remains deferred; the ZuCo2 negative-confirmation result and first-dataset package must be frozen first.
   - Do not include A3 in T6 until its canonical channel map, raw-unit/filter parameters, and real MAT extraction admission pass; CO-N7 itself is cleared by v3.6.
   - Do not use the A3 synthetic identity channel positions as a semantic EGI-to-LaBraM mapping.
   - Do not substitute CBraMod or REVE-Base for the guide-frozen A3 backbone without an author-approved specification change.

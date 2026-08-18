@@ -1,40 +1,34 @@
 # Current Handoff
 
-## Completed decision
+## Completed synthetic-method task
 
-Run `2026-08-16_034_v318_a1_measurement_recovery` completed the exact SPEC v3.18 inner-only audit with declarative outcome `FAIL_A1R_RECOVERY`.
+`S1_EQ_ANMA_SYNTHETIC_BENCHMARK` is complete with the valid declarative outcome `FAIL_EQ_ANMA_SYNTHETIC_ADVANTAGE`.
 
-- exact budget: 6 H-only plus 72 frontend-arm ridge fits, 78 total fits and 78 unique passing V5 ledgers;
-- data boundary: zero outer-test EEG/label/metric reads and zero calibration reads;
-- common observations: NR 48,347/48,347 and TSR 45,392/45,392, retention 1.0, all frozen 15 scoring subjects retained;
-- selected frontend: none; selected task scope: empty;
-- immutable history: v3.14 remains `FAIL_A1_ADMISSION` and run 032 remains `INVALID_A1_MEASUREMENT_VALIDITY_AUDIT`.
+- exact scope: 12 replicate seeds × 2 regimes × 8 alphas = 192 scenarios;
+- exact accounting: 4,800 measurement ridge fits + 7,104 alignment fits = 11,904 total fits;
+- exactly 11,904 unique passing synthetic V5 ledgers;
+- all 12 alpha-zero replicate feature payloads were canonical-byte identical across regimes;
+- selection and final-test subjects/items were jointly disjoint, and each final-test batch was read once only after all choices froze;
+- alpha-zero and MONOTONE_DIRECT discriminativeness controls passed;
+- `alpha_star=null`; parameter, oracle-weight and gate recovery did not satisfy the frozen method-advantage conditions.
 
-Neither frozen candidate passed the required combination of cross `family_detected`, recovery-delta CI lower above zero and at least 10/15 positive paired subject deltas in either task. This is a valid bounded FAIL, not an invalid run and not permission for another frontend search.
+This is synthetic method-boundary evidence only. It is not real EEG evidence, a real Gate B result, real retrieval superiority or a real EEG alpha threshold. Real ZuCo2+A1 remains `FAIL_A1_ADMISSION` and `FAIL_A1R_RECOVERY`; A3 and ROAMM remain unfinished independent routes.
 
-## Sole next action
+## Required next task
 
-Only `S0_A1_NEGATIVE_CONFIRMATION_FREEZE` is READY. A new governing SPEC must freeze, before any outer value is read:
+The only recommended next task is `S1_A1_NEGATIVE_CONFIRMATION`, the already frozen SPEC v3.19/v3.20 real 324-fit negative/TSR-T8 transfer panel. Do not rerun or redesign the completed synthetic benchmark and do not run A3/ROAMM as a substitute.
 
-- the exact 6×5 outer-cell run budget and V5 scopes;
-- subject-first aggregation, multiplicity and decision rules;
-- expected-negative and unexpected-positive handling;
-- formal outputs and claim language.
+## Formal evidence
 
-The freeze task must not run the negative panel. `S1_A1_NEGATIVE_CONFIRMATION` remains BLOCKED until that freeze is DONE.
+- `artifacts/eq_anma_synthetic_benchmark_contract.yaml`
+- `04_results/synthetic_method/eq_anma_synthetic_benchmark.json`
+- `04_results/synthetic_method/eq_anma_synthetic_benchmark.md`
+- `04_results/synthetic_method/eq_anma_synthetic_benchmark_run_ledger.jsonl.gz`
+- `runs/2026-08-16_037_v320_eq_anma_synthetic_benchmark.md`
 
-## Boundaries
+Formal SHA256 values:
 
-- Do not rerun run 034, change either candidate, add a frontend, or alter the fold, seed, probe, sham, row-retention or recovery threshold.
-- Do not execute A1-R outer confirmation; no frontend was selected.
-- Do not read outer-test outcomes, run negative confirmation, alignment, direct `u+`, EQ-ANMA, Gate, A3 or ROAMM.
-- Preserve all admitted/run-032 files byte-for-byte.
-
-## Evidence
-
-- Governing SPEC: `guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_18_2026-08-16.md`
-- Recovery contract: `artifacts/a1_measurement_recovery_contract.yaml`
-- Recovery audit: `04_results/audits/a1_measurement_recovery.json`
-- Human-readable audit: `04_results/audits/a1_measurement_recovery.md`
-- V5 ledger: `04_results/audits/a1_measurement_recovery_run_ledger.jsonl.gz`
-- Run record: `runs/2026-08-16_034_v318_a1_measurement_recovery.md`
+- contract: `07542c5b367e046a0dfbc77df92af2320cc47846c278b433f07da0bec4dfd004`
+- JSON: `f496f308688df7ff68b82f2a5c38fedc971032801b6060f7ed1e61e64e21d2ea`
+- Markdown: `94e580531f16e8886949b7196c2d47889f360997bda6d467fb044f619c54d9ea`
+- gzip ledger: `705e9b034794f77eac0f91355f093e7dc70a5d2bb2a13fa2f7da784a0e8b2601`
