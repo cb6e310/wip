@@ -1,0 +1,49 @@
+schema_version: 1
+outcome: PASS_REAL_SHAM_RESCUE_FREEZE
+task: R0_REAL_SHAM_RESCUE_FREEZE
+branch: research/real-sham-rescue
+base_commit: 86e4f370bab650ff73831627be102fc9a7ffe6a4
+governing_spec:
+  path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_21_2026-08-22.md
+  status: BRANCH_LOCAL_AUTHOR_OVERLAY
+claim_boundary:
+  - RESEARCH_DIAGNOSTIC_ONLY
+  - no_real_EEG_paper_claim
+  - no_gate_release
+  - parent_outcomes_immutable
+parent_outcomes:
+  a1_admission: FAIL_A1_ADMISSION
+  a1_recovery: FAIL_A1R_RECOVERY
+  run032: INVALID_A1_MEASUREMENT_VALIDITY_AUDIT
+  synthetic_eq_anma: FAIL_EQ_ANMA_SYNTHETIC_ADVANTAGE
+  outer_negative_confirmation: READY_NOT_RUN
+execution:
+  existing_artifact_reanalysis_only: true
+  new_eeg_fit_count: 0
+  outer_test_eeg_label_metric_reads: 0
+  calibration_reads: 0
+  source_tasks: [task1_nr, task2_tsr]
+  source_bases: [raw, token_local_frozen_initial_latent]
+  source_artifacts:
+    - 04_results/audits/a1_admission.json
+    - 04_results/audits/a1_admission_run_ledger.jsonl.gz
+    - 04_results/audits/a1_measurement_recovery.json
+diagnostic_estimands:
+  semantic_sham: real_minus_mean_trial_and_within_trial
+  legacy_sham: real_minus_mean_three_parent_shams
+  topology_sentinel: real_minus_channel_block
+  legacy_u_min: retained_sensitivity_only
+diagnostic_hypotheses:
+  - H_geometry
+  - H_temporal
+  - H_scale_nuisance
+  - H_sham_nonexchangeability
+  - H_target_mismatch
+  - H_heterogeneity
+forbidden:
+  - run_S1_A1_NEGATIVE_CONFIRMATION
+  - run_A3_ROAMM_alignment_direct_u_plus_EQ_ANMA_or_Gates
+  - modify_parent_formal_artifacts
+  - add_candidate_seed_fold_sham_or_threshold
+  - delete_or_hide_channel_block_sentinel
+  - use_subject_id_test_label_or_synthetic_truth_as_fitted_input

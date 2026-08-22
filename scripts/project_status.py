@@ -46,10 +46,45 @@ def _rank(task_id: str, tasks: dict) -> tuple:
     )
 
 
+def _render_branch_local(state: dict, tasks: dict, errors: list[str]) -> str:
+    current = state.get("current_task", {})
+    parent = state.get("immutable_parent_outcomes", {})
+    lines = [
+        "PROJECT SNAPSHOT",
+        "",
+        "State kind: branch_local_author_freeze",
+        f"Branch: {state.get('project', {}).get('branch_name')}",
+        f"Base commit: {state.get('project', {}).get('base_commit')}",
+        f"Current task: {current.get('id')} ({current.get('status')})",
+        f"Evidence grade: {state.get('scope', {}).get('evidence_grade')}",
+        "Execution boundary: existing artifacts only | new EEG fits=0 | outer/calibration reads=0/0",
+        "Immutable parent outcomes:",
+    ]
+    lines.extend(f"- {key}: {value}" for key, value in parent.items())
+    lines.extend(
+        [
+            "",
+            "Next task:",
+            "R1_REAL_SHAM_INNER_DIAGNOSTIC only after author review; currently blocked.",
+            "",
+            "Forbidden releases:",
+            "- alignment, direct u+, EQ-ANMA, Gate A/B, A3, and ROAMM",
+            "",
+            "Validator:",
+            "INVALID" if errors else "VALID",
+        ]
+    )
+    if errors:
+        lines.extend(f"- {error}" for error in errors)
+    return "\n".join(lines)
+
+
 def render(root: Path) -> str:
     errors = validate(root)
     state = _load(root / "PROJECT_STATE.yaml")
     tasks = _load(root / "TASKS.yaml")
+    if state.get("state_kind") == "branch_local_author_freeze":
+        return _render_branch_local(state, tasks, errors)
     blockers = state.get("blockers", [])
     candidates = sorted(eligible_tasks(tasks, blockers), key=lambda task_id: _rank(task_id, tasks))
     recommended = state.get("recommended_next_task")

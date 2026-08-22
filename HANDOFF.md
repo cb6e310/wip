@@ -1,34 +1,55 @@
 # Current Handoff
 
-## Completed synthetic-method task
+## Completed R0 diagnosis
 
-`S1_EQ_ANMA_SYNTHETIC_BENCHMARK` is complete with the valid declarative outcome `FAIL_EQ_ANMA_SYNTHETIC_ADVANTAGE`.
+`R0_REAL_SHAM_RESCUE_FREEZE` completed with
+`PASS_REAL_SHAM_RESCUE_FREEZE` on branch `research/real-sham-rescue`.
 
-- exact scope: 12 replicate seeds × 2 regimes × 8 alphas = 192 scenarios;
-- exact accounting: 4,800 measurement ridge fits + 7,104 alignment fits = 11,904 total fits;
-- exactly 11,904 unique passing synthetic V5 ledgers;
-- all 12 alpha-zero replicate feature payloads were canonical-byte identical across regimes;
-- selection and final-test subjects/items were jointly disjoint, and each final-test batch was read once only after all choices froze;
-- alpha-zero and MONOTONE_DIRECT discriminativeness controls passed;
-- `alpha_star=null`; parameter, oracle-weight and gate recovery did not satisfy the frozen method-advantage conditions.
+- Evidence grade: `RESEARCH_DIAGNOSTIC_ONLY`.
+- Existing A1 admission values reproduced across 2 tasks x 2 bases.
+- New EEG fits: `0`.
+- Outer-test/calibration reads: `0/0`.
+- All 639 parent A1 admission V5 ledgers retained unique zero-read scope.
+- Channel-block permutation remains visible as a topology sentinel.
 
-This is synthetic method-boundary evidence only. It is not real EEG evidence, a real Gate B result, real retrieval superiority or a real EEG alpha threshold. Real ZuCo2+A1 remains `FAIL_A1_ADMISSION` and `FAIL_A1R_RECOVERY`; A3 and ROAMM remain unfinished independent routes.
+The new semantic-sham estimates are NR raw `0.0053592`, NR latent
+`0.0073520`, TSR raw `0.0176793`, and TSR latent `0.0029390`. These are pure
+recalculations of existing artifacts, not real EEG incremental evidence.
 
-## Required next task
+## Parent state
 
-The only recommended next task is `S1_A1_NEGATIVE_CONFIRMATION`, the already frozen SPEC v3.19/v3.20 real 324-fit negative/TSR-T8 transfer panel. Do not rerun or redesign the completed synthetic benchmark and do not run A3/ROAMM as a substitute.
+The current repository does not yet contain a valid paper-level outer negative
+confirmation. It contains a valid A1 admission failure, a valid A1-R recovery
+failure, an immutable run-032 construct-validity audit, and a valid synthetic
+EQ-ANMA method-boundary failure. The next author-approved question is whether
+the negative contrast is partly caused by the measurement estimand rather than
+by absence of all real EEG information.
 
-## Formal evidence
+## Why this branch exists
 
-- `artifacts/eq_anma_synthetic_benchmark_contract.yaml`
-- `04_results/synthetic_method/eq_anma_synthetic_benchmark.json`
-- `04_results/synthetic_method/eq_anma_synthetic_benchmark.md`
-- `04_results/synthetic_method/eq_anma_synthetic_benchmark_run_ledger.jsonl.gz`
-- `runs/2026-08-16_037_v320_eq_anma_synthetic_benchmark.md`
+The admitted A1 pilot shows:
 
-Formal SHA256 values:
+- raw `real - trial_shuffle`: NR `-0.0072`, TSR `+0.0293`, both CI lower bounds `<=0`;
+- latent `real - trial_shuffle`: NR `+0.0040`, TSR `+0.0058`, both uncertain;
+- raw `real - channel_block_permutation`: NR `-0.1338`, TSR `-0.1494`, both strongly negative;
+- legacy raw `u_min`: NR `-0.7883`, TSR `-0.7476`;
+- subject identity probe passes while semantic item probe fails;
+- A1-R T8 detects signal for seen subjects in TSR but not for held-out subjects.
 
-- contract: `07542c5b367e046a0dfbc77df92af2320cc47846c278b433f07da0bec4dfd004`
-- JSON: `f496f308688df7ff68b82f2a5c38fedc971032801b6060f7ed1e61e64e21d2ea`
-- Markdown: `94e580531f16e8886949b7196c2d47889f360997bda6d467fb044f619c54d9ea`
-- gzip ledger: `705e9b034794f77eac0f91355f093e7dc70a5d2bb2a13fa2f7da784a0e8b2601`
+The most informative hypothesis is a combination of cross-subject geometry,
+sentence-level temporal dilution, absolute-power nuisance and a potentially
+non-exchangeable topology-destroying sham. This is a hypothesis, not an
+outcome.
+
+## Sole next action
+
+Stop for author review. The only possible next task is the separately
+authorized `R1_REAL_SHAM_INNER_DIAGNOSTIC`; it remains blocked until that
+review.
+
+Do not implement R1 feature repair or any alignment model in this task.
+
+## Claim boundary
+
+Any R0 result is `RESEARCH_DIAGNOSTIC_ONLY`. It cannot release Gate A/B,
+alignment, direct `u+`, EQ-ANMA, A3 or ROAMM and cannot relabel old outcomes.

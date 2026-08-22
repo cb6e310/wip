@@ -72,6 +72,22 @@ ALLOWED_ROUTES = {
     "NEGATIVE-DIAGNOSTIC",
 }
 
+BRANCH_LOCAL_STATE_KIND = "branch_local_author_freeze"
+BRANCH_LOCAL_TASK_STATUSES = {
+    "READY",
+    "DONE",
+    "BLOCKED_UNTIL_R0_AUTHOR_REVIEW",
+}
+BRANCH_LOCAL_PARENT_OUTCOMES = {
+    "real_a1_admission": "FAIL_A1_ADMISSION",
+    "real_a1_recovery": "FAIL_A1R_RECOVERY",
+    "run_032": "INVALID_A1_MEASUREMENT_VALIDITY_AUDIT",
+    "synthetic_eq_anma": "FAIL_EQ_ANMA_SYNTHETIC_ADVANTAGE",
+    "outer_negative_confirmation": "READY_NOT_RUN",
+    "a3": "UNFINISHED",
+    "roamm": "DEFERRED",
+}
+
 
 def _load_yaml(path: Path, errors: list[str]) -> Any:
     try:
@@ -142,6 +158,82 @@ def _check_cycles(tasks: dict[str, Any], errors: list[str]) -> None:
         visit(task_id, [])
 
 
+def _validate_branch_local_freeze(
+    root: Path, state: dict[str, Any], tasks: dict[str, Any]
+) -> list[str]:
+    """Validate the deliberately small v3.21 research-branch state schema."""
+
+    errors: list[str] = []
+    project = state.get("project", {})
+    expected_project = {
+        "parent_spec": "v3.20",
+        "branch_spec": "v3.21_REAL_SHAM_RESCUE_RESEARCH",
+        "branch_name": "research/real-sham-rescue",
+        "base_commit": "86e4f370bab650ff73831627be102fc9a7ffe6a4",
+    }
+    for field, expected in expected_project.items():
+        if project.get(field) != expected:
+            errors.append(f"STATE_SPEC_CONFLICT: project.{field} != {expected!r}")
+    spec_path = root / "guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_21_2026-08-22.md"
+    if not spec_path.is_file():
+        errors.append(f"missing branch scientific spec: {spec_path}")
+    freeze_path = root / "artifacts/real_sham_rescue_freeze.yaml"
+    if not freeze_path.is_file():
+        errors.append(f"missing branch author freeze: {freeze_path}")
+
+    if state.get("immutable_parent_outcomes") != BRANCH_LOCAL_PARENT_OUTCOMES:
+        errors.append("STATE_SPEC_CONFLICT: immutable parent outcomes changed")
+    scope = state.get("scope", {})
+    if scope.get("evidence_grade") != "RESEARCH_DIAGNOSTIC_ONLY":
+        errors.append("branch evidence grade must be RESEARCH_DIAGNOSTIC_ONLY")
+    if scope.get("outer_test_reads_allowed") is not False:
+        errors.append("branch state must forbid outer-test reads")
+    if scope.get("calibration_reads_allowed") is not False:
+        errors.append("branch state must forbid calibration reads")
+
+    expected_tasks = {"R0_REAL_SHAM_RESCUE_FREEZE", "R1_REAL_SHAM_INNER_DIAGNOSTIC"}
+    if set(tasks) != expected_tasks:
+        errors.append(f"branch TASKS.yaml must contain exactly {sorted(expected_tasks)}")
+        return errors
+    for task_id, task in tasks.items():
+        if not isinstance(task, dict):
+            errors.append(f"{task_id}: task entry must be a mapping")
+            continue
+        for field in ("title", "stage", "status", "prerequisites"):
+            if field not in task:
+                errors.append(f"{task_id}: missing field {field}")
+        if task.get("status") not in BRANCH_LOCAL_TASK_STATUSES:
+            errors.append(f"{task_id}: illegal branch-local status {task.get('status')!r}")
+        if not isinstance(task.get("prerequisites"), list):
+            errors.append(f"{task_id}: prerequisites must be a list")
+
+    r0 = tasks["R0_REAL_SHAM_RESCUE_FREEZE"]
+    current = state.get("current_task", {})
+    if current.get("id") != "R0_REAL_SHAM_RESCUE_FREEZE":
+        errors.append("current_task.id must remain R0_REAL_SHAM_RESCUE_FREEZE")
+    if current.get("status") != r0.get("status"):
+        errors.append("current_task.status does not match R0 task status")
+    if current.get("new_eeg_fits") != 0:
+        errors.append("R0 new_eeg_fits must be zero")
+    if current.get("recommended_next") != "R1_REAL_SHAM_INNER_DIAGNOSTIC":
+        errors.append("R0 recommended_next must be R1_REAL_SHAM_INNER_DIAGNOSTIC")
+    if tasks["R1_REAL_SHAM_INNER_DIAGNOSTIC"].get("status") != "BLOCKED_UNTIL_R0_AUTHOR_REVIEW":
+        errors.append("R1 must remain blocked until author review")
+    if r0.get("status") == "DONE":
+        if r0.get("completion_outcome") != "PASS_REAL_SHAM_RESCUE_FREEZE":
+            errors.append("DONE R0 requires PASS_REAL_SHAM_RESCUE_FREEZE")
+        if not r0.get("completed_by_run"):
+            errors.append("DONE R0 requires completed_by_run")
+        produced = r0.get("produces", [])
+        if not isinstance(produced, list) or not produced:
+            errors.append("DONE R0 requires produced artifacts")
+        else:
+            for artifact in produced:
+                if not (root / artifact).is_file():
+                    errors.append(f"R0 missing DONE artifact {artifact}")
+    return errors
+
+
 def validate(root: Path) -> list[str]:
     errors: list[str] = []
     state_path = root / "PROJECT_STATE.yaml"
@@ -150,6 +242,9 @@ def validate(root: Path) -> list[str]:
     tasks = _load_yaml(tasks_path, errors)
     if not isinstance(state, dict) or not isinstance(tasks, dict):
         return errors
+
+    if state.get("state_kind") == BRANCH_LOCAL_STATE_KIND:
+        return errors + _validate_branch_local_freeze(root, state, tasks)
 
     missing = sorted(REQUIRED_TASK_IDS - set(tasks))
     if missing:

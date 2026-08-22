@@ -1,0 +1,69 @@
+schema_version: 1
+task: R0_REAL_SHAM_RESCUE_FREEZE
+run_id: 2026-08-22_002_v321_real_sham_rescue_r0
+branch: research/real-sham-rescue
+base_commit: 86e4f370bab650ff73831627be102fc9a7ffe6a4
+governing_spec:
+  path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_21_2026-08-22.md
+  sha256: 9adf0233ed0a36bac63d731637876513811fa1488ddbaf24f4ce5019a2377c7c
+  status: BRANCH_LOCAL_AUTHOR_OVERLAY
+author_freeze:
+  path: artifacts/real_sham_rescue_freeze.yaml
+  sha256: a23c06dd9357bfdcc383e34a58d9258e38145244af146653187d18943864afd2
+evidence_grade: RESEARCH_DIAGNOSTIC_ONLY
+scope:
+  tasks:
+  - task1_nr
+  - task2_tsr
+  bases:
+  - raw
+  - token_local_frozen_initial_latent
+  shams:
+  - trial_shuffle
+  - within_trial_unit_assignment_shuffle
+  - channel_block_permutation
+  source_artifacts:
+  - 04_results/audits/a1_admission.json
+  - 04_results/audits/a1_admission_run_ledger.jsonl.gz
+  - 04_results/audits/a1_measurement_recovery.json
+  existing_artifact_reanalysis_only: true
+  new_eeg_fits: 0
+  outer_test_eeg_label_metric_reads: 0
+  calibration_reads: 0
+estimands:
+  delta_semantic: real - mean(trial_shuffle, within_trial_unit_assignment_shuffle)
+  delta_legacy: real - mean(trial_shuffle, within_trial_unit_assignment_shuffle, channel_block_permutation)
+  delta_channel: real - channel_block_permutation
+  channel_block_role: topology_sentinel_retained
+old_value_reproduction_required:
+- u_oof
+- u_min
+- real_minus_trial_shuffle
+- real_minus_within_trial_unit_assignment_shuffle
+- real_minus_channel_block_permutation
+parent_formal_hashes:
+  04_results/audits/a1_admission.json: b3d2b47ee21b2e777470004dbca862cb9495b59f3c68513e9001f3800b4e151e
+  04_results/audits/a1_admission.md: e187f2314ca3ee8a9d8f973c7898276ecaccd64245ce1480243c916c5c729a8e
+  04_results/audits/a1_admission_run_ledger.jsonl.gz: fe22b691795709508386d72d662cbf2feeafb3dd74d5012b46b12e5ae1d963fd
+  04_results/audits/a1_measurement_recovery.json: cf68c0ca170152a79f163ed001706df80ea649ea854da85b09fef1f638e8b51a
+  04_results/audits/a1_measurement_recovery.md: fc039ae77043619e562eb942898287321882189736bdd8219fc3c6a71cc87004
+  04_results/audits/a1_measurement_recovery_run_ledger.jsonl.gz: 90326ad6ed2bb981df0c0d8559102dd73c56a16ce7de6923973bad42529debc7
+  04_results/synthetic_method/eq_anma_synthetic_benchmark.json: f496f308688df7ff68b82f2a5c38fedc971032801b6060f7ed1e61e64e21d2ea
+  04_results/synthetic_method/eq_anma_synthetic_benchmark.md: 94e580531f16e8886949b7196c2d47889f360997bda6d467fb044f619c54d9ea
+  04_results/synthetic_method/eq_anma_synthetic_benchmark_run_ledger.jsonl.gz: 705e9b034794f77eac0f91355f093e7dc70a5d2bb2a13fa2f7da784a0e8b2601
+outcome_rule:
+  valid: PASS_REAL_SHAM_RESCUE_FREEZE
+  invalid: INVALID_REAL_SHAM_RESCUE_R0
+  observed: PASS_REAL_SHAM_RESCUE_FREEZE
+claim_boundary:
+  parent_outcomes_immutable: true
+  real_eeg_increment_claim: false
+  released:
+    alignment: false
+    direct_u_plus: false
+    EQ_ANMA: false
+    Gate_A: false
+    Gate_B: false
+    A3: false
+    ROAMM: false
+next_task: R1_REAL_SHAM_INNER_DIAGNOSTIC_AFTER_AUTHOR_REVIEW_ONLY
