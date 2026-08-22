@@ -8,6 +8,7 @@ task claims DONE, while unresolved scientific facts remain explicit blockers.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import sys
 from pathlib import Path
 from typing import Any
@@ -87,6 +88,39 @@ BRANCH_LOCAL_PARENT_OUTCOMES = {
     "a3": "UNFINISHED",
     "roamm": "DEFERRED",
 }
+R1_BRANCH_SPEC = "v3.22_REAL_SHAM_R1_INNER_DIAGNOSTIC"
+R1_LEGAL_OUTCOMES = {
+    "PASS_R1_BOTH_TASKS",
+    "PASS_R1_LIMITED_ONE_TASK",
+    "FAIL_R1_REAL_SHAM_INNER_DIAGNOSTIC",
+    "INVALID_R1_REAL_SHAM_INNER_DIAGNOSTIC",
+}
+R1_FORMAL_HASHES = {
+    "contract_sha256": (
+        "artifacts/real_sham_r1_contract.yaml",
+        "50a4d1ebf44af415a0de69ec66e4fe56bcaeb21acf70d262cfd80a59454779ed",
+    ),
+    "json_sha256": (
+        "04_results/diagnostics/real_sham_r1_inner.json",
+        "610e40bf09959fb30f2a08f998b42148e9967168263a64c3ba37969194e964ff",
+    ),
+    "markdown_sha256": (
+        "04_results/diagnostics/real_sham_r1_inner.md",
+        "a858a7475b486bd874ace44435cc2de074c57391f6cdc9ffc102cb7f78c5beed",
+    ),
+    "ledger_sha256": (
+        "04_results/diagnostics/real_sham_r1_inner_run_ledger.jsonl.gz",
+        "28fc32b5103a1ba19b9c2cd2c724da5d7d3aff17f53f5ac72e3993e64db9314a",
+    ),
+}
+
+
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
 
 
 def _load_yaml(path: Path, errors: list[str]) -> Any:
@@ -158,7 +192,7 @@ def _check_cycles(tasks: dict[str, Any], errors: list[str]) -> None:
         visit(task_id, [])
 
 
-def _validate_branch_local_freeze(
+def _validate_r0_branch_local_freeze(
     root: Path, state: dict[str, Any], tasks: dict[str, Any]
 ) -> list[str]:
     """Validate the deliberately small v3.21 research-branch state schema."""
@@ -232,6 +266,124 @@ def _validate_branch_local_freeze(
                 if not (root / artifact).is_file():
                     errors.append(f"R0 missing DONE artifact {artifact}")
     return errors
+
+
+def _validate_r1_branch_local_freeze(
+    root: Path, state: dict[str, Any], tasks: dict[str, Any]
+) -> list[str]:
+    """Validate the v3.22 R1 inner-only diagnostic state schema."""
+
+    errors: list[str] = []
+    project = state.get("project", {})
+    expected_project = {
+        "parent_spec": "v3.20",
+        "branch_spec": R1_BRANCH_SPEC,
+        "branch_name": "research/real-sham-r1-inner",
+        "base_commit": "ec7ced2708fe68ae8614b6b89b03256d88d1b541",
+        "parent_branch": "research/real-sham-rescue",
+    }
+    for field, expected in expected_project.items():
+        if project.get(field) != expected:
+            errors.append(f"STATE_SPEC_CONFLICT: project.{field} != {expected!r}")
+    for required in (
+        "guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_22_2026-08-22.md",
+        "artifacts/real_sham_r1_freeze.yaml",
+    ):
+        if not (root / required).is_file():
+            errors.append(f"missing R1 branch freeze artifact: {required}")
+
+    if state.get("immutable_parent_outcomes") != BRANCH_LOCAL_PARENT_OUTCOMES:
+        errors.append("STATE_SPEC_CONFLICT: immutable parent outcomes changed")
+    immutable_r0 = state.get("immutable_r0", {})
+    expected_r0 = {
+        "commit": "ec7ced2708fe68ae8614b6b89b03256d88d1b541",
+        "outcome": "PASS_REAL_SHAM_RESCUE_FREEZE",
+        "contract_sha256": "89f9bc468f5bea0bafe127baa1e0a96ceb5ff1c9327aba89e3445d86ed683055",
+    }
+    if immutable_r0 != expected_r0:
+        errors.append("STATE_SPEC_CONFLICT: immutable R0 contract changed")
+
+    scope = state.get("scope", {})
+    if scope.get("evidence_grade") != "RESEARCH_DIAGNOSTIC_ONLY":
+        errors.append("R1 evidence grade must be RESEARCH_DIAGNOSTIC_ONLY")
+    if scope.get("outer_test_reads_allowed") is not False:
+        errors.append("R1 state must forbid outer-test reads")
+    if scope.get("calibration_reads_allowed") is not False:
+        errors.append("R1 state must forbid calibration reads")
+    if scope.get("alignment_scope") != "M0_STRICT_INDUCTIVE_ONLY":
+        errors.append("R1 alignment scope must remain M0_STRICT_INDUCTIVE_ONLY")
+
+    if set(tasks) != {"R1_REAL_SHAM_INNER_DIAGNOSTIC"}:
+        errors.append("R1 TASKS.yaml must contain exactly R1_REAL_SHAM_INNER_DIAGNOSTIC")
+        return errors
+    task = tasks["R1_REAL_SHAM_INNER_DIAGNOSTIC"]
+    if not isinstance(task, dict):
+        return errors + ["R1 task entry must be a mapping"]
+    for field in ("title", "stage", "status", "prerequisites"):
+        if field not in task:
+            errors.append(f"R1 task missing field {field}")
+    if task.get("status") not in {"READY", "DONE"}:
+        errors.append(f"R1 task has illegal status {task.get('status')!r}")
+    if not isinstance(task.get("prerequisites"), list):
+        errors.append("R1 prerequisites must be a list")
+
+    current = state.get("current_task", {})
+    if current.get("id") != "R1_REAL_SHAM_INNER_DIAGNOSTIC":
+        errors.append("current_task.id must be R1_REAL_SHAM_INNER_DIAGNOSTIC")
+    if current.get("status") != task.get("status"):
+        errors.append("current_task.status does not match R1 task status")
+    if current.get("forbidden_next_until_author_review") is not True:
+        errors.append("R2 must remain forbidden until author review")
+
+    if task.get("status") == "DONE":
+        outcome = task.get("completion_outcome")
+        if outcome not in R1_LEGAL_OUTCOMES:
+            errors.append(f"DONE R1 has illegal outcome {outcome!r}")
+        if current.get("outcome") != outcome:
+            errors.append("current_task.outcome does not match R1 task outcome")
+        if not task.get("completed_by_run"):
+            errors.append("DONE R1 requires completed_by_run")
+        produced = task.get("produces", [])
+        if not isinstance(produced, list) or not produced:
+            errors.append("DONE R1 requires produced artifacts")
+        else:
+            for artifact in produced:
+                if not (root / artifact).is_file():
+                    errors.append(f"R1 missing DONE artifact {artifact}")
+        execution = state.get("execution_counts", {})
+        expected_counts = {
+            "h_only_y0_fits": 6,
+            "y1_text_residualizer_fits": 6,
+            "eeg_probe_fits": 144,
+            "total_ridge_operations": 156,
+            "v5_eeg_probe_ledgers": 150,
+            "text_residualizer_ledgers": 6,
+            "outer_test_reads": 0,
+            "calibration_reads": 0,
+        }
+        for field, expected in expected_counts.items():
+            if execution.get(field) != expected:
+                errors.append(f"R1 execution_counts.{field} must be {expected}")
+        if state.get("scope_violations") != [] or task.get("scope_violations") != []:
+            errors.append("DONE R1 requires zero scope violations")
+        recorded_hashes = state.get("formal_outputs", {})
+        for field, (relative, expected) in R1_FORMAL_HASHES.items():
+            if recorded_hashes.get(field) != expected:
+                errors.append(f"R1 formal_outputs.{field} does not match frozen result")
+                continue
+            path = root / relative
+            if path.is_file() and _sha256_file(path) != expected:
+                errors.append(f"R1 formal output hash changed: {relative}")
+    return errors
+
+
+def _validate_branch_local_freeze(
+    root: Path, state: dict[str, Any], tasks: dict[str, Any]
+) -> list[str]:
+    branch_spec = state.get("project", {}).get("branch_spec")
+    if branch_spec == R1_BRANCH_SPEC:
+        return _validate_r1_branch_local_freeze(root, state, tasks)
+    return _validate_r0_branch_local_freeze(root, state, tasks)
 
 
 def validate(root: Path) -> list[str]:

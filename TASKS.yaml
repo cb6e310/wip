@@ -1,57 +1,80 @@
-R0_REAL_SHAM_RESCUE_FREEZE:
-  title: Freeze independent real-vs-sham rescue diagnosis
+R1_REAL_SHAM_INNER_DIAGNOSTIC:
+  title: Inner-only pre-frozen frontend and conditional-text diagnostic
   stage: research_branch
   status: DONE
   priority: 1
   prerequisites:
-    - current origin/main is 86e4f370bab650ff73831627be102fc9a7ffe6a4
-    - parent v3.20 synthetic and real A1 artifacts are present
-  produces:
-    - guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_21_2026-08-22.md
-    - artifacts/real_sham_rescue_freeze.yaml
-    - artifacts/real_sham_rescue_contract.yaml
-    - 02_code/src/data/real_sham_rescue.py
-    - 02_code/tests/test_real_sham_rescue.py
-    - 02_code/scripts/run_real_sham_rescue_r0.py
-    - 04_results/diagnostics/real_sham_rescue_r0.json
-    - 04_results/diagnostics/real_sham_rescue_r0.md
-    - 04_results/diagnostics/real_sham_rescue_r0_run_ledger.jsonl.gz
-    - runs/research/2026-08-22_001_v321_real_sham_rescue_freeze.md
-    - runs/research/2026-08-22_002_v321_real_sham_rescue_r0.md
+    - origin/research/real-sham-rescue is ec7ced2708fe68ae8614b6b89b03256d88d1b541
+    - R0 contract outcome is PASS_REAL_SHAM_RESCUE_FREEZE
+  candidates:
+    frontends:
+      - F0_A1_BP_CONCAT
+      - F1_LOGREL_BP
+      - F2_T8_FIXATION
+    targets:
+      - Y0_RAW_MINILM
+      - Y1_H_RESIDUAL_MINILM
+    alignment:
+      - M0_STRICT_INDUCTIVE
+    deferred:
+      - F3_EVENT_LOCKED
+      - M1_TRANS_UNLABELED_EA_SECONDARY
+  exact_scope:
+    tasks: [task1_nr, task2_tsr]
+    outer_base_cell: outer_s0_t0
+    inner_text_fold: t0
+    inner_subject_folds: [s0, s1, s2]
+    seed: 20260813
+    arms:
+      - real
+      - trial_shuffle
+      - within_trial_unit_assignment_shuffle
+      - channel_block_permutation
+    common_observation_min_retention: 0.90
+  target_definition:
+    Y0: exact frozen item-surface MiniLM embedding
+    Y1: >-
+      Fit H_full -> Y0 ridge on fit rows only, alpha=1.0, float64 solve and
+      no intercept penalty.  For each supported item use its canonical fit-row
+      H and Y0 to form residual r=Y0-pred(H), require finite norm>1e-8, then
+      L2-normalize r.  Use this fixed item residual as the vocabulary and the
+      row target for fit/seen/cross.  No fallback or refit on seen/cross rows.
+  fit_budget:
+    h_only_y0_fits: 6
+    y1_text_residualizer_fits: 6
+    eeg_probe_fits: 144
+    total_ridge_operations: 156
+    v5_eeg_probe_ledgers: 150
+    text_residualizer_ledgers: 6
   acceptance:
-    - branch is created from the exact current origin/main commit
-    - semantic, legacy and topology contrasts reproduce from parent artifacts
-    - old u_oof/u_min values remain unchanged
-    - zero new EEG fits and zero outer-test/calibration reads
-    - focused, related, compile, state/status and diff-check verification pass
+    - All three frontends and both targets run for 2 tasks x 3 inner folds x
+      4 arms under identical row identity and support.
+    - Primary semantic-sham contrast is computed subject-first as real minus
+      mean(trial_shuffle, within_trial_unit_assignment_shuffle).
+    - Family detection uses CI lower>0, positive_subject_count>=12, and both
+      semantic single-sham point estimates>0; candidate recovery uses paired
+      cross-subject CI lower>0 and >=10/15 positive subjects versus F0/Y0.
+    - >-
+      Selection order is frozen: recovered task count desc, minimum paired
+      cross recovery delta desc, passing-task delta desc, candidate ID lexical.
+    - >-
+      Focused/related tests, compile, state/status, diff-check and parent/R0
+      hash checks pass; outer/calibration reads are exactly 0/0.
+  outcomes:
+    pass_both_tasks: PASS_R1_BOTH_TASKS
+    pass_one_task: PASS_R1_LIMITED_ONE_TASK
+    valid_no_candidate: FAIL_R1_REAL_SHAM_INNER_DIAGNOSTIC
+    contract_failure: INVALID_R1_REAL_SHAM_INNER_DIAGNOSTIC
   forbidden:
-    - run S1_A1_NEGATIVE_CONFIRMATION
-    - run A3, ROAMM, alignment, direct u+, EQ-ANMA or Gate
-    - add a feature, seed, fold, sham or threshold
-    - modify parent formal artifacts
-  completion_outcome: PASS_REAL_SHAM_RESCUE_FREEZE
-  completed_by_run: 2026-08-22_002_v321_real_sham_rescue_r0
-  evidence_scope: RESEARCH_DIAGNOSTIC_ONLY
-  completion_note: >-
-    Existing A1 artifacts reproduced old u_oof, u_min, and all three
-    single-sham contrasts across both tasks and both bases. R0 added zero EEG
-    fits, read zero outer-test/calibration values, retained channel block as a
-    topology sentinel, and released only author review of the still-blocked R1.
-
-R1_REAL_SHAM_INNER_DIAGNOSTIC:
-  title: Inner-only pre-frozen feature and conditional-text diagnostic
-  stage: research_branch
-  status: BLOCKED_UNTIL_R0_AUTHOR_REVIEW
-  prerequisites:
-    - R0_REAL_SHAM_RESCUE_FREEZE
-  planned_candidates:
-    - F0_A1_BP_CONCAT
-    - F1_LOGREL_BP
-    - F2_T8_FIXATION
-    - F3_EVENT_LOCKED_IF_SOURCE_SCHEMA_PASS
-  planned_targets:
-    - Y0_RAW_MINILM
-    - Y1_H_RESIDUAL_MINILM
-  planned_alignment_scopes:
-    - M0_STRICT_INDUCTIVE
-    - M1_TRANS_UNLABELED_EA_SECONDARY
+    - Run S1_A1_NEGATIVE_CONFIRMATION or any outer confirmation.
+    - Run A3, ROAMM, alignment, direct_u_plus, EQ_ANMA or a Gate.
+    - Change or overwrite parent/R0 formal artifacts.
+  produces:
+    - artifacts/real_sham_r1_contract.yaml
+    - 04_results/diagnostics/real_sham_r1_inner.json
+    - 04_results/diagnostics/real_sham_r1_inner.md
+    - 04_results/diagnostics/real_sham_r1_inner_run_ledger.jsonl.gz
+    - runs/research/2026-08-22_003_v322_real_sham_r1_freeze.md
+  completion_outcome: FAIL_R1_REAL_SHAM_INNER_DIAGNOSTIC
+  completed_by_run: 2026-08-22_003_v322_real_sham_r1_inner
+  scope_violations: []

@@ -1,25 +1,26 @@
 schema_version: 1
 state_kind: branch_local_author_freeze
-updated_at: "2026-08-22T15:36:40+08:00"
-updated_by: 2026-08-22_002_v321_real_sham_rescue_r0
+updated_at: "2026-08-22T16:00:00+08:00"
+updated_by: 2026-08-22_003_v322_real_sham_r1_inner
 
 project:
   name: trustworthy_subject_general_eeg_text_alignment
   parent_spec: v3.20
-  branch_spec: v3.21_REAL_SHAM_RESCUE_RESEARCH
-  branch_name: research/real-sham-rescue
-  base_commit: 86e4f370bab650ff73831627be102fc9a7ffe6a4
-  server_root: /home/song/projects/trust_align
-  python_path: /home/song/projects/trust_align/.venv/bin/python
+  branch_spec: v3.22_REAL_SHAM_R1_INNER_DIAGNOSTIC
+  branch_name: research/real-sham-r1-inner
+  base_commit: ec7ced2708fe68ae8614b6b89b03256d88d1b541
+  parent_branch: research/real-sham-rescue
 
 scope:
   dataset: zuco_2_0
   research_question: >-
-    After pre-frozen representation and conditional-text diagnostics, does
-    real EEG exceed semantic-null matched shams on unseen subjects and items?
+    Under the unchanged inner split and four-arm construction, can a
+    pre-frozen EEG frontend or fit-only text-residual target yield a positive,
+    cross-subject real-minus-semantic-sham increment?
   evidence_grade: RESEARCH_DIAGNOSTIC_ONLY
   outer_test_reads_allowed: false
   calibration_reads_allowed: false
+  alignment_scope: M0_STRICT_INDUCTIVE_ONLY
 
 immutable_parent_outcomes:
   real_a1_admission: FAIL_A1_ADMISSION
@@ -30,26 +31,47 @@ immutable_parent_outcomes:
   a3: UNFINISHED
   roamm: DEFERRED
 
-diagnostic_estimands:
-  semantic_sham: real - mean(trial_shuffle, within_trial_unit_assignment_shuffle)
-  legacy_sham: real - mean(all_three_parent_shams)
-  topology_sentinel: real - channel_block_permutation
-  legacy_u_min: retained_as_sensitivity_only
+immutable_r0:
+  commit: ec7ced2708fe68ae8614b6b89b03256d88d1b541
+  outcome: PASS_REAL_SHAM_RESCUE_FREEZE
+  contract_sha256: 89f9bc468f5bea0bafe127baa1e0a96ceb5ff1c9327aba89e3445d86ed683055
 
 current_task:
-  id: R0_REAL_SHAM_RESCUE_FREEZE
+  id: R1_REAL_SHAM_INNER_DIAGNOSTIC
   status: DONE
-  exact_scope: existing_admitted_artifacts_only
-  new_eeg_fits: 0
-  recommended_next: R1_REAL_SHAM_INNER_DIAGNOSTIC
-  completion_outcome: PASS_REAL_SHAM_RESCUE_FREEZE
-  completed_by_run: 2026-08-22_002_v321_real_sham_rescue_r0
+  outcome: FAIL_R1_REAL_SHAM_INNER_DIAGNOSTIC
+  recommended_next: AUTHOR_REVIEW_ONLY
+  forbidden_next_until_author_review: true
 
-last_run: runs/research/2026-08-22_002_v321_real_sham_rescue_r0.md
+execution_counts:
+  h_only_y0_fits: 6
+  y1_text_residualizer_fits: 6
+  eeg_probe_fits: 144
+  total_ridge_operations: 156
+  v5_eeg_probe_ledgers: 150
+  text_residualizer_ledgers: 6
+  outer_test_reads: 0
+  calibration_reads: 0
 
-do_not_do_yet:
-  - Run S1_A1_NEGATIVE_CONFIRMATION in this task.
-  - Run A3, ROAMM, alignment, direct_u_plus, EQ_ANMA or either Gate.
-  - Change parent splits, shams, thresholds, seeds, support or candidate rules.
-  - Delete or hide channel_block_permutation because its contrast is negative.
-  - Treat a branch-local diagnostic as real EEG paper evidence.
+formal_outputs:
+  contract_sha256: 50a4d1ebf44af415a0de69ec66e4fe56bcaeb21acf70d262cfd80a59454779ed
+  json_sha256: 610e40bf09959fb30f2a08f998b42148e9967168263a64c3ba37969194e964ff
+  markdown_sha256: a858a7475b486bd874ace44435cc2de074c57391f6cdc9ffc102cb7f78c5beed
+  ledger_sha256: 28fc32b5103a1ba19b9c2cd2c724da5d7d3aff17f53f5ac72e3993e64db9314a
+
+scope_violations: []
+
+last_run: runs/research/2026-08-22_003_v322_real_sham_r1_freeze.md
+
+do_not_do:
+  - Read or score outer-test or calibration rows.
+  - Fit M1 transductive alignment, any subject-target covariance map, or any
+    alignment encoder; M0 is the unchanged inductive probe path only.
+  - Change parent splits, record IDs, seed 20260813, ridge alpha 1.0,
+    temperature 0.07, support rules, sham permutations, thresholds, or
+    text-encoder revision.
+  - Add F3_EVENT_LOCKED unless a released source-schema contract is separately
+    authored before execution; for this R1 it is deferred and must not run.
+  - Modify or relabel parent formal artifacts, R0 artifacts, or old outcomes.
+  - Use subject identity, task labels, calibration labels, synthetic truth, or
+    row counts as fitted inputs.

@@ -1,0 +1,72 @@
+schema_version: 1
+task: R1_REAL_SHAM_INNER_DIAGNOSTIC
+run_id: 2026-08-22_003_v322_real_sham_r1_inner
+outcome_before_execution: READY
+branch: research/real-sham-r1-inner
+base_commit: ec7ced2708fe68ae8614b6b89b03256d88d1b541
+parent_branch: research/real-sham-rescue
+governing_spec:
+  path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_22_2026-08-22.md
+  status: BRANCH_LOCAL_AUTHOR_OVERLAY
+claim_boundary:
+  - RESEARCH_DIAGNOSTIC_ONLY
+  - no_outer_confirmation
+  - no_paper_level_real_eeg_claim
+  - parent_and_r0_outcomes_immutable
+inputs:
+  dataset: zuco_2_0
+  tasks: [task1_nr, task2_tsr]
+  outer_base_cell: outer_s0_t0
+  inner_cells: [inner_s0_t0, inner_s1_t0, inner_s2_t0]
+  seed: 20260813
+  target_encoder: sentence-transformers/all-MiniLM-L6-v2@1110a243fdf4706b3f48f1d95db1a4f5529b4d41
+  ridge_alpha: 1.0
+  softmax_temperature: 0.07
+  common_observation_min_retention: 0.90
+frontends:
+  - id: F0_A1_BP_CONCAT
+    source: inherited A1 BP concat, exact v3.18 construction
+  - id: F1_LOGREL_BP
+    source: fit-scope positive median epsilon 1e-6 times median, log(x+epsilon)
+  - id: F2_T8_FIXATION
+    source: inherited A1-R T8 fixation-relative 105x8 feature
+targets:
+  - id: Y0_RAW_MINILM
+    definition: exact frozen item-surface MiniLM embedding
+  - id: Y1_H_RESIDUAL_MINILM
+    definition: fit-only H->Y0 ridge residual, canonical item residual, L2-normalized
+alignment:
+  id: M0_STRICT_INDUCTIVE
+  definition: no learned alignment; unchanged fold-local normalizer and H+EEG probe
+shams:
+  semantic:
+    - trial_shuffle
+    - within_trial_unit_assignment_shuffle
+  topology_sentinel:
+    - channel_block_permutation
+metrics:
+  primary: subject_first_real_minus_mean_semantic_shams
+  retained_secondary:
+    - real_minus_trial_shuffle
+    - real_minus_within_trial_unit_assignment_shuffle
+    - real_minus_channel_block_permutation
+    - legacy_u_oof
+    - legacy_u_min
+thresholds:
+  family_ci_lower_gt: 0.0
+  family_positive_subjects_gte: 12
+  recovery_ci_lower_gt: 0.0
+  recovery_positive_subjects_gte: 10
+fit_budget:
+  h_only_y0: 6
+  y1_text_residualizer: 6
+  eeg_probes: 144
+  total_ridge_operations: 156
+  v5_eeg_probe_ledgers: 150
+  text_residualizer_ledgers: 6
+forbidden:
+  - outer_test_reads
+  - calibration_reads
+  - M1_transductive_alignment
+  - F3_event_locked_frontend
+  - parent_or_r0_formal_artifact_mutation

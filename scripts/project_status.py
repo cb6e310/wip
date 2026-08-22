@@ -49,6 +49,38 @@ def _rank(task_id: str, tasks: dict) -> tuple:
 def _render_branch_local(state: dict, tasks: dict, errors: list[str]) -> str:
     current = state.get("current_task", {})
     parent = state.get("immutable_parent_outcomes", {})
+    is_r1 = (
+        state.get("project", {}).get("branch_spec")
+        == "v3.22_REAL_SHAM_R1_INNER_DIAGNOSTIC"
+    )
+    if is_r1:
+        execution = state.get("execution_counts", {})
+        if current.get("status") == "DONE":
+            boundary = (
+                "R1 inner-only | ridge operations="
+                f"{execution.get('total_ridge_operations')} | EEG V5/text ledgers="
+                f"{execution.get('v5_eeg_probe_ledgers')}/"
+                f"{execution.get('text_residualizer_ledgers')} | outer/calibration reads="
+                f"{execution.get('outer_test_reads')}/{execution.get('calibration_reads')}"
+            )
+        else:
+            boundary = (
+                "R1 inner-only frozen budget | ridge operations=156 "
+                "(6 H-only + 6 text residualizers + 144 EEG probes) | "
+                "outer/calibration reads=0/0"
+            )
+        next_task = (
+            "R2_REAL_SHAM_OUTER_CONFIRMATION_FREEZE_IF_R1_PASS is forbidden "
+            "until author review; do not start it automatically."
+        )
+        forbidden = (
+            "F3, M1, outer confirmation, calibration, alignment, direct u+, "
+            "EQ-ANMA, Gate A/B, A3, and ROAMM"
+        )
+    else:
+        boundary = "existing artifacts only | new EEG fits=0 | outer/calibration reads=0/0"
+        next_task = "R1_REAL_SHAM_INNER_DIAGNOSTIC only after author review; currently blocked."
+        forbidden = "alignment, direct u+, EQ-ANMA, Gate A/B, A3, and ROAMM"
     lines = [
         "PROJECT SNAPSHOT",
         "",
@@ -56,8 +88,9 @@ def _render_branch_local(state: dict, tasks: dict, errors: list[str]) -> str:
         f"Branch: {state.get('project', {}).get('branch_name')}",
         f"Base commit: {state.get('project', {}).get('base_commit')}",
         f"Current task: {current.get('id')} ({current.get('status')})",
+        f"Outcome: {current.get('outcome', 'not executed')}",
         f"Evidence grade: {state.get('scope', {}).get('evidence_grade')}",
-        "Execution boundary: existing artifacts only | new EEG fits=0 | outer/calibration reads=0/0",
+        f"Execution boundary: {boundary}",
         "Immutable parent outcomes:",
     ]
     lines.extend(f"- {key}: {value}" for key, value in parent.items())
@@ -65,10 +98,10 @@ def _render_branch_local(state: dict, tasks: dict, errors: list[str]) -> str:
         [
             "",
             "Next task:",
-            "R1_REAL_SHAM_INNER_DIAGNOSTIC only after author review; currently blocked.",
+            next_task,
             "",
             "Forbidden releases:",
-            "- alignment, direct u+, EQ-ANMA, Gate A/B, A3, and ROAMM",
+            f"- {forbidden}",
             "",
             "Validator:",
             "INVALID" if errors else "VALID",
