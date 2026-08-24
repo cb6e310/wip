@@ -1,28 +1,21 @@
-R2_REAL_SHAM_GEOMETRY_INNER_DIAGNOSTIC:
-  title: Inner-only subject-geometry and frozen-basis diagnostic
+R3_REAL_SHAM_SUBJECT_BALANCED_INNER_DIAGNOSTIC:
+  title: Inner-only source subject-item-balanced fit diagnostic
   stage: research_branch
   status: DONE
   priority: 1
   prerequisites:
-    - origin/research/real-sham-r1-inner is 012590ff1bc9c421644168a555511715bb30ec4a
-    - R1 outcome is FAIL_R1_REAL_SHAM_INNER_DIAGNOSTIC with no scope violation
+    - origin/research/real-sham-r2-geometry-inner is a6fdf258ae89e4032e5e7afba61bba021fca186d
+    - R2 outcome is FAIL_R2_GEOMETRY_INNER_DIAGNOSTIC with no scope violation
   methods:
-    B0_RAW_A1:
-      dimension: 840
-      definition: exact inherited A1 raw channel-major bandpower
-    B1_TOKEN_LOCAL_LATENT:
-      dimension: 384
-      definition: exact frozen token_local_frozen_initial_latent, seed 20260813
-    M0_STRICT_INDUCTIVE:
-      definition: no subject-wise target transform; unchanged fold-local normalizer
-    M1_UNLABELED_TRANSDUCTIVE_EA:
-      definition: full covariance Euclidean alignment, exact formula in SPEC
-  cells:
-    - M0_STRICT_INDUCTIVE/B0_RAW_A1
-    - M0_STRICT_INDUCTIVE/B1_TOKEN_LOCAL_LATENT
-    - M1_UNLABELED_TRANSDUCTIVE_EA/B0_RAW_A1
-    - M1_UNLABELED_TRANSDUCTIVE_EA/B1_TOKEN_LOCAL_LATENT
+    P0_OBSERVATION_WEIGHTED:
+      definition: exact inherited pooled row-level ridge baseline
+      role: immutable baseline replication
+    P1_SUBJECT_ITEM_BALANCED:
+      definition: source-fit-only equal-weight group means by (subject_id,item_id)
+      role: sole inductive candidate
+  basis: B0_RAW_A1
   target: Y0_RAW_MINILM
+  alignment: M0_STRICT_INDUCTIVE
   exact_scope:
     tasks: [task1_nr, task2_tsr]
     outer_base_cell: outer_s0_t0
@@ -35,42 +28,47 @@ R2_REAL_SHAM_GEOMETRY_INNER_DIAGNOSTIC:
       - within_trial_unit_assignment_shuffle
       - channel_block_permutation
     common_observation_min_retention: 0.90
+  fit_group_rule:
+    grouping_key: [subject_id, item_id]
+    source_scope: fit_rows_only
+    aggregate: arithmetic_mean_of_finite_EEG_rows_per_group
+    group_weight: equal_per_group_in_ridge
+    H_and_target: canonical_item_values_for_each_group
+    scoring_rows: unchanged_individual_seen_and_cross_rows
+    no_seen_cross_group_creation: true
   fit_budget:
-    h_only_y0_fits: 6
-    geometry_probe_fits: 96
-    total_ridge_operations: 102
-    unique_v5_ledgers: 102
+    h_only_p0_fits: 6
+    h_only_p1_fits: 6
+    p0_probe_fits: 24
+    p1_probe_fits: 24
+    total_ridge_operations: 60
+    unique_v5_ledgers: 60
     outer_test_reads: 0
     calibration_reads: 0
   acceptance:
-    - Four cells run on 2 tasks x 3 inner folds x 4 arms with identical row
-      identity and support.
-    - M1 transform is computed from real-arm EEG values only, without labels,
-      and the exact same transform is applied to all four arms for that
-      subject/regime.
-    - Primary inductive result is M0/B1; M1 results are secondary transductive
-      diagnostics and cannot release an inductive or paper-level claim.
+    - P0 and P1 run on 2 tasks x 3 inner folds x 4 arms with identical
+      scoring row identity and supported vocabulary.
+    - P1 groups are constructed only from fit rows, with no subject/item
+      grouping information from seen/cross rows entering the fit.
     - Primary semantic contrast, family thresholds and paired recovery rules
-      are exactly inherited from R1.
+      are exactly inherited from R1/R2.
+    - P1 is the only candidate; P0 is baseline replication.
     - Focused/related tests, compile, state/status, diff-check and all parent,
-      R0 and R1 hash checks pass.
+      R0, R1 and R2 hash checks pass.
   outcomes:
-    inductive_pass: PASS_R2_INDUCTIVE_GEOMETRY
-    transductive_only_pass: PASS_R2_TRANSDUCTIVE_GEOMETRY_ONLY
-    no_candidate: FAIL_R2_GEOMETRY_INNER_DIAGNOSTIC
-    contract_failure: INVALID_R2_GEOMETRY_INNER_DIAGNOSTIC
+    candidate_pass: PASS_R3_SUBJECT_BALANCED_INNER
+    no_candidate: FAIL_R3_SUBJECT_BALANCED_INNER_DIAGNOSTIC
+    contract_failure: INVALID_R3_SUBJECT_BALANCED_INNER_DIAGNOSTIC
   forbidden:
     - Run outer confirmation, negative confirmation, A3, ROAMM, direct_u_plus,
-      EQ_ANMA, alignment training or a Gate.
-    - Add event-locked frontend, target residual, new seed, fold, threshold or
-      a post-outcome candidate.
+      EQ_ANMA, alignment or a Gate.
+    - Add a post-outcome weighting, group, basis, target or threshold variant.
   produces:
-    - artifacts/real_sham_r2_geometry_contract.yaml
-    - 04_results/diagnostics/real_sham_r2_geometry_inner.json
-    - 04_results/diagnostics/real_sham_r2_geometry_inner.md
-    - 04_results/diagnostics/real_sham_r2_geometry_inner_run_ledger.jsonl.gz
-    - 04_results/diagnostics/real_sham_r2_geometry_inner_transform_ledger.jsonl.gz
-    - runs/research/2026-08-23_004_v323_real_sham_r2_geometry_freeze.md
-  completion_outcome: FAIL_R2_GEOMETRY_INNER_DIAGNOSTIC
-  completed_by_run: 2026-08-23_004_v323_real_sham_r2_geometry_inner
+    - artifacts/real_sham_r3_subject_balanced_contract.yaml
+    - 04_results/diagnostics/real_sham_r3_subject_balanced_inner.json
+    - 04_results/diagnostics/real_sham_r3_subject_balanced_inner.md
+    - 04_results/diagnostics/real_sham_r3_subject_balanced_inner_run_ledger.jsonl.gz
+    - runs/research/2026-08-24_005_v324_real_sham_r3_subject_balanced_freeze.md
+  completion_outcome: FAIL_R3_SUBJECT_BALANCED_INNER_DIAGNOSTIC
+  completed_by_run: 2026-08-24_005_v324_real_sham_r3_subject_balanced_inner
   scope_violations: []

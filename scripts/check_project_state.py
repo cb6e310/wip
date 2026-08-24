@@ -90,6 +90,7 @@ BRANCH_LOCAL_PARENT_OUTCOMES = {
 }
 R1_BRANCH_SPEC = "v3.22_REAL_SHAM_R1_INNER_DIAGNOSTIC"
 R2_BRANCH_SPEC = "v3.23_REAL_SHAM_R2_GEOMETRY_INNER"
+R3_BRANCH_SPEC = "v3.24_REAL_SHAM_R3_SUBJECT_BALANCED_INNER"
 R1_LEGAL_OUTCOMES = {
     "PASS_R1_BOTH_TASKS",
     "PASS_R1_LIMITED_ONE_TASK",
@@ -126,6 +127,17 @@ R2_FORMAL_PATHS = {
     "markdown_sha256": "04_results/diagnostics/real_sham_r2_geometry_inner.md",
     "ledger_sha256": "04_results/diagnostics/real_sham_r2_geometry_inner_run_ledger.jsonl.gz",
     "transform_ledger_sha256": "04_results/diagnostics/real_sham_r2_geometry_inner_transform_ledger.jsonl.gz",
+}
+R3_LEGAL_OUTCOMES = {
+    "PASS_R3_SUBJECT_BALANCED_INNER",
+    "FAIL_R3_SUBJECT_BALANCED_INNER_DIAGNOSTIC",
+    "INVALID_R3_SUBJECT_BALANCED_INNER_DIAGNOSTIC",
+}
+R3_FORMAL_PATHS = {
+    "contract_sha256": "artifacts/real_sham_r3_subject_balanced_contract.yaml",
+    "json_sha256": "04_results/diagnostics/real_sham_r3_subject_balanced_inner.json",
+    "markdown_sha256": "04_results/diagnostics/real_sham_r3_subject_balanced_inner.md",
+    "ledger_sha256": "04_results/diagnostics/real_sham_r3_subject_balanced_inner_run_ledger.jsonl.gz",
 }
 
 
@@ -508,10 +520,132 @@ def _validate_r2_branch_local_freeze(
     return errors
 
 
+def _validate_r3_branch_local_freeze(
+    root: Path, state: dict[str, Any], tasks: dict[str, Any]
+) -> list[str]:
+    """Validate the v3.24 R3 fit-only subject-balanced diagnostic state."""
+
+    errors: list[str] = []
+    project = state.get("project", {})
+    expected_project = {
+        "parent_spec": "v3.20",
+        "branch_spec": R3_BRANCH_SPEC,
+        "branch_name": "research/real-sham-r3-subject-balanced",
+        "base_commit": "a6fdf258ae89e4032e5e7afba61bba021fca186d",
+        "parent_branch": "research/real-sham-r2-geometry-inner",
+    }
+    for field, expected in expected_project.items():
+        if project.get(field) != expected:
+            errors.append(f"STATE_SPEC_CONFLICT: project.{field} != {expected!r}")
+    for required in (
+        "guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_24_2026-08-24.md",
+        "artifacts/real_sham_r3_freeze.yaml",
+    ):
+        if not (root / required).is_file():
+            errors.append(f"missing R3 branch freeze artifact: {required}")
+    if state.get("immutable_parent_outcomes") != BRANCH_LOCAL_PARENT_OUTCOMES:
+        errors.append("STATE_SPEC_CONFLICT: immutable parent outcomes changed")
+    expected_r0_r1_r2 = {
+        "r0_commit": "ec7ced2708fe68ae8614b6b89b03256d88d1b541",
+        "r0_outcome": "PASS_REAL_SHAM_RESCUE_FREEZE",
+        "r1_commit": "012590ff1bc9c421644168a555511715bb30ec4a",
+        "r1_outcome": "FAIL_R1_REAL_SHAM_INNER_DIAGNOSTIC",
+        "r1_contract_sha256": "50a4d1ebf44af415a0de69ec66e4fe56bcaeb21acf70d262cfd80a59454779ed",
+        "r2_commit": "a6fdf258ae89e4032e5e7afba61bba021fca186d",
+        "r2_outcome": "FAIL_R2_GEOMETRY_INNER_DIAGNOSTIC",
+        "r2_contract_sha256": "cb28e85029ec01dff3961e101a42d00672155ac7258641a077bf4bd6cf6eee78",
+        "r2_json_sha256": "6aca8e2be1e062092a3ca7a4133cacd179e0fd73926240bd48739aedaa51426b",
+    }
+    if state.get("immutable_r0_r1_r2") != expected_r0_r1_r2:
+        errors.append("STATE_SPEC_CONFLICT: immutable R0/R1/R2 contract changed")
+    scope = state.get("scope", {})
+    expected_scope = {
+        "evidence_grade": "RESEARCH_DIAGNOSTIC_ONLY",
+        "outer_test_reads_allowed": False,
+        "calibration_reads_allowed": False,
+        "alignment_scope": "M0_STRICT_INDUCTIVE_ONLY",
+    }
+    for field, expected in expected_scope.items():
+        if scope.get(field) != expected:
+            errors.append(f"R3 scope.{field} must be {expected!r}")
+    if set(tasks) != {"R3_REAL_SHAM_SUBJECT_BALANCED_INNER_DIAGNOSTIC"}:
+        errors.append("R3 TASKS.yaml must contain exactly its frozen task")
+        return errors
+    task = tasks["R3_REAL_SHAM_SUBJECT_BALANCED_INNER_DIAGNOSTIC"]
+    if not isinstance(task, dict):
+        return errors + ["R3 task entry must be a mapping"]
+    for field in ("title", "stage", "status", "prerequisites"):
+        if field not in task:
+            errors.append(f"R3 task missing field {field}")
+    if task.get("status") not in {"READY", "DONE"}:
+        errors.append(f"R3 task has illegal status {task.get('status')!r}")
+    if not isinstance(task.get("prerequisites"), list):
+        errors.append("R3 prerequisites must be a list")
+    current = state.get("current_task", {})
+    if current.get("id") != "R3_REAL_SHAM_SUBJECT_BALANCED_INNER_DIAGNOSTIC":
+        errors.append("current_task.id must be R3 subject-balanced diagnostic")
+    if current.get("status") != task.get("status"):
+        errors.append("current_task.status does not match R3 task status")
+    if current.get("forbidden_next_until_author_review") is not True:
+        errors.append("outer confirmation must remain forbidden until author review")
+
+    if task.get("status") == "DONE":
+        outcome = task.get("completion_outcome")
+        if outcome not in R3_LEGAL_OUTCOMES:
+            errors.append(f"DONE R3 has illegal outcome {outcome!r}")
+        if current.get("outcome") != outcome:
+            errors.append("current_task.outcome does not match R3 task outcome")
+        if not task.get("completed_by_run"):
+            errors.append("DONE R3 requires completed_by_run")
+        produced = task.get("produces", [])
+        if not isinstance(produced, list) or not produced:
+            errors.append("DONE R3 requires produced artifacts")
+        else:
+            for artifact in produced:
+                if not (root / artifact).is_file():
+                    errors.append(f"R3 missing DONE artifact {artifact}")
+        expected_counts = {
+            "h_only_p0_fits": 6,
+            "h_only_p1_fits": 6,
+            "p0_probe_fits": 24,
+            "p1_probe_fits": 24,
+            "total_ridge_operations": 60,
+            "unique_v5_ledgers": 60,
+            "group_scope_count": 6,
+            "outer_test_reads": 0,
+            "calibration_reads": 0,
+        }
+        execution = state.get("execution_counts", {})
+        for field, expected in expected_counts.items():
+            if execution.get(field) != expected:
+                errors.append(f"R3 execution_counts.{field} must be {expected}")
+        group_audit = state.get("group_audit", {})
+        if group_audit.get("fit_rows_only") is not True:
+            errors.append("R3 group audit must record fit_rows_only=true")
+        if group_audit.get("subject_id_input_to_probe") is not False:
+            errors.append("R3 group audit must forbid subject ID probe input")
+        if group_audit.get("same_individual_scoring_rows_p0_p1") is not True:
+            errors.append("R3 P0/P1 scoring row identity must be true")
+        if state.get("scope_violations") != [] or task.get("scope_violations") != []:
+            errors.append("DONE R3 requires zero scope violations")
+        recorded_hashes = state.get("formal_outputs", {})
+        for field, relative in R3_FORMAL_PATHS.items():
+            digest = recorded_hashes.get(field)
+            if not isinstance(digest, str) or len(digest) != 64:
+                errors.append(f"R3 formal_outputs.{field} must be SHA-256")
+                continue
+            path = root / relative
+            if path.is_file() and _sha256_file(path) != digest:
+                errors.append(f"R3 formal output hash changed: {relative}")
+    return errors
+
+
 def _validate_branch_local_freeze(
     root: Path, state: dict[str, Any], tasks: dict[str, Any]
 ) -> list[str]:
     branch_spec = state.get("project", {}).get("branch_spec")
+    if branch_spec == R3_BRANCH_SPEC:
+        return _validate_r3_branch_local_freeze(root, state, tasks)
     if branch_spec == R2_BRANCH_SPEC:
         return _validate_r2_branch_local_freeze(root, state, tasks)
     if branch_spec == R1_BRANCH_SPEC:

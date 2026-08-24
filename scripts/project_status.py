@@ -50,11 +50,35 @@ def _render_branch_local(state: dict, tasks: dict, errors: list[str]) -> str:
     current = state.get("current_task", {})
     parent = state.get("immutable_parent_outcomes", {})
     branch_spec = state.get("project", {}).get("branch_spec")
+    is_r3 = branch_spec == "v3.24_REAL_SHAM_R3_SUBJECT_BALANCED_INNER"
     is_r2 = branch_spec == "v3.23_REAL_SHAM_R2_GEOMETRY_INNER"
     is_r1 = (
         branch_spec == "v3.22_REAL_SHAM_R1_INNER_DIAGNOSTIC"
     )
-    if is_r2:
+    if is_r3:
+        execution = state.get("execution_counts", {})
+        if current.get("status") == "DONE":
+            boundary = (
+                "R3 inner-only subject-balanced | ridge/V5="
+                f"{execution.get('total_ridge_operations')}/"
+                f"{execution.get('unique_v5_ledgers')} | group scopes="
+                f"{execution.get('group_scope_count')} | outer/calibration reads="
+                f"{execution.get('outer_test_reads')}/{execution.get('calibration_reads')}"
+            )
+        else:
+            boundary = (
+                "R3 frozen budget | ridge/V5=60/60 "
+                "(12 H-only + 48 probes) | fit-only group scopes=6 | "
+                "outer/calibration reads=0/0"
+            )
+        next_task = (
+            "AUTHOR_REVIEW_ONLY; no outer confirmation may start automatically."
+        )
+        forbidden = (
+            "F3, Y1, M1, outer confirmation, calibration, direct u+, "
+            "EQ-ANMA, Gate A/B, A3, and ROAMM"
+        )
+    elif is_r2:
         execution = state.get("execution_counts", {})
         if current.get("status") == "DONE":
             boundary = (

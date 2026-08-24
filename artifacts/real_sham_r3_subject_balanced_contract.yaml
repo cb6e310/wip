@@ -1,0 +1,147 @@
+schema_version: 1
+algorithm_version: real-sham-r3-subject-balanced-v324-d110-d113-v1
+run_id: 2026-08-24_005_v324_real_sham_r3_subject_balanced_inner
+task: R3_REAL_SHAM_SUBJECT_BALANCED_INNER_DIAGNOSTIC
+branch: research/real-sham-r3-subject-balanced
+base_commit: a6fdf258ae89e4032e5e7afba61bba021fca186d
+evidence_grade: RESEARCH_DIAGNOSTIC_ONLY
+governing_spec:
+  path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_24_2026-08-24.md
+  sha256: 4e17a8499a61e5e53fc416b128ab6b153f48b56e7e4230b7ff1c9f4eef3a00b3
+author_freeze:
+  path: artifacts/real_sham_r3_freeze.yaml
+  sha256: cbc4386823b38f30d00aa29f862dfd818873a2e83edf0f2cffd6c2534187a94b
+  outcome_before_execution: READY
+scope:
+  tasks:
+  - task1_nr
+  - task2_tsr
+  folds:
+  - inner_s0_t0
+  - inner_s1_t0
+  - inner_s2_t0
+  methods:
+  - P0_OBSERVATION_WEIGHTED
+  - P1_SUBJECT_ITEM_BALANCED
+  basis: B0_RAW_A1
+  target: Y0_RAW_MINILM
+  alignment: M0_STRICT_INDUCTIVE
+  arms:
+  - real
+  - trial_shuffle
+  - within_trial_unit_assignment_shuffle
+  - channel_block_permutation
+  regimes:
+  - seen
+  - cross
+  seed: 20260813
+  ridge_alpha: 1.0
+  temperature: 0.07
+  h_only_operations: 12
+  eeg_probe_operations: 48
+  total_ridge_operations: 60
+  unique_v5_ledgers: 60
+  outer_test_reads: 0
+  calibration_reads: 0
+p0_definition:
+  fit_rows: each_fit_observation_independently
+  role: immutable_baseline_replication
+p1_definition:
+  grouping_key:
+  - subject_id
+  - item_id
+  group_source: supported_fit_rows_only
+  eeg_aggregate: arithmetic_mean
+  group_weight: equal_per_group
+  canonical_h_and_y0_per_item: true
+  seen_cross_group_or_weight_use: false
+  subject_id_input_to_probe: false
+  role: sole_candidate
+claim_boundary:
+  only_candidate: P1_SUBJECT_ITEM_BALANCED
+  p0_baseline_only: true
+  paper_level_real_eeg_claim: false
+  outer_confirmation_released: false
+estimands:
+  delta_semantic: real - mean(trial_shuffle, within_trial_unit_assignment_shuffle)
+  delta_legacy: real - mean(all_three_shams)
+  delta_channel: real - channel_block_permutation
+input_artifact_hashes:
+  a1_freeze: 9c3f48ddf38bca8e75534932ebc6ea3c035a044f627e271a0348ec759bc11e30
+  h_definition: 226f92e299633997fdb9469592f6f8a36fa6c728aa24d9a7d6cb9ded8fb2ae6b
+  inner_split: 0271aba0ae9627f35e281029a8a95390513c1e92c8010e8a2795171f837575d7
+  outer_split: 20aedfd56c7c5ee41a491e5b5531ef77728344808d42ba45d72d7e30250cffa6
+  r2_contract: cb28e85029ec01dff3961e101a42d00672155ac7258641a077bf4bd6cf6eee78
+  r2_diagnostic_json: 6aca8e2be1e062092a3ca7a4133cacd179e0fd73926240bd48739aedaa51426b
+  r3_freeze: cbc4386823b38f30d00aa29f862dfd818873a2e83edf0f2cffd6c2534187a94b
+  semantic_support: fe862ebaed2b027b4924f45c23dacfc01c5c7ad862f6917cbd0a963d2dcff32c
+  source_contract: bb03bb785dd62d8957819aa69eaa4155636e36858dcb35cf31a8e9a81bbedc3c
+  spec_v324: 4e17a8499a61e5e53fc416b128ab6b153f48b56e7e4230b7ff1c9f4eef3a00b3
+  text_encoder: 35e18392a285c8d09ba84a934e31dd327a18fa1a0c10a3bd8550f090cd496494
+immutable_parent_r0_r1_r2_hashes:
+  04_results/audits/a1_admission.json: b3d2b47ee21b2e777470004dbca862cb9495b59f3c68513e9001f3800b4e151e
+  04_results/audits/a1_admission.md: e187f2314ca3ee8a9d8f973c7898276ecaccd64245ce1480243c916c5c729a8e
+  04_results/audits/a1_admission_run_ledger.jsonl.gz: fe22b691795709508386d72d662cbf2feeafb3dd74d5012b46b12e5ae1d963fd
+  04_results/audits/a1_measurement_recovery.json: cf68c0ca170152a79f163ed001706df80ea649ea854da85b09fef1f638e8b51a
+  04_results/audits/a1_measurement_recovery.md: fc039ae77043619e562eb942898287321882189736bdd8219fc3c6a71cc87004
+  04_results/audits/a1_measurement_recovery_run_ledger.jsonl.gz: 90326ad6ed2bb981df0c0d8559102dd73c56a16ce7de6923973bad42529debc7
+  04_results/synthetic_method/eq_anma_synthetic_benchmark.json: f496f308688df7ff68b82f2a5c38fedc971032801b6060f7ed1e61e64e21d2ea
+  04_results/synthetic_method/eq_anma_synthetic_benchmark.md: 94e580531f16e8886949b7196c2d47889f360997bda6d467fb044f619c54d9ea
+  04_results/synthetic_method/eq_anma_synthetic_benchmark_run_ledger.jsonl.gz: 705e9b034794f77eac0f91355f093e7dc70a5d2bb2a13fa2f7da784a0e8b2601
+  artifacts/real_sham_rescue_freeze.yaml: a23c06dd9357bfdcc383e34a58d9258e38145244af146653187d18943864afd2
+  artifacts/real_sham_rescue_contract.yaml: 89f9bc468f5bea0bafe127baa1e0a96ceb5ff1c9327aba89e3445d86ed683055
+  04_results/diagnostics/real_sham_rescue_r0.json: 70eb78aaa7de232d908d62e610c916a45035c8586f23909879a162c0712a3c5c
+  04_results/diagnostics/real_sham_rescue_r0.md: 0126550bef4e4220327ed93aa811ade6c7d2170e483dd975d39fa80066037955
+  04_results/diagnostics/real_sham_rescue_r0_run_ledger.jsonl.gz: 1739ebc0e8b4a9b39887041a3907208a13be98fd4a619acd340e5fc955345ec1
+  guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_21_2026-08-22.md: 9adf0233ed0a36bac63d731637876513811fa1488ddbaf24f4ce5019a2377c7c
+  runs/research/2026-08-22_001_v321_real_sham_rescue_freeze.md: bf42b56b6b321206e9da9f34714bd669e37be33e656635df089da19f80097a9c
+  runs/research/2026-08-22_002_v321_real_sham_rescue_r0.md: f58eb1b369e1e6ad8b9c0c7fe269eff94da2d31aafba085394f7955cb92e154b
+  02_code/src/data/real_sham_rescue.py: fd923075925a2e6e182ac71340d1ad58d5508b2e1dfb07af30a8fb41c756c237
+  02_code/scripts/run_real_sham_rescue_r0.py: 7f1327ac5f6ffda3a9700e99d08c44afbc6b9e3c7d34024ffe9d334d2ecda79b
+  02_code/tests/test_real_sham_rescue.py: aa13267d0c307f007bd3e6de8a1aa8828bc8caa7a975df0ba5a901c7e553ad2c
+  artifacts/real_sham_r1_freeze.yaml: d08719f3f2a5c9c21ceb80de2fff5949ccb8ac891750482f58768dfaa36b09a5
+  artifacts/real_sham_r1_contract.yaml: 50a4d1ebf44af415a0de69ec66e4fe56bcaeb21acf70d262cfd80a59454779ed
+  04_results/diagnostics/real_sham_r1_inner.json: 610e40bf09959fb30f2a08f998b42148e9967168263a64c3ba37969194e964ff
+  04_results/diagnostics/real_sham_r1_inner.md: a858a7475b486bd874ace44435cc2de074c57391f6cdc9ffc102cb7f78c5beed
+  04_results/diagnostics/real_sham_r1_inner_run_ledger.jsonl.gz: 28fc32b5103a1ba19b9c2cd2c724da5d7d3aff17f53f5ac72e3993e64db9314a
+  guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_22_2026-08-22.md: 2d334869985b914ffcb5d3a70af1e7c1d4fe1c18210e447736105e7c3941c95e
+  runs/research/2026-08-22_003_v322_real_sham_r1_freeze.md: 9cef46f9612a988139d5f05a528a3a449119f59c7bb4f65d6b2ccd6b4dd800a9
+  02_code/src/data/real_sham_r1_inner.py: 4a070945d55bbbf0a31f749fa15c12efd862151e3133f402cbbc33f096136029
+  02_code/scripts/run_real_sham_r1_inner.py: f3f218336df34f5342dfba28415bba7f80e836476d02fcfbca8d753c5d24e9ed
+  02_code/tests/test_real_sham_r1_inner.py: a63a2ce66dfa6eb16817483f10ad40d90ccc5a9486cc3b421d35eee8e3f6c670
+  artifacts/real_sham_r2_freeze.yaml: 2d8b8746ad68c9d5cb48566ec6f769d4ffa07f147ca8d4e108259a0974400bf0
+  artifacts/real_sham_r2_geometry_contract.yaml: cb28e85029ec01dff3961e101a42d00672155ac7258641a077bf4bd6cf6eee78
+  04_results/diagnostics/real_sham_r2_geometry_inner.json: 6aca8e2be1e062092a3ca7a4133cacd179e0fd73926240bd48739aedaa51426b
+  04_results/diagnostics/real_sham_r2_geometry_inner.md: 931091510f32059e6b199028eab6e8023960d74a093b8a09546925b709a60d55
+  04_results/diagnostics/real_sham_r2_geometry_inner_run_ledger.jsonl.gz: 8e9ee515cfef330eba7d6f2d6caaa91ec4d4b140678c191e21f11597253fecd3
+  04_results/diagnostics/real_sham_r2_geometry_inner_transform_ledger.jsonl.gz: 21d257d3002a4e3aff8198317bd2e25293eab3b2d8ec585b85acad42b951021b
+  guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_23_2026-08-23.md: e8ce2b93f3cd3bc27232c0f98193c74528f3eb46ca56dc6f705f6a461fd92d63
+  runs/research/2026-08-23_004_v323_real_sham_r2_geometry_freeze.md: 5750f3e26fe8105f127d84a50e5282a52afc2a53dfbe09dfc3fa18e71eab41b3
+  02_code/src/data/real_sham_r2_geometry.py: 289ea36c28400c9e7c321e48fd0f02a9ef5a233f4e1e0f861235d2c6c229fac6
+  02_code/scripts/run_real_sham_r2_geometry_inner.py: 99d392cff4b4320bb13ca0d6792215e62f55b1e413b84aea3c5d46841ed7f155
+  02_code/tests/test_real_sham_r2_geometry.py: 61fcf2a5062c37345d704d333996fe66884d34b256cd2eacb8e8753e0c04bfa6
+run032_immutable_hashes:
+  artifacts/a1_measurement_validity_contract.yaml: 4c09d484cc1b09d7b1215fbf70c442ba8aaaaea57cd5ef42a66a5b25f99118b6
+  04_results/audits/a1_measurement_validity.json: 89d4dc7ac9b4925f60db4fdc12a059f426bd453764db685827f5ed83b4fef270
+  04_results/audits/a1_measurement_validity.md: f7b84125d56cd0e8816374d0e15ec6228b0fc52d69bc9e812e60e213d2e7ac61
+  04_results/audits/a1_measurement_validity_run_ledger.jsonl.gz: 4cc1d14acd8c93e834a96146f63460bc8d6d231a61f8fde6549ec319fd6fc638
+  02_code/src/data/a1_measurement_validity.py: ea08228a713a03512d807e3f6c890003d558eef9fb4b58a4c69d151e856c64b9
+  02_code/scripts/run_a1_measurement_validity.py: 9a2b221d30d579758c5d5575b646db1314d09b2ddf2c515cfa42ac3a91eaf4b7
+  02_code/tests/test_a1_measurement_validity.py: d349d963902b6b08cf6bd8e99a33a91f62623d7f72a4c9df126c19f5905d5328
+  runs/2026-08-16_032_v317_a1_measurement_validity.md: 4158a0d4488b6c77dfeb0fb05b0e71503d2ac6595ac008c1a64aa20019c6fb02
+  guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_17_2026-08-16.md: e650b85a1f32c4bbccd45214584393f41b38884357bb43b2c091cb5d9924dd9a
+source_hashes:
+  02_code/src/data/real_sham_r3_subject_balanced.py: 8d283ca328c1b2c6319ed1985a4d9fb19942ca5e42458fa575336eee2fc6f35f
+  02_code/scripts/run_real_sham_r3_subject_balanced.py: b1e578dd442c0f84170eff71f1cf94c80162d69ff84d473800d22070abd55249
+  02_code/tests/test_real_sham_r3_subject_balanced.py: d8a364df2496eb4910660c2bb250068be9c2123cf2f0af7f319f9e398797cd0c
+forbidden:
+- F3_EVENT_LOCKED
+- Y1_H_RESIDUAL_MINILM
+- M1_EA
+- outer_confirmation
+- calibration
+- direct_u_plus
+- EQ_ANMA
+- A3
+- ROAMM
+- Gate_A_or_B

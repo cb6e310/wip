@@ -1,0 +1,68 @@
+schema_version: 1
+task: R3_REAL_SHAM_SUBJECT_BALANCED_INNER_DIAGNOSTIC
+run_id: 2026-08-24_005_v324_real_sham_r3_subject_balanced_inner
+outcome_before_execution: READY
+branch: research/real-sham-r3-subject-balanced
+base_commit: a6fdf258ae89e4032e5e7afba61bba021fca186d
+parent_branch: research/real-sham-r2-geometry-inner
+evidence_grade: RESEARCH_DIAGNOSTIC_ONLY
+governing_spec:
+  path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_24_2026-08-24.md
+  status: BRANCH_LOCAL_AUTHOR_OVERLAY
+immutable_r2:
+  outcome: FAIL_R2_GEOMETRY_INNER_DIAGNOSTIC
+  contract_sha256: cb28e85029ec01dff3961e101a42d00672155ac7258641a077bf4bd6cf6eee78
+  json_sha256: 6aca8e2be1e062092a3ca7a4133cacd179e0fd73926240bd48739aedaa51426b
+scope:
+  dataset: zuco_2_0
+  tasks: [task1_nr, task2_tsr]
+  folds: [inner_s0_t0, inner_s1_t0, inner_s2_t0]
+  outer_base_cell: outer_s0_t0
+  seed: 20260813
+  ridge_alpha: 1.0
+  temperature: 0.07
+  basis: B0_RAW_A1
+  target: Y0_RAW_MINILM
+  alignment: M0_STRICT_INDUCTIVE
+  arms: [real, trial_shuffle, within_trial_unit_assignment_shuffle, channel_block_permutation]
+methods:
+  P0_OBSERVATION_WEIGHTED:
+    fit_rows: unchanged_individual_fit_rows
+    role: immutable_baseline_replication
+  P1_SUBJECT_ITEM_BALANCED:
+    fit_rows: one_arithmetic_mean_per_available_fit_subject_item_group
+    grouping_key: [subject_id, item_id]
+    group_scope: fit_rows_only
+    score_rows: unchanged_individual_seen_cross_rows
+    group_weight: equal_per_group
+    subject_id_input_to_probe: false
+estimands:
+  primary: subject_first_real_minus_mean_semantic_shams
+  delta_semantic: real - mean(trial_shuffle, within_trial_unit_assignment_shuffle)
+  delta_legacy: real - mean(all_three_shams)
+  delta_channel: real - channel_block_permutation
+thresholds:
+  family_ci_lower_gt: 0.0
+  family_positive_subjects_gte: 12
+  recovery_ci_lower_gt: 0.0
+  recovery_positive_subjects_gte: 10
+fit_budget:
+  h_only_p0: 6
+  h_only_p1: 6
+  p0_probes: 24
+  p1_probes: 24
+  total_ridge_operations: 60
+  unique_v5_ledgers: 60
+  outer_test_reads: 0
+  calibration_reads: 0
+forbidden:
+  - F3_EVENT_LOCKED
+  - Y1_H_RESIDUAL_MINILM
+  - M1_EA
+  - outer_confirmation
+  - calibration
+  - direct_u_plus
+  - EQ_ANMA
+  - A3
+  - ROAMM
+  - Gate_A_or_B
