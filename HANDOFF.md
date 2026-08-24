@@ -70,7 +70,8 @@ scope, contracts, budget, and forbidden reads.
 
 ## R6 author freeze committed on main
 
-The current remote baseline is `main@0a140bafabf9ec489547dda002f7613cafdfa4db`.
+The freeze was based on `main@0a140bafabf9ec489547dda002f7613cafdfa4db` and is now
+committed at `main@125d72c9aad1dd2d3777d695123f17dc97138268`.
 The author approved creation of the R6 freeze, and this package records that
 protocol-only freeze as `R6_AUTHOR_FREEZE_COMMITTED`. The R4 outcome and every
 R0–R4 formal hash remain immutable; `TASKS.yaml` remains unchanged.
@@ -87,3 +88,25 @@ The SPEC and freeze artifact SHA are bound on `main`; experiment execution
 remains blocked until implementation. The only next task is
 `R6_IMPLEMENT_ARMS_AND_TESTS` on `main`; do not create a research branch and
 do not run held-out work before implementation and tests pass.
+
+## R6 implementation readiness review
+
+Remote inspection after the freeze commit confirms that `main` is clean at
+`125d72c9aad1dd2d3777d695123f17dc97138268`, while the historical R4 branch
+remains at `e80862e943b9fbff7f5788dc109eefbf2c27a476`. The freeze artifact,
+SPEC hash, R0–R4 formal hashes, `TASKS.yaml`, and all read counters are intact.
+
+The current code has the legacy/synthetic EQ-ANMA and DIRECT weighting surfaces,
+but no R6 arm adapter, bounded `clip(1+gamma*h)` controller, fit-only scope
+guard, compute-matching ledger, or R6 contract self-check. The next task is
+therefore deliberately limited to those protocol surfaces and T-01…T-09
+synthetic/adversarial tests. It must not add a real runner, real data loader,
+training loop, retrieval loop, outer/calibration output, or held-out metric.
+
+Codex completed `R6_IMPLEMENT_ARMS_AND_TESTS` as protocol-only Python surfaces.
+The standalone synthetic selfcheck and pytest suite both pass all T-01…T-09
+contracts, including adversarial fit-ID, shuffle-axis, and feature-injection
+checks. No real data loader, runner, training, retrieval, outer/calibration
+output, or held-out metric was added or used. The only next task is
+`R6_INNER_SELECTION`; real EEG, outer, calibration, Gate, A3, ROAMM, and
+paper-level operations remain blocked.

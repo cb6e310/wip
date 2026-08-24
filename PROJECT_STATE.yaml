@@ -1,8 +1,8 @@
 schema_version: 1
 state_kind: branch_local_author_freeze
-updated_at: "2026-08-24T21:13:20+08:00"
-updated_by: codex_r6_author_freeze_commit
-updated_by_run: 2026-08-24_009_v4_1_r6_author_freeze_on_main
+updated_at: "2026-08-24T22:07:02+08:00"
+updated_by: codex_r6_implementation
+updated_by_run: 2026-08-24_010_v4_1_r6_implementation_readiness
 
 project:
   name: trustworthy_subject_general_eeg_text_alignment
@@ -11,8 +11,8 @@ project:
   branch_name: research/real-sham-r4-orthogonal-inner
   base_commit: fbc54c7b90ffc1bbc07b55ffc3123d0421779104
   parent_branch: research/real-sham-r3-subject-balanced
-  active_protocol_spec: v4.1_R6FREEZE_MAIN_R6_EQALIGN_MSP
-  active_protocol_spec_file: guide/EEG_Text_Bprime_Unified_Paper_Spec_v4_1_R6_EQALIGN_MSP_R6FREEZE_MAIN_2026-08-24.md
+  active_protocol_spec: v4.1_R6IMPLEMENT_READY_MAIN_R6_EQALIGN_MSP
+  active_protocol_spec_file: guide/EEG_Text_Bprime_Unified_Paper_Spec_v4_1_R6_EQALIGN_MSP_R6IMPLEMENT_READY_MAIN_2026-08-24.md
   alignment_case: CASE_A_BRANCH_LOCAL_R4
   alignment_status: ALIGNED_R4_BRANCH_LOCAL
   active_work_branch: main
@@ -27,7 +27,9 @@ project:
   r6_freeze_base_commit: 0a140bafabf9ec489547dda002f7613cafdfa4db
   r6_implementation_status: SYNTHETIC_SURFACE_ONLY
   r6_real_runner_status: ABSENT
-  r6_experiment_release: BLOCKED_UNTIL_IMPLEMENTATION
+  r6_experiment_release: BLOCKED_UNTIL_INNER_SELECTION
+  r6_implementation_task_status: DONE
+  r6_implementation_base_commit: 125d72c9aad1dd2d3777d695123f17dc97138268
 
 scope:
   dataset: zuco_2_0
@@ -138,7 +140,7 @@ alignment_record:
   merge_source_commit: e80862e943b9fbff7f5788dc109eefbf2c27a476
   merge_mode: FAST_FORWARD
   future_work_branch: main
-  next_main_action: R6_IMPLEMENT_ARMS_AND_TESTS
+  next_main_action: R6_INNER_SELECTION
 
 r6_author_freeze:
   task: R6_AUTHOR_FREEZE_ON_MAIN
@@ -160,6 +162,31 @@ r6_author_freeze:
   artifact_file: artifacts/eqalign_r6_author_freeze.yaml
   run_record: runs/research/2026-08-24_009_v4_1_r6_author_freeze_on_main.md
   next_after_completion: R6_IMPLEMENT_ARMS_AND_TESTS
+
+r6_implementation:
+  task: R6_IMPLEMENT_ARMS_AND_TESTS
+  status: DONE
+  base_branch: main
+  base_commit: 125d72c9aad1dd2d3777d695123f17dc97138268
+  commit: SELF
+  remote_main_after_push: SAME_AS_SELF
+  protocol_only: true
+  real_eeg_reads: 0
+  outer_test_reads: 0
+  calibration_reads: 0
+  training_started: false
+  heldout_metrics_generated: false
+  real_runner_status: ABSENT
+  governing_spec_file: guide/EEG_Text_Bprime_Unified_Paper_Spec_v4_1_R6_EQALIGN_MSP_R6IMPLEMENT_READY_MAIN_2026-08-24.md
+  implementation_contract_file: artifacts/eqalign_r6_implementation_contract.yaml
+  implementation_contract_sha256: e8b4942bfb1a9fa25db6196d36a0f74d592f1759b11e7e216a4641e3c7518544
+  spec_sha256: e6bc63c134bc7136516521beed7519e34982278e06cd576e17f9e204f6cc5fbe
+  run_record: runs/research/2026-08-24_010_v4_1_r6_implementation_readiness.md
+  allowed_scope: protocol_contracts_and_synthetic_tests_only
+  pytest_status: PASS_9
+  selfcheck_status: PASS_9_OF_9
+  next_task: R6_INNER_SELECTION
+  next_after_completion: R6_INNER_SELECTION
 
 do_not_do:
   - Read or score outer-test or calibration rows.
