@@ -10,6 +10,11 @@ project:
   branch_name: research/real-sham-r4-orthogonal-inner
   base_commit: fbc54c7b90ffc1bbc07b55ffc3123d0421779104
   parent_branch: research/real-sham-r3-subject-balanced
+  active_protocol_spec: v4.1_R4ALIGN_R6_EQALIGN_MSP
+  active_protocol_spec_file: guide/EEG_Text_Bprime_Unified_Paper_Spec_v4_1_R6_EQALIGN_MSP_R4ALIGNED_2026-08-24.md
+  alignment_case: CASE_A_BRANCH_LOCAL_R4
+  alignment_status: ALIGNED_R4_BRANCH_LOCAL
+  r6_release: AUTHOR_REVIEW_REQUIRED
 
 scope:
   dataset: zuco_2_0
@@ -101,6 +106,16 @@ formal_outputs:
   ledger_sha256: d502561fb442ee26185859919cbdfac6a73131a3ccdaeb5afec56fbc394d171d
 
 scope_violations: []
+
+alignment_record:
+  task: R4_STATE_RECONCILIATION
+  status: DONE
+  completion_outcome: ALIGNED_R4_BRANCH_LOCAL
+  completed_by_run: 2026-08-24_007_v4_1_r4align_state_reconciliation
+  next_if_valid_completion: AUTHOR_REVIEW_ONLY
+  r6_design_freeze: BLOCKED
+  forbidden_next_until_author_review: true
+  branches_deleted: []
 
 do_not_do:
   - Read or score outer-test or calibration rows.

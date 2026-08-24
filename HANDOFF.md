@@ -41,3 +41,13 @@ seen/cross nuisance reads, and outer/calibration reads were all zero. P0
 reproduced R3/P0 with maximum subject-level absolute error 0.0. Parent/R0-R3
 hashes remained unchanged and scope violations were empty. Stop at author
 review; no downstream task is released automatically.
+
+## R4 state reconciliation
+
+`R4_STATE_RECONCILIATION` aligned the active protocol reference and project
+entry point to the R4 HEAD
+`954cecd5d8885bb274dd4cde97db6255bd9cf54d` using the v4.1-R4ALIGN protocol.
+All R0-R4 formal artifacts, outcomes, hashes, and read counters remain
+unchanged. The next step remains `AUTHOR_REVIEW_ONLY`. An R6 author freeze may
+be created from this R4 HEAD only after explicit author approval; this
+reconciliation does not release R6 or any downstream research task.
