@@ -1,0 +1,98 @@
+schema_version: 1
+freeze_id: v4_1_r6_eqalign_msp_author_freeze_main
+status: DONE
+task: R6_AUTHOR_FREEZE_ON_MAIN
+base_branch: main
+base_commit: 0a140bafabf9ec489547dda002f7613cafdfa4db
+future_work_branch: main
+workflow_policy: MAIN_ONLY_AFTER_R4_MERGE
+author_approval:
+  status: APPROVED
+  scope: R6_AUTHOR_FREEZE_ONLY
+  downstream_r4_outer_confirmation: NOT_APPROVED
+evidence:
+  grade: DESIGN_FREEZE_ONLY
+  real_eeg_reads: 0
+  outer_test_reads: 0
+  calibration_reads: 0
+  metrics_generated: false
+  experiment_started: false
+governing_spec:
+  path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v4_1_R6_EQALIGN_MSP_R6FREEZE_MAIN_2026-08-24.md
+  sha256: 0d520ce03959e5b733f44cfa00ae5f6bd4c4eddbb43f92ed2ca29f28df439e55
+parent_protocol:
+  path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v4_1_R6_EQALIGN_MSP_MAIN_APPROVED_2026-08-24.md
+  sha256: 9ddd48b3ee783614dc80751feac9624d0c437474b5d2b0796ab0d6ee0f8f1e0f
+frozen_protocol:
+  dataset: zuco_2_0
+  tasks: [task1_nr, task2_tsr]
+  outer_split: leave_subject_and_stimulus_out
+  outer_subject_folds: 6
+  outer_text_folds: 3
+  inner_split: task_global_3x3_per_outer_cell
+  candidate_support: candidate_common_support
+  legal_count_min: 9
+  candidate_N: 10
+  frozen_prefix_count: 5
+  primary_metric: macro_subject_candidate_common_support_R_at_1_N10
+  primary_contrast: EQ_ANMA_minus_BASE
+  primary_test: subject_cluster_bootstrap_one_sided_95_percent_lower_bound_gt_zero
+  report_two_sided_ci: true
+  tier1_arms: [BASE, DIRECT, EQ_ANMA, EQ_SHUFFLE]
+  mandatory_shape_control: DIRECT_MATCHED
+  conditional_arm: BEHAVIOR_CONTROLLER
+  controller_signal: u_oof_to_sigma_u_over_tau_to_amortized_2pl_to_model_implied_fisher_to_sentence_mean
+  controller_normalization: fit_only_zscore_then_clip
+  h_clip: 3
+  weight_formula: clip_1_plus_gamma_h
+  w_min: 0.2
+  w_max: 3.0
+  eq_gamma_grid: [0.0, 0.25, 0.5, 1.0]
+  gamma_selection: pooled_inner_best_tie_prefer_smaller_absolute_gamma
+  direct_grid_size: 8
+  shuffle_realizations: 3
+  shuffle_primary_axis: within_outer_cell_task_subject_across_trials
+  main_seed_count: 3
+  ablation_seed_count: 2
+  bootstrap_replicates: 10000
+  test_calibration_count: 0
+  outer_read_limit_per_cell_task: 1
+  validity_hard_preconditions: [V-A, V-B]
+implementation_readiness:
+  status: SYNTHETIC_SURFACE_ONLY
+  real_runner_status: ABSENT
+  present_surfaces:
+    - 02_code/src/methods/eq_anma.py
+    - 02_code/src/methods/direct_u_plus.py
+    - 02_code/src/data/eq_anma_synthetic_benchmark.py
+    - 02_code/scripts/run_eq_anma_synthetic_benchmark.py
+    - 02_code/tests/test_eq_anma.py
+    - 02_code/tests/test_direct_u_plus.py
+  absent_surfaces:
+    - 02_code/scripts/run_eqalign_r6.py
+    - 02_code/scripts/run_eqalign_outer.py
+    - 02_code/src/align
+    - 02_code/src/training
+    - 02_code/src/retrieval
+  code_inventory_sha256:
+    eq_anma_py: e20fb0f262435bcbc2324963b4725414407f672eda73601237cca45952136bb4
+    direct_u_plus_py: cecab273097c1f9761e91a7aa8d9496992858a5509bfe639f3e4849b2856859a
+    synthetic_runner_py: b2ce9cf58f799bb34daa1dbf793874d9cd7e6be047552284b8820495fd1d9dc9
+    test_eq_anma_py: e0900f3bbca77bbe31a22451442b6a202c71dc06fb6656c0d0e2705bb48e96c2
+    test_direct_u_plus_py: c6c63534ed346571bed0308cf6006b7cf89f5bba043aa4e5dfd947ff87781f92
+validation:
+  project_state: PASS
+  project_status: VALID
+  diff_check: PASS
+  compileall: PASS
+  pytest: BLOCKED_ENV_NO_PYTEST
+forbidden_until_commit:
+  - any_real_r6_runner_or_training
+  - any_outer_test_read
+  - any_calibration_read
+  - any_heldout_metric_or_paper_outcome
+  - gate_a_or_gate_b
+  - a3_or_roamm
+  - modification_of_r0_r4_artifacts_or_task_history
+  - creation_of_a_research_branch
+next_after_commit: R6_IMPLEMENT_ARMS_AND_TESTS

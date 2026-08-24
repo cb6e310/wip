@@ -67,3 +67,23 @@ calibration, EQ-ANMA, Gate A/B, A3, ROAMM, or any held-out experiment.
 The next task is to create a new R6 author freeze on `main`. No R6 experiment
 may start before that freeze records its base commit, estimand, data-consumption
 scope, contracts, budget, and forbidden reads.
+
+## R6 author freeze committed on main
+
+The current remote baseline is `main@0a140bafabf9ec489547dda002f7613cafdfa4db`.
+The author approved creation of the R6 freeze, and this package records that
+protocol-only freeze as `R6_AUTHOR_FREEZE_COMMITTED`. The R4 outcome and every
+R0–R4 formal hash remain immutable; `TASKS.yaml` remains unchanged.
+
+Repository inspection found only synthetic R6 surfaces at this point:
+`02_code/src/methods/eq_anma.py`, `02_code/src/methods/direct_u_plus.py`, the
+synthetic benchmark and tests are present, while a real R6 runner and the
+`src/align`, `src/training`, and `src/retrieval` packages are absent. The
+freeze therefore has no real EEG reads, no outer/calibration reads, and no
+metrics. `compileall` is the available code check; pytest is blocked by the
+runtime missing the `pytest` module and must not be treated as a code failure.
+
+The SPEC and freeze artifact SHA are bound on `main`; experiment execution
+remains blocked until implementation. The only next task is
+`R6_IMPLEMENT_ARMS_AND_TESTS` on `main`; do not create a research branch and
+do not run held-out work before implementation and tests pass.
