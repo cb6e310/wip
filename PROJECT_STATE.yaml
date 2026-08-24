@@ -1,7 +1,8 @@
 schema_version: 1
 state_kind: branch_local_author_freeze
-updated_at: "2026-08-24T10:10:19+08:00"
+updated_at: "2026-08-24T20:22:11+08:00"
 updated_by: codex_r4_execution
+updated_by_run: 2026-08-24_008_v4_1_main_activation_and_author_approval
 
 project:
   name: trustworthy_subject_general_eeg_text_alignment
@@ -10,11 +11,17 @@ project:
   branch_name: research/real-sham-r4-orthogonal-inner
   base_commit: fbc54c7b90ffc1bbc07b55ffc3123d0421779104
   parent_branch: research/real-sham-r3-subject-balanced
-  active_protocol_spec: v4.1_R4ALIGN_R6_EQALIGN_MSP
-  active_protocol_spec_file: guide/EEG_Text_Bprime_Unified_Paper_Spec_v4_1_R6_EQALIGN_MSP_R4ALIGNED_2026-08-24.md
+  active_protocol_spec: v4.1_MAIN_APPROVED_R6_EQALIGN_MSP
+  active_protocol_spec_file: guide/EEG_Text_Bprime_Unified_Paper_Spec_v4_1_R6_EQALIGN_MSP_MAIN_APPROVED_2026-08-24.md
   alignment_case: CASE_A_BRANCH_LOCAL_R4
   alignment_status: ALIGNED_R4_BRANCH_LOCAL
-  r6_release: AUTHOR_REVIEW_REQUIRED
+  active_work_branch: main
+  future_work_branch: main
+  workflow_policy: MAIN_ONLY_AFTER_R4_MERGE
+  merged_from_branch: research/real-sham-r4-orthogonal-inner
+  merged_from_commit: e80862e943b9fbff7f5788dc109eefbf2c27a476
+  main_migration_status: DONE
+  r6_release: AUTHOR_APPROVED_PENDING_NEW_FREEZE
 
 scope:
   dataset: zuco_2_0
@@ -116,6 +123,16 @@ alignment_record:
   r6_design_freeze: BLOCKED
   forbidden_next_until_author_review: true
   branches_deleted: []
+  author_approval:
+    status: APPROVED
+    scope: R6_AUTHOR_FREEZE_ONLY
+    downstream_r4_outer_confirmation: NOT_APPROVED
+  merge_target_branch: main
+  merge_source_branch: research/real-sham-r4-orthogonal-inner
+  merge_source_commit: e80862e943b9fbff7f5788dc109eefbf2c27a476
+  merge_mode: FAST_FORWARD
+  future_work_branch: main
+  next_main_action: R6_AUTHOR_FREEZE_ON_MAIN
 
 do_not_do:
   - Read or score outer-test or calibration rows.

@@ -51,3 +51,19 @@ All R0-R4 formal artifacts, outcomes, hashes, and read counters remain
 unchanged. The next step remains `AUTHOR_REVIEW_ONLY`. An R6 author freeze may
 be created from this R4 HEAD only after explicit author approval; this
 reconciliation does not release R6 or any downstream research task.
+
+## Main activation and author approval (completed fast-forward)
+
+The author approved and Codex fast-forwarded the verified R4 branch
+`research/real-sham-r4-orthogonal-inner@e80862e943b9fbff7f5788dc109eefbf2c27a476`
+into `main`. The merge is safe only after confirming that `main` is an ancestor
+of the R4 commit; no merge commit, rebase, reset, or force update is allowed.
+
+After the fast-forward, `main` is the only future working branch. The R0–R4
+branches remain read-only historical audit references. The approval releases
+only `R6_AUTHOR_FREEZE_ON_MAIN`; it does not release R4 outer confirmation,
+calibration, EQ-ANMA, Gate A/B, A3, ROAMM, or any held-out experiment.
+
+The next task is to create a new R6 author freeze on `main`. No R6 experiment
+may start before that freeze records its base commit, estimand, data-consumption
+scope, contracts, budget, and forbidden reads.
