@@ -1,30 +1,43 @@
-# R3 author handoff — completed subject-balanced diagnostic
+# R4 author handoff — orthogonal conditional increment freeze
 
-R2 completed a valid negative geometry diagnostic. The exact raw and frozen
-latent bases both failed under strict M0; unlabeled full-covariance EA also
-failed as a transductive secondary. The seen-to-cross collapse is therefore
-not repaired by basis choice or whitening alone.
+R3 completed at commit fbc54c7b90ffc1bbc07b55ffc3123d0421779104
+with FAIL_R3_SUBJECT_BALANCED_INNER_DIAGNOSTIC. Its contract and output
+hashes were independently reproduced. It completed 60/60 ridge/V5 operations,
+read outer/calibration data 0/0 times, had no scope violations, and left all
+earlier outcomes immutable.
 
-R3 completed with outcome `FAIL_R3_SUBJECT_BALANCED_INNER_DIAGNOSTIC`. P1 used
-only supported fit rows to form `(subject_id,item_id)` groups, averaged EEG
-arithmetically within each group, and gave each group one ridge row. Subject ID
-was not a probe input. P0 and P1 used identical individual seen/cross scoring
-rows, identical vocabulary and the frozen four arms.
+The P1 subject-item mean reduced each fit cell from 6,053–8,624 observations to
+1,011–1,346 groups. Task1 cross semantic contrast changed from +0.0389076 to
+-0.127937; task2 changed from +0.0182842 to -0.0404971. Simple equal-group
+training therefore did not repair transfer and materially reduced effective
+training information.
 
-The run completed 60 ridge operations and 60 unique V5 ledgers: 6 P0 H-only,
-6 P1 H-only, 24 P0 probes and 24 P1 probes. Six fit-only group scopes contained
-1011--1346 groups from 6053--8624 supported fit observations. P0 reproduced the
-R2 M0/B0 subject values with maximum absolute difference `0.0`. Outer-test and
-calibration reads were `0/0`; scope violations were empty.
+R4 tests a different mechanism. The inherited joint ridge estimates H and EEG
+effects together in a high-dimensional model, although the scientific target is
+the EEG contribution conditional on H. R1's Y1 is not an orthogonal estimator:
+it builds one canonical item residual vocabulary, keeps H inside the EEG probe,
+and never residualizes EEG against H.
 
-Formal hashes:
+R4 uses source-subject-block cross-fitting to compute out-of-fold residuals
+Y0 - mY(H) and X_arm - mX_arm(H), fits each arm's residual EEG probe on those
+residuals, and scores unseen rows as
+mY_full(H) + beta_arm(X_arm - mX_arm_full(H)). Real and every sham receive
+the same algorithm, capacity, folds, rows, alpha, normalizer, and scoring rule.
 
-- contract: `04f67c0cc4762ee93eb13fbcb26e57c20a65e3ec57cdfbd0b2f5fe107f9b1f92`
-- JSON: `ccf89fb575c9bcd35a866ccf53c1d0f8fcc56bd9a17cffea3c1bb85261258812`
-- Markdown: `1822c9efa69496f089858c1f266d75b8e87b0e42faa2c709ec7a8976d8c06cc9`
-- V5 ledger: `417070b98346de0a3e9015922cc06afd32988d298f6b28b7110c766ffefa292d`
+This remains RESEARCH_DIAGNOSTIC_ONLY. Even a pass only releases author
+review for a separately frozen outer step. R4 itself must not read outer-test or
+calibration data and must not run direct u+, EQ-ANMA, A3, ROAMM, or a Gate.
 
-Neither task passed the frozen cross family and paired recovery rules. This is
-a valid negative inner diagnostic, not real-EEG increment or paper-level
-evidence. Parent/R0/R1/R2 outcomes and formal artifacts remain immutable. Stop
-for author review; outer confirmation was not started.
+R4 completed as `FAIL_R4_ORTHOGONAL_INNER_DIAGNOSTIC`. C1 did not pass either
+task: task1 cross semantic delta was +0.0388348 (CI95 -0.0465514 to
++0.122657, 9/15 positive) with paired recovery -0.0000728 (CI95 -0.0133054
+to +0.0126437, 7/15 positive); task2 cross semantic delta was +0.0152228
+(CI95 -0.0478296 to +0.0801269, 9/15 positive) with paired recovery
+-0.00306141 (CI95 -0.0125178 to +0.00810636, 3/15 positive).
+
+The run completed exactly 234 unique ridge operations with 54 final-scoring
+V5 ledgers and 180 nuisance ledgers. Held-out nuisance overlap, fallback,
+seen/cross nuisance reads, and outer/calibration reads were all zero. P0
+reproduced R3/P0 with maximum subject-level absolute error 0.0. Parent/R0-R3
+hashes remained unchanged and scope violations were empty. Stop at author
+review; no downstream task is released automatically.

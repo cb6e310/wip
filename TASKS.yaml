@@ -1,18 +1,14 @@
-R3_REAL_SHAM_SUBJECT_BALANCED_INNER_DIAGNOSTIC:
-  title: Inner-only source subject-item-balanced fit diagnostic
+R4_REAL_SHAM_ORTHOGONAL_INNER_DIAGNOSTIC:
+  title: Source-subject cross-fitted orthogonal conditional increment
   stage: research_branch
   status: DONE
   priority: 1
   prerequisites:
-    - origin/research/real-sham-r2-geometry-inner is a6fdf258ae89e4032e5e7afba61bba021fca186d
-    - R2 outcome is FAIL_R2_GEOMETRY_INNER_DIAGNOSTIC with no scope violation
-  methods:
-    P0_OBSERVATION_WEIGHTED:
-      definition: exact inherited pooled row-level ridge baseline
-      role: immutable baseline replication
-    P1_SUBJECT_ITEM_BALANCED:
-      definition: source-fit-only equal-weight group means by (subject_id,item_id)
-      role: sole inductive candidate
+    - origin/research/real-sham-r3-subject-balanced is fbc54c7b90ffc1bbc07b55ffc3123d0421779104
+    - R3 outcome is FAIL_R3_SUBJECT_BALANCED_INNER_DIAGNOSTIC with no scope violation
+  cells:
+    baseline: P0_JOINT_RIDGE_REPLICATION
+    candidate: C1_SUBJECT_BLOCK_ORTHOGONAL
   basis: B0_RAW_A1
   target: Y0_RAW_MINILM
   alignment: M0_STRICT_INDUCTIVE
@@ -22,53 +18,57 @@ R3_REAL_SHAM_SUBJECT_BALANCED_INNER_DIAGNOSTIC:
     inner_text_fold: t0
     inner_subject_folds: [s0, s1, s2]
     seed: 20260813
+    ridge_alpha: 1.0
+    temperature: 0.07
     arms:
       - real
       - trial_shuffle
       - within_trial_unit_assignment_shuffle
       - channel_block_permutation
-    common_observation_min_retention: 0.90
-  fit_group_rule:
-    grouping_key: [subject_id, item_id]
-    source_scope: fit_rows_only
-    aggregate: arithmetic_mean_of_finite_EEG_rows_per_group
-    group_weight: equal_per_group_in_ridge
-    H_and_target: canonical_item_values_for_each_group
-    scoring_rows: unchanged_individual_seen_and_cross_rows
-    no_seen_cross_group_creation: true
-  fit_budget:
-    h_only_p0_fits: 6
-    h_only_p1_fits: 6
-    p0_probe_fits: 24
-    p1_probe_fits: 24
-    total_ridge_operations: 60
-    unique_v5_ledgers: 60
+  cross_fit:
+    unit: source_subject
+    blocks_per_task_fold: 5
+    subjects_per_block: 2
+    assignment: sha256_seed_task_inner_cell_subject_then_consecutive_pairs
+    fit_subject_count: 10
+    heldout_subject_never_in_its_nuisance_fit: true
+  operation_budget:
+    p0_h_only: 6
+    p0_joint: 24
+    c1_oof_y_nuisance: 30
+    c1_oof_x_nuisance: 120
+    c1_full_y_nuisance: 6
+    c1_full_x_nuisance: 24
+    c1_residual_probe: 24
+    total: 234
+    final_scoring_v5_ledgers: 54
+    nuisance_ledgers: 180
     outer_test_reads: 0
     calibration_reads: 0
   acceptance:
-    - P0 and P1 run on 2 tasks x 3 inner folds x 4 arms with identical
-      scoring row identity and supported vocabulary.
-    - P1 groups are constructed only from fit rows, with no subject/item
-      grouping information from seen/cross rows entering the fit.
-    - Primary semantic contrast, family thresholds and paired recovery rules
-      are exactly inherited from R1/R2.
-    - P1 is the only candidate; P0 is baseline replication.
-    - Focused/related tests, compile, state/status, diff-check and all parent,
-      R0, R1 and R2 hash checks pass.
+    family_detection:
+      delta_semantic_ci_lower_gt_zero: true
+      positive_subjects_gte: 12
+      both_semantic_single_sham_point_estimates_gt_zero: true
+    paired_recovery_vs_p0:
+      ci_lower_gt_zero: true
+      positive_subjects_gte: 10
+    valid_pass_requires_both_family_and_recovery: true
   outcomes:
-    candidate_pass: PASS_R3_SUBJECT_BALANCED_INNER
-    no_candidate: FAIL_R3_SUBJECT_BALANCED_INNER_DIAGNOSTIC
-    contract_failure: INVALID_R3_SUBJECT_BALANCED_INNER_DIAGNOSTIC
+    both_tasks: PASS_R4_ORTHOGONAL_BOTH_TASKS
+    one_task: PASS_R4_ORTHOGONAL_LIMITED_ONE_TASK
+    no_task: FAIL_R4_ORTHOGONAL_INNER_DIAGNOSTIC
+    contract_failure: INVALID_R4_ORTHOGONAL_INNER_DIAGNOSTIC
   forbidden:
-    - Run outer confirmation, negative confirmation, A3, ROAMM, direct_u_plus,
-      EQ_ANMA, alignment or a Gate.
-    - Add a post-outcome weighting, group, basis, target or threshold variant.
+    - outer confirmation or negative confirmation
+    - F3, Y1, M1, new basis, new target, new seed, or tuning grid
+    - direct_u_plus, EQ_ANMA, A3, ROAMM, or Gate
   produces:
-    - artifacts/real_sham_r3_subject_balanced_contract.yaml
-    - 04_results/diagnostics/real_sham_r3_subject_balanced_inner.json
-    - 04_results/diagnostics/real_sham_r3_subject_balanced_inner.md
-    - 04_results/diagnostics/real_sham_r3_subject_balanced_inner_run_ledger.jsonl.gz
-    - runs/research/2026-08-24_005_v324_real_sham_r3_subject_balanced_freeze.md
-  completion_outcome: FAIL_R3_SUBJECT_BALANCED_INNER_DIAGNOSTIC
-  completed_by_run: 2026-08-24_005_v324_real_sham_r3_subject_balanced_inner
+    - artifacts/real_sham_r4_orthogonal_contract.yaml
+    - 04_results/diagnostics/real_sham_r4_orthogonal_inner.json
+    - 04_results/diagnostics/real_sham_r4_orthogonal_inner.md
+    - 04_results/diagnostics/real_sham_r4_orthogonal_inner_run_ledger.jsonl.gz
+    - runs/research/2026-08-24_006_v325_real_sham_r4_orthogonal_freeze.md
+  completion_outcome: FAIL_R4_ORTHOGONAL_INNER_DIAGNOSTIC
+  completed_by_run: 2026-08-24_006_v325_real_sham_r4_orthogonal_inner
   scope_violations: []

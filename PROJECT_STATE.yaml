@@ -1,22 +1,22 @@
 schema_version: 1
 state_kind: branch_local_author_freeze
-updated_at: "2026-08-24T09:18:03+08:00"
-updated_by: 2026-08-24_005_v324_real_sham_r3_subject_balanced_inner
+updated_at: "2026-08-24T10:10:19+08:00"
+updated_by: codex_r4_execution
 
 project:
   name: trustworthy_subject_general_eeg_text_alignment
   parent_spec: v3.20
-  branch_spec: v3.24_REAL_SHAM_R3_SUBJECT_BALANCED_INNER
-  branch_name: research/real-sham-r3-subject-balanced
-  base_commit: a6fdf258ae89e4032e5e7afba61bba021fca186d
-  parent_branch: research/real-sham-r2-geometry-inner
+  branch_spec: v3.25_REAL_SHAM_R4_ORTHOGONAL_INNER
+  branch_name: research/real-sham-r4-orthogonal-inner
+  base_commit: fbc54c7b90ffc1bbc07b55ffc3123d0421779104
+  parent_branch: research/real-sham-r3-subject-balanced
 
 scope:
   dataset: zuco_2_0
   research_question: >-
-    Does observation-frequency and subject/item imbalance in the pooled fit
-    cause the seen-to-cross collapse, and does source-only subject-item
-    balancing restore real-minus-semantic-sham evidence?
+    After subject-block cross-fitted partialling-out of H from both Y0 and
+    every EEG arm, does residual real EEG provide stable unseen-subject
+    incremental evidence over matched semantic shams?
   evidence_grade: RESEARCH_DIAGNOSTIC_ONLY
   outer_test_reads_allowed: false
   calibration_reads_allowed: false
@@ -27,64 +27,89 @@ immutable_parent_outcomes:
   real_a1_recovery: FAIL_A1R_RECOVERY
   run_032: INVALID_A1_MEASUREMENT_VALIDITY_AUDIT
   synthetic_eq_anma: FAIL_EQ_ANMA_SYNTHETIC_ADVANTAGE
+  r1: FAIL_R1_REAL_SHAM_INNER_DIAGNOSTIC
+  r2: FAIL_R2_GEOMETRY_INNER_DIAGNOSTIC
+  r3: FAIL_R3_SUBJECT_BALANCED_INNER_DIAGNOSTIC
   outer_negative_confirmation: READY_NOT_RUN
   a3: UNFINISHED
   roamm: DEFERRED
 
-immutable_r0_r1_r2:
-  r0_commit: ec7ced2708fe68ae8614b6b89b03256d88d1b541
-  r0_outcome: PASS_REAL_SHAM_RESCUE_FREEZE
-  r1_commit: 012590ff1bc9c421644168a555511715bb30ec4a
-  r1_outcome: FAIL_R1_REAL_SHAM_INNER_DIAGNOSTIC
-  r1_contract_sha256: 50a4d1ebf44af415a0de69ec66e4fe56bcaeb21acf70d262cfd80a59454779ed
-  r2_commit: a6fdf258ae89e4032e5e7afba61bba021fca186d
-  r2_outcome: FAIL_R2_GEOMETRY_INNER_DIAGNOSTIC
-  r2_contract_sha256: cb28e85029ec01dff3961e101a42d00672155ac7258641a077bf4bd6cf6eee78
-  r2_json_sha256: 6aca8e2be1e062092a3ca7a4133cacd179e0fd73926240bd48739aedaa51426b
+verified_parent:
+  r3_branch_head: fbc54c7b90ffc1bbc07b55ffc3123d0421779104
+  r3_parent_commit: a6fdf258ae89e4032e5e7afba61bba021fca186d
+  r3_contract_sha256: 04f67c0cc4762ee93eb13fbcb26e57c20a65e3ec57cdfbd0b2f5fe107f9b1f92
+  r3_json_sha256: ccf89fb575c9bcd35a866ccf53c1d0f8fcc56bd9a17cffea3c1bb85261258812
+  r3_markdown_sha256: 1822c9efa69496f089858c1f266d75b8e87b0e42faa2c709ec7a8976d8c06cc9
+  r3_ledger_sha256: 417070b98346de0a3e9015922cc06afd32988d298f6b28b7110c766ffefa292d
 
 current_task:
-  id: R3_REAL_SHAM_SUBJECT_BALANCED_INNER_DIAGNOSTIC
+  id: R4_REAL_SHAM_ORTHOGONAL_INNER_DIAGNOSTIC
   status: DONE
-  outcome: FAIL_R3_SUBJECT_BALANCED_INNER_DIAGNOSTIC
-  recommended_next: AUTHOR_REVIEW_ONLY
+  outcome: FAIL_R4_ORTHOGONAL_INNER_DIAGNOSTIC
+  next_if_valid_completion: AUTHOR_REVIEW_ONLY
   forbidden_next_until_author_review: true
 
-execution_counts:
-  h_only_p0_fits: 6
-  h_only_p1_fits: 6
-  p0_probe_fits: 24
-  p1_probe_fits: 24
-  total_ridge_operations: 60
-  unique_v5_ledgers: 60
-  group_scope_count: 6
+execution_budget:
+  task_fold_cells: 6
+  source_subject_blocks_per_cell: 5
+  p0_h_only_fits: 6
+  p0_joint_probe_fits: 24
+  c1_oof_y_nuisance_fits: 30
+  c1_oof_x_nuisance_fits: 120
+  c1_full_y_nuisance_fits: 6
+  c1_full_x_nuisance_fits: 24
+  c1_residual_probe_fits: 24
+  total_ridge_operations: 234
+  final_scoring_v5_ledgers: 54
+  nuisance_ledgers: 180
+  total_unique_operation_ledgers: 234
   outer_test_reads: 0
   calibration_reads: 0
 
-group_audit:
-  fit_rows_only: true
-  subject_id_input_to_probe: false
-  seen_cross_rows_used_for_groups_or_weights: false
-  same_individual_scoring_rows_p0_p1: true
-  p0_r2_baseline_maximum_subject_difference: 0.0
-  task1_group_counts: [1054, 1263, 1011]
-  task2_group_counts: [1346, 1162, 1202]
+execution_counts:
+  p0_h_only_fits: 6
+  p0_joint_probe_fits: 24
+  c1_oof_y_nuisance_fits: 30
+  c1_oof_x_nuisance_fits: 120
+  c1_full_y_nuisance_fits: 6
+  c1_full_x_nuisance_fits: 24
+  c1_residual_probe_fits: 24
+  total_ridge_operations: 234
+  final_scoring_v5_ledgers: 54
+  nuisance_ledgers: 180
+  total_unique_operation_ledgers: 234
+  outer_test_reads: 0
+  calibration_reads: 0
+
+orthogonal_audit:
+  task_fold_scopes: 6
+  blocks_per_scope: 5
+  subjects_per_block: 2
+  heldout_fit_overlap_count: 0
+  fit_subject_oof_coverage_exactly_once: true
+  m_y_shared_across_arms: true
+  m_x_arm_symmetric_contract: true
+  residual_probe_input_dimension: 840
+  residual_probe_appends_h: false
+  query_rows_used_for_fit: false
+  p0_r3_maximum_subject_absolute_error: 0.0
 
 formal_outputs:
-  contract_sha256: 04f67c0cc4762ee93eb13fbcb26e57c20a65e3ec57cdfbd0b2f5fe107f9b1f92
-  json_sha256: ccf89fb575c9bcd35a866ccf53c1d0f8fcc56bd9a17cffea3c1bb85261258812
-  markdown_sha256: 1822c9efa69496f089858c1f266d75b8e87b0e42faa2c709ec7a8976d8c06cc9
-  ledger_sha256: 417070b98346de0a3e9015922cc06afd32988d298f6b28b7110c766ffefa292d
+  contract_sha256: f563e5c6d22ebf5417e63a49acde7f36dc31180d67ea1c7c8df05c8cb9829069
+  json_sha256: a19be6a03fd6bbcc9ee85c9f614049402874255d306cd3acc8cb55e4478f4ac2
+  markdown_sha256: 6ca641b33166e4031e1136b60edfe3533434b6ccb4f0932c0118e19ac46baca5
+  ledger_sha256: d502561fb442ee26185859919cbdfac6a73131a3ccdaeb5afec56fbc394d171d
 
 scope_violations: []
 
-last_run: runs/research/2026-08-24_005_v324_real_sham_r3_subject_balanced_freeze.md
-
 do_not_do:
   - Read or score outer-test or calibration rows.
-  - Use seen/cross rows to create fit groups, weights, vocabulary or thresholds.
-  - Use subject identity as a probe input; it is only a fit-row grouping key.
-  - Change parent splits, record IDs, seed 20260813, alpha 1.0, temperature
-    0.07, support rules, sham permutations or text encoder revision.
-  - Add F3_EVENT_LOCKED, Y1 residual, M1 EA, new basis, new seed or new
-    post-outcome candidate.
-  - Modify or relabel parent, R0, R1 or R2 formal artifacts.
+  - Use seen/cross rows to create cross-fit blocks, fit nuisance models, select
+    support, tune models, set thresholds, or choose an outcome.
+  - Change basis, target, split, seed, alpha, temperature, support, sham, or
+    normalizer contracts.
+  - Append H to the C1 residual probe input.
+  - Give real EEG a different nuisance model class, fold, capacity, or scoring
+    rule from any sham arm.
+  - Add a tuning grid, new feature, new seed, or post-outcome candidate.
+  - Modify or relabel parent/R0/R1/R2/R3 formal artifacts.

@@ -91,6 +91,7 @@ BRANCH_LOCAL_PARENT_OUTCOMES = {
 R1_BRANCH_SPEC = "v3.22_REAL_SHAM_R1_INNER_DIAGNOSTIC"
 R2_BRANCH_SPEC = "v3.23_REAL_SHAM_R2_GEOMETRY_INNER"
 R3_BRANCH_SPEC = "v3.24_REAL_SHAM_R3_SUBJECT_BALANCED_INNER"
+R4_BRANCH_SPEC = "v3.25_REAL_SHAM_R4_ORTHOGONAL_INNER"
 R1_LEGAL_OUTCOMES = {
     "PASS_R1_BOTH_TASKS",
     "PASS_R1_LIMITED_ONE_TASK",
@@ -138,6 +139,30 @@ R3_FORMAL_PATHS = {
     "json_sha256": "04_results/diagnostics/real_sham_r3_subject_balanced_inner.json",
     "markdown_sha256": "04_results/diagnostics/real_sham_r3_subject_balanced_inner.md",
     "ledger_sha256": "04_results/diagnostics/real_sham_r3_subject_balanced_inner_run_ledger.jsonl.gz",
+}
+R4_LEGAL_OUTCOMES = {
+    "PASS_R4_ORTHOGONAL_BOTH_TASKS",
+    "PASS_R4_ORTHOGONAL_LIMITED_ONE_TASK",
+    "FAIL_R4_ORTHOGONAL_INNER_DIAGNOSTIC",
+    "INVALID_R4_ORTHOGONAL_INNER_DIAGNOSTIC",
+}
+R4_FORMAL_PATHS = {
+    "contract_sha256": "artifacts/real_sham_r4_orthogonal_contract.yaml",
+    "json_sha256": "04_results/diagnostics/real_sham_r4_orthogonal_inner.json",
+    "markdown_sha256": "04_results/diagnostics/real_sham_r4_orthogonal_inner.md",
+    "ledger_sha256": "04_results/diagnostics/real_sham_r4_orthogonal_inner_run_ledger.jsonl.gz",
+}
+R4_PARENT_OUTCOMES = {
+    "real_a1_admission": "FAIL_A1_ADMISSION",
+    "real_a1_recovery": "FAIL_A1R_RECOVERY",
+    "run_032": "INVALID_A1_MEASUREMENT_VALIDITY_AUDIT",
+    "synthetic_eq_anma": "FAIL_EQ_ANMA_SYNTHETIC_ADVANTAGE",
+    "r1": "FAIL_R1_REAL_SHAM_INNER_DIAGNOSTIC",
+    "r2": "FAIL_R2_GEOMETRY_INNER_DIAGNOSTIC",
+    "r3": "FAIL_R3_SUBJECT_BALANCED_INNER_DIAGNOSTIC",
+    "outer_negative_confirmation": "READY_NOT_RUN",
+    "a3": "UNFINISHED",
+    "roamm": "DEFERRED",
 }
 
 
@@ -640,10 +665,147 @@ def _validate_r3_branch_local_freeze(
     return errors
 
 
+def _validate_r4_branch_local_freeze(
+    root: Path, state: dict[str, Any], tasks: dict[str, Any]
+) -> list[str]:
+    """Validate the v3.25 source-subject cross-fitted orthogonal diagnostic."""
+
+    errors: list[str] = []
+    project = state.get("project", {})
+    expected_project = {
+        "parent_spec": "v3.20",
+        "branch_spec": R4_BRANCH_SPEC,
+        "branch_name": "research/real-sham-r4-orthogonal-inner",
+        "base_commit": "fbc54c7b90ffc1bbc07b55ffc3123d0421779104",
+        "parent_branch": "research/real-sham-r3-subject-balanced",
+    }
+    for field, expected in expected_project.items():
+        if project.get(field) != expected:
+            errors.append(f"STATE_SPEC_CONFLICT: project.{field} != {expected!r}")
+    required_paths = (
+        "guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_25_2026-08-24.md",
+        "artifacts/real_sham_r4_freeze.yaml",
+        "artifacts/real_sham_r4_orthogonal_contract_TEMPLATE.yaml",
+        "artifacts/real_sham_r4_orthogonal_contract.yaml",
+    )
+    for required in required_paths:
+        if not (root / required).is_file():
+            errors.append(f"missing R4 branch freeze artifact: {required}")
+    if state.get("immutable_parent_outcomes") != R4_PARENT_OUTCOMES:
+        errors.append("STATE_SPEC_CONFLICT: immutable parent outcomes changed")
+    verified = state.get("verified_parent", {})
+    expected_parent = {
+        "r3_branch_head": "fbc54c7b90ffc1bbc07b55ffc3123d0421779104",
+        "r3_parent_commit": "a6fdf258ae89e4032e5e7afba61bba021fca186d",
+        "r3_contract_sha256": "04f67c0cc4762ee93eb13fbcb26e57c20a65e3ec57cdfbd0b2f5fe107f9b1f92",
+        "r3_json_sha256": "ccf89fb575c9bcd35a866ccf53c1d0f8fcc56bd9a17cffea3c1bb85261258812",
+        "r3_markdown_sha256": "1822c9efa69496f089858c1f266d75b8e87b0e42faa2c709ec7a8976d8c06cc9",
+        "r3_ledger_sha256": "417070b98346de0a3e9015922cc06afd32988d298f6b28b7110c766ffefa292d",
+    }
+    for field, expected in expected_parent.items():
+        if verified.get(field) != expected:
+            errors.append(f"STATE_SPEC_CONFLICT: verified_parent.{field} changed")
+    scope = state.get("scope", {})
+    expected_scope = {
+        "evidence_grade": "RESEARCH_DIAGNOSTIC_ONLY",
+        "outer_test_reads_allowed": False,
+        "calibration_reads_allowed": False,
+        "alignment_scope": "M0_STRICT_INDUCTIVE_ONLY",
+    }
+    for field, expected in expected_scope.items():
+        if scope.get(field) != expected:
+            errors.append(f"R4 scope.{field} must be {expected!r}")
+    if set(tasks) != {"R4_REAL_SHAM_ORTHOGONAL_INNER_DIAGNOSTIC"}:
+        errors.append("R4 TASKS.yaml must contain exactly its frozen task")
+        return errors
+    task = tasks["R4_REAL_SHAM_ORTHOGONAL_INNER_DIAGNOSTIC"]
+    if not isinstance(task, dict):
+        return errors + ["R4 task entry must be a mapping"]
+    for field in ("title", "stage", "status", "prerequisites", "produces"):
+        if field not in task:
+            errors.append(f"R4 task missing field {field}")
+    if task.get("status") not in {"READY", "DONE"}:
+        errors.append(f"R4 task has illegal status {task.get('status')!r}")
+    if not isinstance(task.get("prerequisites"), list):
+        errors.append("R4 prerequisites must be a list")
+    current = state.get("current_task", {})
+    if current.get("id") != "R4_REAL_SHAM_ORTHOGONAL_INNER_DIAGNOSTIC":
+        errors.append("current_task.id must be R4 orthogonal diagnostic")
+    if current.get("status") != task.get("status"):
+        errors.append("current_task.status does not match R4 task status")
+    if current.get("forbidden_next_until_author_review") is not True:
+        errors.append("outer confirmation must remain forbidden until author review")
+
+    if task.get("status") == "DONE":
+        outcome = task.get("completion_outcome")
+        if outcome not in R4_LEGAL_OUTCOMES:
+            errors.append(f"DONE R4 has illegal outcome {outcome!r}")
+        if current.get("outcome") != outcome:
+            errors.append("current_task.outcome does not match R4 task outcome")
+        if not task.get("completed_by_run"):
+            errors.append("DONE R4 requires completed_by_run")
+        produced = task.get("produces", [])
+        if not isinstance(produced, list) or not produced:
+            errors.append("DONE R4 requires produced artifacts")
+        else:
+            for artifact in produced:
+                if not (root / artifact).is_file():
+                    errors.append(f"R4 missing DONE artifact {artifact}")
+        expected_counts = {
+            "p0_h_only_fits": 6,
+            "p0_joint_probe_fits": 24,
+            "c1_oof_y_nuisance_fits": 30,
+            "c1_oof_x_nuisance_fits": 120,
+            "c1_full_y_nuisance_fits": 6,
+            "c1_full_x_nuisance_fits": 24,
+            "c1_residual_probe_fits": 24,
+            "total_ridge_operations": 234,
+            "final_scoring_v5_ledgers": 54,
+            "nuisance_ledgers": 180,
+            "total_unique_operation_ledgers": 234,
+            "outer_test_reads": 0,
+            "calibration_reads": 0,
+        }
+        execution = state.get("execution_counts", {})
+        for field, expected in expected_counts.items():
+            if execution.get(field) != expected:
+                errors.append(f"R4 execution_counts.{field} must be {expected}")
+        audit = state.get("orthogonal_audit", {})
+        expected_audit = {
+            "task_fold_scopes": 6,
+            "blocks_per_scope": 5,
+            "subjects_per_block": 2,
+            "heldout_fit_overlap_count": 0,
+            "fit_subject_oof_coverage_exactly_once": True,
+            "m_y_shared_across_arms": True,
+            "m_x_arm_symmetric_contract": True,
+            "residual_probe_input_dimension": 840,
+            "residual_probe_appends_h": False,
+            "query_rows_used_for_fit": False,
+        }
+        for field, expected in expected_audit.items():
+            if audit.get(field) != expected:
+                errors.append(f"R4 orthogonal_audit.{field} must be {expected!r}")
+        if state.get("scope_violations") != [] or task.get("scope_violations") != []:
+            errors.append("DONE R4 requires zero scope violations")
+        recorded_hashes = state.get("formal_outputs", {})
+        for field, relative in R4_FORMAL_PATHS.items():
+            digest = recorded_hashes.get(field)
+            if not isinstance(digest, str) or len(digest) != 64:
+                errors.append(f"R4 formal_outputs.{field} must be SHA-256")
+                continue
+            path = root / relative
+            if path.is_file() and _sha256_file(path) != digest:
+                errors.append(f"R4 formal output hash changed: {relative}")
+    return errors
+
+
 def _validate_branch_local_freeze(
     root: Path, state: dict[str, Any], tasks: dict[str, Any]
 ) -> list[str]:
     branch_spec = state.get("project", {}).get("branch_spec")
+    if branch_spec == R4_BRANCH_SPEC:
+        return _validate_r4_branch_local_freeze(root, state, tasks)
     if branch_spec == R3_BRANCH_SPEC:
         return _validate_r3_branch_local_freeze(root, state, tasks)
     if branch_spec == R2_BRANCH_SPEC:

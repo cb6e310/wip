@@ -1,0 +1,77 @@
+schema_version: 1
+freeze_id: v325_r4_real_sham_orthogonal_inner
+status: READY
+branch: research/real-sham-r4-orthogonal-inner
+base_branch: research/real-sham-r3-subject-balanced
+base_commit: fbc54c7b90ffc1bbc07b55ffc3123d0421779104
+evidence_grade: RESEARCH_DIAGNOSTIC_ONLY
+governing_spec: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_25_2026-08-24.md
+task: R4_REAL_SHAM_ORTHOGONAL_INNER_DIAGNOSTIC
+immutable_r3:
+  outcome: FAIL_R3_SUBJECT_BALANCED_INNER_DIAGNOSTIC
+  contract_sha256: 04f67c0cc4762ee93eb13fbcb26e57c20a65e3ec57cdfbd0b2f5fe107f9b1f92
+  json_sha256: ccf89fb575c9bcd35a866ccf53c1d0f8fcc56bd9a17cffea3c1bb85261258812
+  markdown_sha256: 1822c9efa69496f089858c1f266d75b8e87b0e42faa2c709ec7a8976d8c06cc9
+  ledger_sha256: 417070b98346de0a3e9015922cc06afd32988d298f6b28b7110c766ffefa292d
+scope:
+  tasks: [task1_nr, task2_tsr]
+  inner_subject_folds: [s0, s1, s2]
+  inner_text_fold: t0
+  outer_base_cell: outer_s0_t0
+  basis: B0_RAW_A1
+  target: Y0_RAW_MINILM
+  alignment: M0_STRICT_INDUCTIVE
+  seed: 20260813
+  ridge_alpha: 1.0
+  temperature: 0.07
+  arms:
+    - real
+    - trial_shuffle
+    - within_trial_unit_assignment_shuffle
+    - channel_block_permutation
+methods:
+  baseline: P0_JOINT_RIDGE_REPLICATION
+  sole_candidate: C1_SUBJECT_BLOCK_ORTHOGONAL
+cross_fit:
+  unit: source_subject
+  fit_subjects_per_cell: 10
+  blocks_per_cell: 5
+  subjects_per_block: 2
+  assignment: SHA256_20260813_task_inner_cell_subject_then_consecutive_pairs
+  nuisance_y: H_to_Y0
+  nuisance_x: H_to_matching_arm_EEG
+  residual_probe: X_tilde_arm_to_Y_tilde_without_H
+  full_scoring_query: mY_full_H_plus_beta_arm_X_minus_mX_arm_full_H
+operation_budget:
+  p0_h_only: 6
+  p0_joint: 24
+  c1_oof_y_nuisance: 30
+  c1_oof_x_nuisance: 120
+  c1_full_y_nuisance: 6
+  c1_full_x_nuisance: 24
+  c1_residual_probe: 24
+  total_ridge_operations: 234
+  final_scoring_v5_ledgers: 54
+  nuisance_ledgers: 180
+  total_unique_operation_ledgers: 234
+  outer_test_reads: 0
+  calibration_reads: 0
+acceptance:
+  family_ci_lower_gt_zero: true
+  family_positive_subjects_gte: 12
+  both_semantic_single_sham_estimates_gt_zero: true
+  recovery_ci_lower_gt_zero: true
+  recovery_positive_subjects_gte: 10
+  family_and_recovery_both_required: true
+forbidden:
+  - outer_confirmation
+  - calibration
+  - F3_EVENT_LOCKED
+  - Y1_H_RESIDUAL_MINILM
+  - M1_EA
+  - new_basis_target_seed_or_tuning_grid
+  - direct_u_plus
+  - EQ_ANMA
+  - A3
+  - ROAMM
+  - Gate_A_or_B
