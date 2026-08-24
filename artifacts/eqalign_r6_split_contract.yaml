@@ -1,0 +1,98 @@
+schema_version: 1
+contract_id: v4_1_r6_split_reconciliation_main
+status: DONE
+task: R6_SPLIT_RECONCILIATION
+base_branch: main
+base_commit: a4a3d3c007639029c8d57d4b1700cdd00587e307
+governing_spec:
+  path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v4_1_R6SPLIT_RECONCILE_READY_MAIN_2026-08-24.md
+  sha256: 2d2b584766ab99f4b50dd48dfcb20e0154433081f063cda38fc6833b224850af
+parent_contract:
+  implementation_contract: artifacts/eqalign_r6_implementation_contract.yaml
+  implementation_contract_sha256: e8b4942bfb1a9fa25db6196d36a0f74d592f1759b11e7e216a4641e3c7518544
+frozen_r6_shape:
+  dataset: zuco_2_0
+  tasks: [task1_nr, task2_tsr]
+  outer_split: leave_subject_and_stimulus_out
+  subject_folds: 6
+  text_folds: 3
+  outer_cells_per_task: 18
+  inner_split: task_global_3x3_per_outer_cell
+  inner_cells_per_outer_cell: 9
+  seed: 20260813
+old_artifacts_immutable:
+  outer:
+    path: 01_data_protocol/splits/zuco_2_0_outer_folds.json
+    expected_sha256: 20aedfd56c7c5ee41a491e5b5531ef77728344808d42ba45d72d7e30250cffa6
+    expected_shape: task_local_6x5
+  inner:
+    path: 01_data_protocol/splits/zuco_2_0_inner_folds.json
+    expected_sha256: 0271aba0ae9627f35e281029a8a95390513c1e92c8010e8a2795171f837575d7
+    expected_shape: 30_outer_cells_task_local_inner
+r6_outputs:
+  outer: 01_data_protocol/splits/eqalign_r6_zuco_2_0_outer_folds.json
+  inner: 01_data_protocol/splits/eqalign_r6_zuco_2_0_inner_folds.json
+  support_audit: 04_results/audits/eqalign_r6_zuco2_inner_split_support.json
+  output_hashes:
+    outer:
+      physical_sha256: 445e640239cff4cbbdb9fd0a81e6cdc8d9e0e1e1a698df4235b6382fb7637794
+      canonical_payload_sha256: b5664601b34eded841fe87ff04619436115f97c2dcd7e283cb9d6d18630bcc6f
+      config_hash: a1e22801798847808982c9bb2727f3bcc20a5ca9c0edb33adbec311bbbf69441
+    inner:
+      physical_sha256: 1b609a7e4a62c66f8b1a2127a94ec4ee42793521d7accad40178eb5cde54b40d
+      canonical_payload_sha256: 472e0ad970e02d41edfdf2cdbb12147a4264aa980c5ac4241f0bf0032b629034
+      config_hash: 0715c342946e3cb84a23e65fdbb67d046a921c7d65fd0d6a9c15f6a22d001d9a
+    support_audit:
+      physical_sha256: 055be044f222ae38667d5dd3da3828f1901a890f1448d8215c067c960d105d57
+      canonical_payload_sha256: f6d1a8f5d85f1a091c45b815f4f3edfea16d8685eebd6aa0a556ca930552d374
+      config_hash: 0715c342946e3cb84a23e65fdbb67d046a921c7d65fd0d6a9c15f6a22d001d9a
+source_manifests:
+  construction_source_manifest_sha256: 8ddfa1999748b50aabefe21a04f695961efc333f401df44e2a804fb6578160c5
+  dataset_source_manifest_sha256: 31e38d255f80c3c14c2f00b74cde649afb986999f7285a7a8fc8ceee2972f74f
+  semantic_source_manifest_sha256: c3ce71ddb56b5aed0066d35ce635c88f89144ea063031ed9d387be5325aba43f
+allowed_reads:
+  source_slot_join: true
+  summary_sequence_and_numeric_leaf_schema: true
+  semantic_item_identity_ledger: true
+  eeg_numeric_values: false
+  text_encoder: false
+  training: false
+  retrieval_metric: false
+  outer_test_rows: false
+  calibration_rows: false
+  r6_real_eeg_value_reads: 0
+  outer_test_reads: 0
+  calibration_reads: 0
+required_assertions:
+  - exactly_18_outer_cells_per_task
+  - subject_folds_0_to_5_and_text_folds_0_to_2
+  - exactly_9_inner_cells_per_outer_cell
+  - train_validation_held_out_only_partition_outer_train
+  - subject_stimulus_group_isolation
+  - outer_test_isolation
+  - forward_reverse_canonical_byte_identity
+  - old_6x5_artifacts_byte_identical_before_after
+  - tasks_yaml_unchanged
+  - r0_r4_formal_artifacts_unchanged
+forbidden_new_surfaces:
+  - inner_metric
+  - gamma_selection
+  - direct_selection
+  - real_r6_training_runner
+  - outer_or_calibration_output
+  - new_research_branch
+completion:
+  status: DONE
+  commit: SELF
+  remote_main_after_push: SAME_AS_SELF
+  selfcheck: PASS
+  pytest: PASS_5
+  project_state: PASS
+  project_status: VALID
+  diff_check: PASS
+  branches_deleted: []
+  transient_cleanup:
+    - __pycache__
+    - '*.pyc'
+    - .pytest_cache
+  next_task_if_valid: R6_INNER_SELECTION

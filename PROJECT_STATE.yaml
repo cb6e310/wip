@@ -1,8 +1,8 @@
 schema_version: 1
 state_kind: branch_local_author_freeze
-updated_at: "2026-08-24T22:07:02+08:00"
-updated_by: codex_r6_implementation
-updated_by_run: 2026-08-24_010_v4_1_r6_implementation_readiness
+updated_at: "2026-08-25T07:46:32+08:00"
+updated_by: codex_r6_split_reconciliation
+updated_by_run: 2026-08-24_011_v4_1_r6_split_reconciliation_readiness
 
 project:
   name: trustworthy_subject_general_eeg_text_alignment
@@ -11,8 +11,8 @@ project:
   branch_name: research/real-sham-r4-orthogonal-inner
   base_commit: fbc54c7b90ffc1bbc07b55ffc3123d0421779104
   parent_branch: research/real-sham-r3-subject-balanced
-  active_protocol_spec: v4.1_R6IMPLEMENT_READY_MAIN_R6_EQALIGN_MSP
-  active_protocol_spec_file: guide/EEG_Text_Bprime_Unified_Paper_Spec_v4_1_R6_EQALIGN_MSP_R6IMPLEMENT_READY_MAIN_2026-08-24.md
+  active_protocol_spec: v4.1_R6SPLIT_RECONCILE_READY_MAIN_R6_EQALIGN_MSP
+  active_protocol_spec_file: guide/EEG_Text_Bprime_Unified_Paper_Spec_v4_1_R6SPLIT_RECONCILE_READY_MAIN_2026-08-24.md
   alignment_case: CASE_A_BRANCH_LOCAL_R4
   alignment_status: ALIGNED_R4_BRANCH_LOCAL
   active_work_branch: main
@@ -30,6 +30,7 @@ project:
   r6_experiment_release: BLOCKED_UNTIL_INNER_SELECTION
   r6_implementation_task_status: DONE
   r6_implementation_base_commit: 125d72c9aad1dd2d3777d695123f17dc97138268
+  r6_implementation_commit: a4a3d3c007639029c8d57d4b1700cdd00587e307
 
 scope:
   dataset: zuco_2_0
@@ -141,6 +142,13 @@ alignment_record:
   merge_mode: FAST_FORWARD
   future_work_branch: main
   next_main_action: R6_INNER_SELECTION
+  historical_branches_retained_read_only:
+    - research/real-sham-r1-inner
+    - research/real-sham-r2-geometry-inner
+    - research/real-sham-r3-subject-balanced
+    - research/real-sham-r4-orthogonal-inner
+    - research/real-sham-rescue
+  transient_branches_deleted: []
 
 r6_author_freeze:
   task: R6_AUTHOR_FREEZE_ON_MAIN
@@ -185,8 +193,55 @@ r6_implementation:
   allowed_scope: protocol_contracts_and_synthetic_tests_only
   pytest_status: PASS_9
   selfcheck_status: PASS_9_OF_9
+  next_task: R6_SPLIT_RECONCILIATION
+  next_after_completion: R6_SPLIT_RECONCILIATION
+
+r6_split_reconciliation:
+  task: R6_SPLIT_RECONCILIATION
+  status: DONE
+  base_branch: main
+  base_commit: a4a3d3c007639029c8d57d4b1700cdd00587e307
+  commit: SELF
+  remote_main_after_push: SAME_AS_SELF
+  required_outer_shape: task_local_6x3
+  required_outer_cells_per_task: 18
+  required_inner_shape: task_global_3x3_per_outer_cell
+  existing_old_outer_artifact: 01_data_protocol/splits/zuco_2_0_outer_folds.json
+  existing_old_outer_sha256: 20aedfd56c7c5ee41a491e5b5531ef77728344808d42ba45d72d7e30250cffa6
+  existing_old_outer_shape: task_local_6x5
+  existing_old_inner_artifact: 01_data_protocol/splits/zuco_2_0_inner_folds.json
+  existing_old_inner_sha256: 0271aba0ae9627f35e281029a8a95390513c1e92c8010e8a2795171f837575d7
+  existing_old_artifacts_mutable: false
+  r6_new_artifacts:
+    - 01_data_protocol/splits/eqalign_r6_zuco_2_0_outer_folds.json
+    - 01_data_protocol/splits/eqalign_r6_zuco_2_0_inner_folds.json
+    - 04_results/audits/eqalign_r6_zuco2_inner_split_support.json
+  real_eeg_value_reads: 0
+  outer_test_reads: 0
+  calibration_reads: 0
+  inner_metrics_generated: false
+  training_started: false
+  governing_spec_sha256: 2d2b584766ab99f4b50dd48dfcb20e0154433081f063cda38fc6833b224850af
+  split_contract_sha256: 06154b6de9283bc23b3ddecfb4ddd8eebf6430cbd757111723ef93f8676585a3
+  outer_physical_sha256: 445e640239cff4cbbdb9fd0a81e6cdc8d9e0e1e1a698df4235b6382fb7637794
+  outer_canonical_sha256: b5664601b34eded841fe87ff04619436115f97c2dcd7e283cb9d6d18630bcc6f
+  inner_physical_sha256: 1b609a7e4a62c66f8b1a2127a94ec4ee42793521d7accad40178eb5cde54b40d
+  inner_canonical_sha256: 472e0ad970e02d41edfdf2cdbb12147a4264aa980c5ac4241f0bf0032b629034
+  support_audit_physical_sha256: 055be044f222ae38667d5dd3da3828f1901a890f1448d8215c067c960d105d57
+  support_audit_canonical_sha256: f6d1a8f5d85f1a091c45b815f4f3edfea16d8685eebd6aa0a556ca930552d374
+  source_manifest_sha256: 8ddfa1999748b50aabefe21a04f695961efc333f401df44e2a804fb6578160c5
+  pytest_status: PASS_5
+  selfcheck_status: PASS
   next_task: R6_INNER_SELECTION
-  next_after_completion: R6_INNER_SELECTION
+  next_if_valid_completion: R6_INNER_SELECTION
+  forbidden_until_completion:
+    - reuse_or_overwrite_old_6x5_split
+    - text_encoder_load
+    - eeg_feature_extraction
+    - model_training
+    - retrieval_metric
+    - outer_test_or_calibration_read
+    - gamma_or_direct_selection
 
 do_not_do:
   - Read or score outer-test or calibration rows.

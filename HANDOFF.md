@@ -110,3 +110,48 @@ checks. No real data loader, runner, training, retrieval, outer/calibration
 output, or held-out metric was added or used. The only next task is
 `R6_INNER_SELECTION`; real EEG, outer, calibration, Gate, A3, ROAMM, and
 paper-level operations remain blocked.
+
+## R6 split reconciliation readiness review (2026-08-24)
+
+Remote `origin/main` is now `a4a3d3c007639029c8d57d4b1700cdd00587e307`, the
+Codex commit that completed the R6 arm/controller/scope/ledger synthetic contract
+surface. The implementation record is valid and remains protocol-only; the real
+R6 runner is still absent.
+
+The next task cannot safely be inner selection yet. The R6 author freeze binds
+`K_S_out=6, K_T_out=3` (18 outer cells per task), while the repository's existing
+`01_data_protocol/splits/zuco_2_0_outer_folds.json` is the older v3.13 `6x5`
+artifact (30 cells/task, SHA256
+`20aedfd56c7c5ee41a491e5b5531ef77728344808d42ba45d72d7e30250cffa6`). Its paired
+`01_data_protocol/splits/zuco_2_0_inner_folds.json` is likewise tied to 30 outer
+cells (SHA256
+`0271aba0ae9627f35e281029a8a95390513c1e92c8010e8a2795171f837575d7`). Reusing
+either file would silently change the frozen R6 split and is therefore a
+`STATE_SPEC_CONFLICT`.
+
+The current action is `R6_SPLIT_RECONCILIATION`: add namespaced R6 6x3 outer and
+per-cell 3x3 inner artifacts, validate deterministic construction and complete
+isolation, and bind all hashes. The old 6x5 files, `TASKS.yaml`, and R0–R4 formal
+artifacts are immutable. No EEG values, text encoder, training, retrieval metric,
+outer/calibration reads, gamma selection, or DIRECT selection may occur. After
+the split contract passes, the only next task is `R6_INNER_SELECTION`.
+
+Branch policy remains `main` for all future work. The five R1–R4/rescue branches
+are historical audit references and must remain read-only; only transient
+worktrees, caches, `__pycache__`, `.pytest_cache`, and scratch output may be
+removed. There are no transient remote branches to delete in the checked remote
+state.
+
+## R6 split reconciliation completed
+
+Codex rebuilt the ZuCo source-slot panels with the frozen `seed=20260813`,
+`K_S_out=6`, and `K_T_out=3`, then constructed fixed task-global `3x3` inner
+cells for every outer cell. Both forward and reversed source order produced
+canonical-byte-identical outer, inner and support artifacts. The old v3.13
+6x5 split files, `TASKS.yaml`, and R0-R4 protected history remained unchanged.
+
+The standalone selfcheck passed a second full deterministic rebuild and pytest
+passed all five synthetic/adversarial split tests. No EEG numeric values, text
+encoder, training, retrieval metric, outer-test or calibration rows were read.
+The only next task is `R6_INNER_SELECTION`; it must be executed separately on
+`main` after this handoff is accepted.
