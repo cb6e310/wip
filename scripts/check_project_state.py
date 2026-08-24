@@ -89,6 +89,7 @@ BRANCH_LOCAL_PARENT_OUTCOMES = {
     "roamm": "DEFERRED",
 }
 R1_BRANCH_SPEC = "v3.22_REAL_SHAM_R1_INNER_DIAGNOSTIC"
+R2_BRANCH_SPEC = "v3.23_REAL_SHAM_R2_GEOMETRY_INNER"
 R1_LEGAL_OUTCOMES = {
     "PASS_R1_BOTH_TASKS",
     "PASS_R1_LIMITED_ONE_TASK",
@@ -112,6 +113,19 @@ R1_FORMAL_HASHES = {
         "04_results/diagnostics/real_sham_r1_inner_run_ledger.jsonl.gz",
         "28fc32b5103a1ba19b9c2cd2c724da5d7d3aff17f53f5ac72e3993e64db9314a",
     ),
+}
+R2_LEGAL_OUTCOMES = {
+    "PASS_R2_INDUCTIVE_GEOMETRY",
+    "PASS_R2_TRANSDUCTIVE_GEOMETRY_ONLY",
+    "FAIL_R2_GEOMETRY_INNER_DIAGNOSTIC",
+    "INVALID_R2_GEOMETRY_INNER_DIAGNOSTIC",
+}
+R2_FORMAL_PATHS = {
+    "contract_sha256": "artifacts/real_sham_r2_geometry_contract.yaml",
+    "json_sha256": "04_results/diagnostics/real_sham_r2_geometry_inner.json",
+    "markdown_sha256": "04_results/diagnostics/real_sham_r2_geometry_inner.md",
+    "ledger_sha256": "04_results/diagnostics/real_sham_r2_geometry_inner_run_ledger.jsonl.gz",
+    "transform_ledger_sha256": "04_results/diagnostics/real_sham_r2_geometry_inner_transform_ledger.jsonl.gz",
 }
 
 
@@ -377,10 +391,129 @@ def _validate_r1_branch_local_freeze(
     return errors
 
 
+def _validate_r2_branch_local_freeze(
+    root: Path, state: dict[str, Any], tasks: dict[str, Any]
+) -> list[str]:
+    """Validate the v3.23 R2 inner-only geometry diagnostic state."""
+
+    errors: list[str] = []
+    project = state.get("project", {})
+    expected_project = {
+        "parent_spec": "v3.20",
+        "branch_spec": R2_BRANCH_SPEC,
+        "branch_name": "research/real-sham-r2-geometry-inner",
+        "base_commit": "012590ff1bc9c421644168a555511715bb30ec4a",
+        "parent_branch": "research/real-sham-r1-inner",
+    }
+    for field, expected in expected_project.items():
+        if project.get(field) != expected:
+            errors.append(f"STATE_SPEC_CONFLICT: project.{field} != {expected!r}")
+    for required in (
+        "guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_23_2026-08-23.md",
+        "artifacts/real_sham_r2_freeze.yaml",
+    ):
+        if not (root / required).is_file():
+            errors.append(f"missing R2 branch freeze artifact: {required}")
+    if state.get("immutable_parent_outcomes") != BRANCH_LOCAL_PARENT_OUTCOMES:
+        errors.append("STATE_SPEC_CONFLICT: immutable parent outcomes changed")
+    expected_r0_r1 = {
+        "r0_commit": "ec7ced2708fe68ae8614b6b89b03256d88d1b541",
+        "r0_outcome": "PASS_REAL_SHAM_RESCUE_FREEZE",
+        "r0_contract_sha256": "89f9bc468f5bea0bafe127baa1e0a96ceb5ff1c9327aba89e3445d86ed683055",
+        "r1_commit": "012590ff1bc9c421644168a555511715bb30ec4a",
+        "r1_outcome": "FAIL_R1_REAL_SHAM_INNER_DIAGNOSTIC",
+        "r1_contract_sha256": "50a4d1ebf44af415a0de69ec66e4fe56bcaeb21acf70d262cfd80a59454779ed",
+        "r1_json_sha256": "610e40bf09959fb30f2a08f998b42148e9967168263a64c3ba37969194e964ff",
+    }
+    if state.get("immutable_r0_r1") != expected_r0_r1:
+        errors.append("STATE_SPEC_CONFLICT: immutable R0/R1 contract changed")
+    scope = state.get("scope", {})
+    expected_scope = {
+        "evidence_grade": "RESEARCH_DIAGNOSTIC_ONLY",
+        "outer_test_reads_allowed": False,
+        "calibration_reads_allowed": False,
+        "primary_alignment_scope": "M0_STRICT_INDUCTIVE",
+        "secondary_alignment_scope": "M1_UNLABELED_TRANSDUCTIVE_EA",
+    }
+    for field, expected in expected_scope.items():
+        if scope.get(field) != expected:
+            errors.append(f"R2 scope.{field} must be {expected!r}")
+    if set(tasks) != {"R2_REAL_SHAM_GEOMETRY_INNER_DIAGNOSTIC"}:
+        errors.append("R2 TASKS.yaml must contain exactly its frozen task")
+        return errors
+    task = tasks["R2_REAL_SHAM_GEOMETRY_INNER_DIAGNOSTIC"]
+    if not isinstance(task, dict):
+        return errors + ["R2 task entry must be a mapping"]
+    for field in ("title", "stage", "status", "prerequisites"):
+        if field not in task:
+            errors.append(f"R2 task missing field {field}")
+    if task.get("status") not in {"READY", "DONE"}:
+        errors.append(f"R2 task has illegal status {task.get('status')!r}")
+    if not isinstance(task.get("prerequisites"), list):
+        errors.append("R2 prerequisites must be a list")
+    current = state.get("current_task", {})
+    if current.get("id") != "R2_REAL_SHAM_GEOMETRY_INNER_DIAGNOSTIC":
+        errors.append("current_task.id must be R2_REAL_SHAM_GEOMETRY_INNER_DIAGNOSTIC")
+    if current.get("status") != task.get("status"):
+        errors.append("current_task.status does not match R2 task status")
+    if current.get("forbidden_next_until_author_review") is not True:
+        errors.append("outer confirmation must remain forbidden until author review")
+
+    if task.get("status") == "DONE":
+        outcome = task.get("completion_outcome")
+        if outcome not in R2_LEGAL_OUTCOMES:
+            errors.append(f"DONE R2 has illegal outcome {outcome!r}")
+        if current.get("outcome") != outcome:
+            errors.append("current_task.outcome does not match R2 task outcome")
+        if not task.get("completed_by_run"):
+            errors.append("DONE R2 requires completed_by_run")
+        produced = task.get("produces", [])
+        if not isinstance(produced, list) or not produced:
+            errors.append("DONE R2 requires produced artifacts")
+        else:
+            for artifact in produced:
+                if not (root / artifact).is_file():
+                    errors.append(f"R2 missing DONE artifact {artifact}")
+        expected_counts = {
+            "h_only_y0_fits": 6,
+            "geometry_probe_fits": 96,
+            "total_ridge_operations": 102,
+            "unique_v5_ledgers": 102,
+            "transform_ledger_rows": 300,
+            "outer_test_reads": 0,
+            "calibration_reads": 0,
+        }
+        execution = state.get("execution_counts", {})
+        for field, expected in expected_counts.items():
+            if execution.get(field) != expected:
+                errors.append(f"R2 execution_counts.{field} must be {expected}")
+        transform = state.get("transform_audit", {})
+        if transform.get("labels_used") is not False:
+            errors.append("R2 transform audit must record labels_used=false")
+        if transform.get("shared_across_arms") is not True:
+            errors.append("R2 transform audit must record shared_across_arms=true")
+        if transform.get("fallback_count") != 0:
+            errors.append("R2 transform audit must record zero fallback")
+        if state.get("scope_violations") != [] or task.get("scope_violations") != []:
+            errors.append("DONE R2 requires zero scope violations")
+        recorded_hashes = state.get("formal_outputs", {})
+        for field, relative in R2_FORMAL_PATHS.items():
+            digest = recorded_hashes.get(field)
+            if not isinstance(digest, str) or len(digest) != 64:
+                errors.append(f"R2 formal_outputs.{field} must be SHA-256")
+                continue
+            path = root / relative
+            if path.is_file() and _sha256_file(path) != digest:
+                errors.append(f"R2 formal output hash changed: {relative}")
+    return errors
+
+
 def _validate_branch_local_freeze(
     root: Path, state: dict[str, Any], tasks: dict[str, Any]
 ) -> list[str]:
     branch_spec = state.get("project", {}).get("branch_spec")
+    if branch_spec == R2_BRANCH_SPEC:
+        return _validate_r2_branch_local_freeze(root, state, tasks)
     if branch_spec == R1_BRANCH_SPEC:
         return _validate_r1_branch_local_freeze(root, state, tasks)
     return _validate_r0_branch_local_freeze(root, state, tasks)

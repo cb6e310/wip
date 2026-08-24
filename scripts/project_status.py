@@ -49,11 +49,34 @@ def _rank(task_id: str, tasks: dict) -> tuple:
 def _render_branch_local(state: dict, tasks: dict, errors: list[str]) -> str:
     current = state.get("current_task", {})
     parent = state.get("immutable_parent_outcomes", {})
+    branch_spec = state.get("project", {}).get("branch_spec")
+    is_r2 = branch_spec == "v3.23_REAL_SHAM_R2_GEOMETRY_INNER"
     is_r1 = (
-        state.get("project", {}).get("branch_spec")
-        == "v3.22_REAL_SHAM_R1_INNER_DIAGNOSTIC"
+        branch_spec == "v3.22_REAL_SHAM_R1_INNER_DIAGNOSTIC"
     )
-    if is_r1:
+    if is_r2:
+        execution = state.get("execution_counts", {})
+        if current.get("status") == "DONE":
+            boundary = (
+                "R2 inner-only geometry | ridge/V5="
+                f"{execution.get('total_ridge_operations')}/"
+                f"{execution.get('unique_v5_ledgers')} | M1 transforms="
+                f"{execution.get('transform_ledger_rows')} | outer/calibration reads="
+                f"{execution.get('outer_test_reads')}/{execution.get('calibration_reads')}"
+            )
+        else:
+            boundary = (
+                "R2 frozen budget | ridge/V5=102/102 (6 H-only + 96 probes) | "
+                "M1 transform scopes=300 | outer/calibration reads=0/0"
+            )
+        next_task = (
+            "AUTHOR_REVIEW_ONLY; no outer confirmation may start automatically."
+        )
+        forbidden = (
+            "F3, Y1, outer confirmation, calibration, M1 alignment training, "
+            "direct u+, EQ-ANMA, Gate A/B, A3, and ROAMM"
+        )
+    elif is_r1:
         execution = state.get("execution_counts", {})
         if current.get("status") == "DONE":
             boundary = (

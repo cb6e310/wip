@@ -1,0 +1,67 @@
+schema_version: 1
+task: R2_REAL_SHAM_GEOMETRY_INNER_DIAGNOSTIC
+run_id: 2026-08-23_004_v323_real_sham_r2_geometry_inner
+outcome_before_execution: READY
+branch: research/real-sham-r2-geometry-inner
+base_commit: 012590ff1bc9c421644168a555511715bb30ec4a
+parent_branch: research/real-sham-r1-inner
+evidence_grade: RESEARCH_DIAGNOSTIC_ONLY
+governing_spec:
+  path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v3_23_2026-08-23.md
+  status: BRANCH_LOCAL_AUTHOR_OVERLAY
+immutable_r1:
+  outcome: FAIL_R1_REAL_SHAM_INNER_DIAGNOSTIC
+  contract_sha256: 50a4d1ebf44af415a0de69ec66e4fe56bcaeb21acf70d262cfd80a59454779ed
+  json_sha256: 610e40bf09959fb30f2a08f998b42148e9967168263a64c3ba37969194e964ff
+scope:
+  dataset: zuco_2_0
+  tasks: [task1_nr, task2_tsr]
+  folds: [inner_s0_t0, inner_s1_t0, inner_s2_t0]
+  outer_base_cell: outer_s0_t0
+  seed: 20260813
+  ridge_alpha: 1.0
+  temperature: 0.07
+  target: Y0_RAW_MINILM
+  arms: [real, trial_shuffle, within_trial_unit_assignment_shuffle, channel_block_permutation]
+methods:
+  B0_RAW_A1:
+    dimension: 840
+    source: inherited A1 raw channel-major bandpower
+  B1_TOKEN_LOCAL_LATENT:
+    dimension: 384
+    source: exact frozen token_local_frozen_initial_latent seed 20260813
+  M0_STRICT_INDUCTIVE:
+    target_rows_used_for_transform: false
+  M1_UNLABELED_TRANSDUCTIVE_EA:
+    target_rows_used_for_transform: true
+    labels_used: false
+    transform_source: real_arm_EEG_values_only
+    shared_across_arms: true
+    paper_level_claim_allowed: false
+estimands:
+  primary: subject_first_real_minus_mean_semantic_shams
+  delta_semantic: real - mean(trial_shuffle, within_trial_unit_assignment_shuffle)
+  delta_legacy: real - mean(all_three_shams)
+  delta_channel: real - channel_block_permutation
+thresholds:
+  family_ci_lower_gt: 0.0
+  family_positive_subjects_gte: 12
+  recovery_ci_lower_gt: 0.0
+  recovery_positive_subjects_gte: 10
+fit_budget:
+  h_only_y0: 6
+  geometry_probes: 96
+  total_ridge_operations: 102
+  unique_v5_ledgers: 102
+  outer_test_reads: 0
+  calibration_reads: 0
+forbidden:
+  - F3_EVENT_LOCKED
+  - M1_alignment_training
+  - outer_confirmation
+  - calibration
+  - direct_u_plus
+  - EQ_ANMA
+  - A3
+  - ROAMM
+  - Gate_A_or_B

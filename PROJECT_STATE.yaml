@@ -1,26 +1,27 @@
 schema_version: 1
 state_kind: branch_local_author_freeze
-updated_at: "2026-08-22T16:00:00+08:00"
-updated_by: 2026-08-22_003_v322_real_sham_r1_inner
+updated_at: "2026-08-24T08:34:02+08:00"
+updated_by: 2026-08-23_004_v323_real_sham_r2_geometry_inner
 
 project:
   name: trustworthy_subject_general_eeg_text_alignment
   parent_spec: v3.20
-  branch_spec: v3.22_REAL_SHAM_R1_INNER_DIAGNOSTIC
-  branch_name: research/real-sham-r1-inner
-  base_commit: ec7ced2708fe68ae8614b6b89b03256d88d1b541
-  parent_branch: research/real-sham-rescue
+  branch_spec: v3.23_REAL_SHAM_R2_GEOMETRY_INNER
+  branch_name: research/real-sham-r2-geometry-inner
+  base_commit: 012590ff1bc9c421644168a555511715bb30ec4a
+  parent_branch: research/real-sham-r1-inner
 
 scope:
   dataset: zuco_2_0
   research_question: >-
-    Under the unchanged inner split and four-arm construction, can a
-    pre-frozen EEG frontend or fit-only text-residual target yield a positive,
+    Does subject-specific EEG geometry explain the seen-to-cross collapse, and
+    can a pre-frozen basis or unlabeled Euclidean alignment restore the
     cross-subject real-minus-semantic-sham increment?
   evidence_grade: RESEARCH_DIAGNOSTIC_ONLY
   outer_test_reads_allowed: false
   calibration_reads_allowed: false
-  alignment_scope: M0_STRICT_INDUCTIVE_ONLY
+  primary_alignment_scope: M0_STRICT_INDUCTIVE
+  secondary_alignment_scope: M1_UNLABELED_TRANSDUCTIVE_EA
 
 immutable_parent_outcomes:
   real_a1_admission: FAIL_A1_ADMISSION
@@ -31,47 +32,60 @@ immutable_parent_outcomes:
   a3: UNFINISHED
   roamm: DEFERRED
 
-immutable_r0:
-  commit: ec7ced2708fe68ae8614b6b89b03256d88d1b541
-  outcome: PASS_REAL_SHAM_RESCUE_FREEZE
-  contract_sha256: 89f9bc468f5bea0bafe127baa1e0a96ceb5ff1c9327aba89e3445d86ed683055
+immutable_r0_r1:
+  r0_commit: ec7ced2708fe68ae8614b6b89b03256d88d1b541
+  r0_outcome: PASS_REAL_SHAM_RESCUE_FREEZE
+  r0_contract_sha256: 89f9bc468f5bea0bafe127baa1e0a96ceb5ff1c9327aba89e3445d86ed683055
+  r1_commit: 012590ff1bc9c421644168a555511715bb30ec4a
+  r1_outcome: FAIL_R1_REAL_SHAM_INNER_DIAGNOSTIC
+  r1_contract_sha256: 50a4d1ebf44af415a0de69ec66e4fe56bcaeb21acf70d262cfd80a59454779ed
+  r1_json_sha256: 610e40bf09959fb30f2a08f998b42148e9967168263a64c3ba37969194e964ff
 
 current_task:
-  id: R1_REAL_SHAM_INNER_DIAGNOSTIC
+  id: R2_REAL_SHAM_GEOMETRY_INNER_DIAGNOSTIC
   status: DONE
-  outcome: FAIL_R1_REAL_SHAM_INNER_DIAGNOSTIC
+  outcome: FAIL_R2_GEOMETRY_INNER_DIAGNOSTIC
   recommended_next: AUTHOR_REVIEW_ONLY
   forbidden_next_until_author_review: true
 
 execution_counts:
   h_only_y0_fits: 6
-  y1_text_residualizer_fits: 6
-  eeg_probe_fits: 144
-  total_ridge_operations: 156
-  v5_eeg_probe_ledgers: 150
-  text_residualizer_ledgers: 6
+  geometry_probe_fits: 96
+  total_ridge_operations: 102
+  unique_v5_ledgers: 102
+  transform_ledger_rows: 300
   outer_test_reads: 0
   calibration_reads: 0
 
+transform_audit:
+  unique_scope_count: 300
+  unique_transform_hash_count: 300
+  minimum_covariance_trace: 20.22948118791483
+  minimum_lambda: 5.268088791264029e-08
+  real_arm_values_only: true
+  labels_used: false
+  shared_across_arms: true
+  transductive: true
+  fallback_count: 0
+
 formal_outputs:
-  contract_sha256: 50a4d1ebf44af415a0de69ec66e4fe56bcaeb21acf70d262cfd80a59454779ed
-  json_sha256: 610e40bf09959fb30f2a08f998b42148e9967168263a64c3ba37969194e964ff
-  markdown_sha256: a858a7475b486bd874ace44435cc2de074c57391f6cdc9ffc102cb7f78c5beed
-  ledger_sha256: 28fc32b5103a1ba19b9c2cd2c724da5d7d3aff17f53f5ac72e3993e64db9314a
+  contract_sha256: cb28e85029ec01dff3961e101a42d00672155ac7258641a077bf4bd6cf6eee78
+  json_sha256: 6aca8e2be1e062092a3ca7a4133cacd179e0fd73926240bd48739aedaa51426b
+  markdown_sha256: 931091510f32059e6b199028eab6e8023960d74a093b8a09546925b709a60d55
+  ledger_sha256: 8e9ee515cfef330eba7d6f2d6caaa91ec4d4b140678c191e21f11597253fecd3
+  transform_ledger_sha256: 21d257d3002a4e3aff8198317bd2e25293eab3b2d8ec585b85acad42b951021b
 
 scope_violations: []
 
-last_run: runs/research/2026-08-22_003_v322_real_sham_r1_freeze.md
+last_run: runs/research/2026-08-23_004_v323_real_sham_r2_geometry_freeze.md
 
 do_not_do:
   - Read or score outer-test or calibration rows.
-  - Fit M1 transductive alignment, any subject-target covariance map, or any
-    alignment encoder; M0 is the unchanged inductive probe path only.
-  - Change parent splits, record IDs, seed 20260813, ridge alpha 1.0,
-    temperature 0.07, support rules, sham permutations, thresholds, or
-    text-encoder revision.
-  - Add F3_EVENT_LOCKED unless a released source-schema contract is separately
-    authored before execution; for this R1 it is deferred and must not run.
-  - Modify or relabel parent formal artifacts, R0 artifacts, or old outcomes.
-  - Use subject identity, task labels, calibration labels, synthetic truth, or
-    row counts as fitted inputs.
+  - Use subject identity, item labels, H, task labels or sham labels to fit
+    the M1 transform.
+  - Treat M1 transductive success as inductive or paper-level evidence.
+  - Change parent splits, record IDs, seed 20260813, alpha 1.0, temperature
+    0.07, support rules, sham permutations or text encoder revision.
+  - Add F3_EVENT_LOCKED; released source schema still has no onset/window
+    contract beyond fixation-level word.rawEEG.
+  - Modify or relabel parent, R0 or R1 formal artifacts.
