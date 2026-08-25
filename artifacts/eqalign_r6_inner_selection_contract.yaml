@@ -1,0 +1,192 @@
+schema_version: 1
+contract_id: v4_1_r6_inner_selection_main
+status: BLOCKED_R6_EXECUTION_CONTRACT_INCOMPLETE
+task: R6_INNER_SELECTION
+base_branch: main
+base_commit: 309b70163707c145b9e92a38b41a3ff92cf0f510
+governing_spec:
+  path: guide/EEG_Text_Bprime_Unified_Paper_Spec_v4_1_R6INNER_READY_MAIN_2026-08-25.md
+  sha256: 00f2a8fc7c77ba578903249f545e6ace5a622b79ed887fd18a3db07bdc98c8da
+historical_provenance:
+  validator_branch: research/real-sham-r4-orthogonal-inner
+  validator_branch_is_not_active_work_branch: true
+  active_work_branch: main
+  future_work_branch: main
+  historical_branches_read_only:
+    - research/real-sham-r1-inner
+    - research/real-sham-r2-geometry-inner
+    - research/real-sham-r3-subject-balanced
+    - research/real-sham-r4-orthogonal-inner
+    - research/real-sham-rescue
+
+split_inputs:
+  outer:
+    path: 01_data_protocol/splits/eqalign_r6_zuco_2_0_outer_folds.json
+    physical_sha256: 445e640239cff4cbbdb9fd0a81e6cdc8d9e0e1e1a698df4235b6382fb7637794
+    canonical_sha256: b5664601b34eded841fe87ff04619436115f97c2dcd7e283cb9d6d18630bcc6f
+  inner:
+    path: 01_data_protocol/splits/eqalign_r6_zuco_2_0_inner_folds.json
+    physical_sha256: 1b609a7e4a62c66f8b1a2127a94ec4ee42793521d7accad40178eb5cde54b40d
+    canonical_sha256: 472e0ad970e02d41edfdf2cdbb12147a4264aa980c5ac4241f0bf0032b629034
+  support_audit:
+    path: 04_results/audits/eqalign_r6_zuco2_inner_split_support.json
+    physical_sha256: 055be044f222ae38667d5dd3da3828f1901a890f1448d8215c067c960d105d57
+    canonical_sha256: f6d1a8f5d85f1a091c45b815f4f3edfea16d8685eebd6aa0a556ca930552d374
+  required_shape:
+    tasks: [task1_nr, task2_tsr]
+    outer_cells_per_task: 18
+    inner_cells_per_outer_cell: 9
+    outer_folds: {subject: 6, text: 3}
+    inner_folds: {subject: 3, text: 3, task_global: true}
+
+other_frozen_inputs:
+  source_contract:
+    path: artifacts/a1_real_source_contract.yaml
+    physical_sha256: bb03bb785dd62d8957819aa69eaa4155636e36858dcb35cf31a8e9a81bbedc3c
+  a1_frontend_freeze:
+    path: artifacts/a1_frontend_freeze.yaml
+    physical_sha256: 9c3f48ddf38bca8e75534932ebc6ea3c035a044f627e271a0348ec759bc11e30
+  candidate_common_support:
+    path: 01_data_protocol/candidates/candidate_lists_n10_common_support.json
+    physical_sha256: b3eda1c09542344e108ce162a0f414beb54a426644db18126ee1e87e36ddf097
+  common_support_audit:
+    path: 04_results/audits/zuco2_n10_common_support_audit.json
+    physical_sha256: 6dfba054d8242501808e267f91efdf080f6cbd479b617819edb4baf47554c0fc
+  semantic_item_support:
+    path: 04_results/audits/semantic_item/zuco2_semantic_item_support.json
+    physical_sha256: fe862ebaed2b027b4924f45c23dacfc01c5c7ad862f6917cbd0a963d2dcff32c
+  h_definition:
+    path: artifacts/h_definition.yaml
+    physical_sha256: 226f92e299633997fdb9469592f6f8a36fa6c728aa24d9a7d6cb9ded8fb2ae6b
+  text_encoder_freeze:
+    path: artifacts/text_encoder_freeze.yaml
+    physical_sha256: 35e18392a285c8d09ba84a934e31dd327a18fa1a0c10a3bd8550f090cd496494
+
+execution_contract_gate:
+  recipe_status: BLOCKED_UNFROZEN_CONFIRMED
+  oof_probe_contract_status: BLOCKED_UNFROZEN_CONFIRMED
+  required_before_any_real_read_or_metric: true
+  required_recipe_fields:
+    - alignment_encoder_architecture_and_parameter_count
+    - optimizer_and_parameter_groups
+    - learning_rate_and_scheduler
+    - batch_size_and_exact_batch_order_rule
+    - total_steps_or_epochs
+    - early_stopping_rule_and_validation_cadence
+    - infonce_temperature
+    - seed_derivation_and_rng_stream_partition
+  required_oof_probe_fields:
+    - probe_architecture_and_capacity
+    - nested_fit_only_fold_rule
+    - normalization_fit_scope
+    - u_oof_and_u_min_definition
+    - amortized_2pl_fit_rule
+    - ledger_record_id_schema
+  prohibited_substitutions:
+    - 02_code/scripts/eq_anma_smoke.py defaults
+    - 02_code/scripts/run_eq_anma_synthetic_benchmark.py defaults
+    - 02_code/scripts/run_a1_admission.py old 6x5 loader as an R6 runner
+  missing_contract_action: BLOCKED_R6_EXECUTION_CONTRACT_INCOMPLETE
+
+allowed_scope_if_gate_passes:
+  reads:
+    - outer_train_records_only
+    - current_inner_train_records_for_fit
+    - current_inner_validation_records_for_selection_only
+    - frozen_candidate_common_support
+    - frozen_text_encoder_and_a1_source
+  forbidden_reads:
+    - old_6x5_outer_or_inner_artifacts
+    - held_out_only_records_for_fit_or_selection
+    - outer_test_records
+    - calibration_records
+  counters:
+    real_eeg_value_reads_allowed: true
+    controller_reads_outer: false
+    outer_test_reads: 0
+    calibration_reads: 0
+    real_outer_reads_in_stage_c: 0
+
+selection:
+  arms: [BASE, DIRECT, EQ_ANMA, EQ_SHUFFLE, DIRECT_MATCHED]
+  gamma_grid: [0.0, 0.25, 0.5, 1.0]
+  direct_grid_size: 8
+  shuffle_realizations: 3
+  main_seeds: 3
+  ablation_seeds: 2
+  primary_metric: candidate_common_support_macro_subject_recall_at_1_n10
+  secondary_metrics: [mrr_at_10, auroc_1_1, auprc_1_9, worst_subject_r_at_1]
+  aggregation: mean_outer_cells_then_mean_seeds_then_macro_subject
+  tie_break: absolute_gamma_smaller_when_difference_lt_0_25_point
+  taskwise_gamma: record_only_no_second_outer_run
+  outer_read_limit_per_task_cell: 0_during_inner_selection
+
+outputs:
+  contract_artifact: artifacts/eqalign_r6_inner_selection.yaml
+  json: 04_results/inner_selection/eqalign_r6_inner_selection.json
+  markdown: 04_results/inner_selection/eqalign_r6_inner_selection.md
+  ledger: 04_results/inner_selection/eqalign_r6_inner_selection_run_ledger.jsonl.gz
+  run_record: runs/research/<new>_v4_1_r6_inner_selection.md
+  no_output_if_blocked: true
+  next_task_if_completed: R6_CALIBRATION_LABELING
+
+immutable_inputs:
+  old_outer_sha256: 20aedfd56c7c5ee41a491e5b5531ef77728344808d42ba45d72d7e30250cffa6
+  old_inner_sha256: 0271aba0ae9627f35e281029a8a95390513c1e92c8010e8a2795171f837575d7
+  tasks_yaml_unchanged: true
+  r0_r4_formal_artifacts_unchanged: true
+preflight_result:
+  status: BLOCKED_R6_EXECUTION_CONTRACT_INCOMPLETE
+  checked_head: 309b70163707c145b9e92a38b41a3ff92cf0f510
+  preflight_commit: SELF
+  remote_main_after_push: SAME_AS_SELF
+  real_runner_present: false
+  real_training_recipe_hash_bound: false
+  real_oof_probe_contract_hash_bound: false
+  present_hash_bound_inputs:
+    exact_minilm_snapshot_and_manifests:
+      status: PRESENT
+      artifact_sha256: 35e18392a285c8d09ba84a934e31dd327a18fa1a0c10a3bd8550f090cd496494
+      revision: 1110a243fdf4706b3f48f1d95db1a4f5529b4d41
+    zuco_dataset_root_and_source_manifest:
+      status: PRESENT
+      root: 01_data_protocol/datasets/zuco_2.0
+      dataset_source_manifest_sha256: 31e38d255f80c3c14c2f00b74cde649afb986999f7285a7a8fc8ceee2972f74f
+  missing_contract_fields:
+    - alignment_encoder_architecture_and_exact_parameter_count
+    - optimizer_and_parameter_groups
+    - learning_rate_and_scheduler
+    - batch_size_and_deterministic_batch_order
+    - total_steps_or_epochs
+    - validation_cadence
+    - early_stopping_rule
+    - infonce_temperature
+    - real_oof_probe_architecture_and_capacity
+    - real_oof_probe_nested_fit_only_folds
+    - real_runner_normalizer_fit_scope_binding
+    - real_runner_u_oof_and_u_min_definition_binding
+    - amortized_2pl_fitting_rule_and_capacity
+    - complete_rng_stream_partition
+    - real_ledger_record_id_schema
+  prohibited_sources_not_used:
+    - 02_code/scripts/eq_anma_smoke.py
+    - 02_code/scripts/run_eq_anma_synthetic_benchmark.py
+    - 02_code/scripts/run_a1_admission.py
+  counters:
+    real_eeg_value_reads: 0
+    text_encoder_reads: 0
+    training_started: false
+    inner_metrics_generated: false
+    outer_test_reads: 0
+    calibration_reads: 0
+  metric_outputs_created: []
+  cleanup_targets_removed:
+    - .codex_stage0_a1_admission_v314/
+    - .codex_stage0_tests/
+    - .codex_stage0_scripts/
+    - .codex_stage0_src/
+    - .codex_stage0_artifacts/
+    - .codex_stage1_a1r_v318/
+    - 02_code/src/methods/__pycache__/
+    - 02_code/src/data/__pycache__/
+  branches_deleted: []

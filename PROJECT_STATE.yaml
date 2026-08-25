@@ -1,8 +1,8 @@
 schema_version: 1
 state_kind: branch_local_author_freeze
-updated_at: "2026-08-25T07:46:32+08:00"
-updated_by: codex_r6_split_reconciliation
-updated_by_run: 2026-08-24_011_v4_1_r6_split_reconciliation_readiness
+updated_at: "2026-08-25T08:15:15+08:00"
+updated_by: codex_r6_inner_selection_preflight
+updated_by_run: 2026-08-25_012_v4_1_r6_inner_selection_readiness
 
 project:
   name: trustworthy_subject_general_eeg_text_alignment
@@ -11,13 +11,18 @@ project:
   branch_name: research/real-sham-r4-orthogonal-inner
   base_commit: fbc54c7b90ffc1bbc07b55ffc3123d0421779104
   parent_branch: research/real-sham-r3-subject-balanced
-  active_protocol_spec: v4.1_R6SPLIT_RECONCILE_READY_MAIN_R6_EQALIGN_MSP
-  active_protocol_spec_file: guide/EEG_Text_Bprime_Unified_Paper_Spec_v4_1_R6SPLIT_RECONCILE_READY_MAIN_2026-08-24.md
+  active_protocol_spec: v4.1_R6INNER_READY_MAIN_R6_EQALIGN_MSP
+  active_protocol_spec_file: guide/EEG_Text_Bprime_Unified_Paper_Spec_v4_1_R6INNER_READY_MAIN_2026-08-25.md
   alignment_case: CASE_A_BRANCH_LOCAL_R4
   alignment_status: ALIGNED_R4_BRANCH_LOCAL
   active_work_branch: main
   future_work_branch: main
   workflow_policy: MAIN_ONLY_AFTER_R4_MERGE
+  active_base_commit: 309b70163707c145b9e92a38b41a3ff92cf0f510
+  active_base_commit_role: remote_main_after_r6_split_reconciliation
+  validator_provenance_note: >-
+    project.branch_name/base_commit remain the historical R4 validator provenance;
+    active_work_branch/future_work_branch/active_base_commit are the executable R6 entry point.
   merged_from_branch: research/real-sham-r4-orthogonal-inner
   merged_from_commit: e80862e943b9fbff7f5788dc109eefbf2c27a476
   main_migration_status: DONE
@@ -27,7 +32,7 @@ project:
   r6_freeze_base_commit: 0a140bafabf9ec489547dda002f7613cafdfa4db
   r6_implementation_status: SYNTHETIC_SURFACE_ONLY
   r6_real_runner_status: ABSENT
-  r6_experiment_release: BLOCKED_UNTIL_INNER_SELECTION
+  r6_experiment_release: BLOCKED_R6_EXECUTION_CONTRACT_INCOMPLETE
   r6_implementation_task_status: DONE
   r6_implementation_base_commit: 125d72c9aad1dd2d3777d695123f17dc97138268
   r6_implementation_commit: a4a3d3c007639029c8d57d4b1700cdd00587e307
@@ -242,6 +247,66 @@ r6_split_reconciliation:
     - retrieval_metric
     - outer_test_or_calibration_read
     - gamma_or_direct_selection
+
+r6_inner_selection:
+  task: R6_INNER_SELECTION
+  status: BLOCKED_R6_EXECUTION_CONTRACT_INCOMPLETE
+  base_branch: main
+  base_commit: 309b70163707c145b9e92a38b41a3ff92cf0f510
+  preflight_commit: SELF
+  remote_main_after_push: SAME_AS_SELF
+  governing_spec_file: guide/EEG_Text_Bprime_Unified_Paper_Spec_v4_1_R6INNER_READY_MAIN_2026-08-25.md
+  governing_spec_sha256: 00f2a8fc7c77ba578903249f545e6ace5a622b79ed887fd18a3db07bdc98c8da
+  split_reconciliation_dependency: DONE
+  real_runner_status: ABSENT
+  execution_contract_status: BLOCKED_R6_EXECUTION_CONTRACT_INCOMPLETE
+  recipe_status: BLOCKED_UNFROZEN
+  oof_probe_contract_status: BLOCKED_UNFROZEN
+  real_eeg_value_reads: 0
+  text_encoder_reads: 0
+  training_started: false
+  inner_metrics_generated: false
+  outer_test_reads: 0
+  calibration_reads: 0
+  expected_codex_action: PREFLIGHT_THEN_STOP_IF_ANY_CONTRACT_MISSING
+  no_synthetic_substitute: true
+  preflight_result: BLOCKED_R6_EXECUTION_CONTRACT_INCOMPLETE
+  present_hash_bound_inputs:
+    - r6_outer_6x3_split
+    - r6_inner_3x3_split
+    - support_identity_audit
+    - exact_minilm_snapshot_and_manifests
+    - zuco_dataset_root_and_source_manifest
+  missing_contract_fields:
+    - alignment_encoder_architecture_and_exact_parameter_count
+    - optimizer_and_parameter_groups
+    - learning_rate_and_scheduler
+    - batch_size_and_deterministic_batch_order
+    - total_steps_or_epochs
+    - validation_cadence
+    - early_stopping_rule
+    - infonce_temperature
+    - real_oof_probe_architecture_and_capacity
+    - real_oof_probe_nested_fit_only_folds
+    - real_runner_normalizer_fit_scope_binding
+    - real_runner_u_oof_and_u_min_definition_binding
+    - amortized_2pl_fitting_rule_and_capacity
+    - complete_rng_stream_partition
+    - real_ledger_record_id_schema
+  cleanup_targets_removed:
+    - .codex_stage0_a1_admission_v314/
+    - .codex_stage0_tests/
+    - .codex_stage0_scripts/
+    - .codex_stage0_src/
+    - .codex_stage0_artifacts/
+    - .codex_stage1_a1r_v318/
+    - 02_code/src/methods/__pycache__/
+    - 02_code/src/data/__pycache__/
+  branches_deleted: []
+  next_if_contract_complete: R6_INNER_SELECTION_REAL_RUN
+  next_after_completion: R6_CALIBRATION_LABELING
+  contract_artifact: artifacts/eqalign_r6_inner_selection_contract.yaml
+  contract_artifact_sha256: a03824883e8e11d910cad1d94915c51df4fe072fef5786bd930d496d6f9fbcde
 
 do_not_do:
   - Read or score outer-test or calibration rows.

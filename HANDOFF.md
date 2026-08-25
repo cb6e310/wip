@@ -155,3 +155,48 @@ passed all five synthetic/adversarial split tests. No EEG numeric values, text
 encoder, training, retrieval metric, outer-test or calibration rows were read.
 The only next task is `R6_INNER_SELECTION`; it must be executed separately on
 `main` after this handoff is accepted.
+
+## R6 inner-selection readiness review (2026-08-25)
+
+Remote `origin/main` was checked directly and is `309b70163707c145b9e92a38b41a3ff92cf0f510`.
+The remote branch inventory is `main` plus the five historical audit refs
+`research/real-sham-r1-inner`, `research/real-sham-r2-geometry-inner`,
+`research/real-sham-r3-subject-balanced`, `research/real-sham-r4-orthogonal-inner`
+and `research/real-sham-rescue`; no transient remote branch is present. Future
+work remains main-only. The old 6x5 artifacts and historical ledgers are retained.
+
+The split task is complete. The R6 namespaced outer/inner/support artifacts have
+the hashes recorded in `PROJECT_STATE.yaml` and
+`artifacts/eqalign_r6_inner_selection_contract.yaml`; the remote commit reported
+PASS for the split selfcheck and five split tests. Independent local static checks
+also passed for project diff/compile and artifact shape, while the local runtime
+lacks `h5py` and `pytest`, so a second local real-data selfcheck is not claimed.
+
+The next task is not yet an unconditional training authorization. The current
+tree has no real R6 runner and the author freeze does not bind concrete alignment
+optimizer/batch/steps/early-stop values or the real fit-only OOF probe→2PL
+contract. The synthetic smoke and benchmark defaults are explicitly non-paper
+surfaces. Codex must preflight those contracts and stop with
+`BLOCKED_R6_EXECUTION_CONTRACT_INCOMPLETE` if either is absent; it must not guess,
+run synthetic substitutes, read outer-test/calibration, or write empty metrics.
+If the author-frozen contracts are present in the checked-out repository, Codex
+may execute only inner selection under the new 6x3/3x3 artifacts and produce the
+paths in the inner-selection contract.
+
+## R6 inner-selection contract preflight result
+
+Codex completed the repository preflight on clean `main@309b701...` before any
+EEG value or text-encoder read. The exact MiniLM revision/manifests and the ZuCo
+dataset root/source manifest are present, and all new/old split hashes and shapes
+match. However, no real R6 runner or author-frozen, hash-bound alignment recipe
+exists. The real OOF probe to amortized-2PL contract is also not bound to an
+executable fit-only implementation.
+
+The task is therefore `BLOCKED_R6_EXECUTION_CONTRACT_INCOMPLETE`. Missing fields
+are the exact alignment architecture/parameter count; optimizer/parameter
+groups; learning rate/scheduler; batch size/order; steps/epochs; validation
+cadence; early stopping; InfoNCE temperature; real OOF probe architecture,
+capacity and nested folds; real-runner normalizer and u-score bindings;
+amortized-2PL fit rule/capacity; RNG stream partition; and real ledger record-ID
+schema. No runner, training, synthetic substitute, metric artifact, outer read,
+or calibration read was produced.
