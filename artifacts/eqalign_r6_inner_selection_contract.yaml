@@ -189,4 +189,5 @@ preflight_result:
     - .codex_stage1_a1r_v318/
     - 02_code/src/methods/__pycache__/
     - 02_code/src/data/__pycache__/
+    - scripts/__pycache__/
   branches_deleted: []

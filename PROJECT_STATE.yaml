@@ -302,11 +302,12 @@ r6_inner_selection:
     - .codex_stage1_a1r_v318/
     - 02_code/src/methods/__pycache__/
     - 02_code/src/data/__pycache__/
+    - scripts/__pycache__/
   branches_deleted: []
   next_if_contract_complete: R6_INNER_SELECTION_REAL_RUN
   next_after_completion: R6_CALIBRATION_LABELING
   contract_artifact: artifacts/eqalign_r6_inner_selection_contract.yaml
-  contract_artifact_sha256: a03824883e8e11d910cad1d94915c51df4fe072fef5786bd930d496d6f9fbcde
+  contract_artifact_sha256: b39e82b7c15c754a9610b48b9234b7a3f35cef869d79c2bd55f2329ff62f09a8
 
 do_not_do:
   - Read or score outer-test or calibration rows.

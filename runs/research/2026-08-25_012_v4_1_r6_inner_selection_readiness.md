@@ -87,7 +87,7 @@ Missing execution-contract fields:
 Final contract artifact:
 
 - `artifacts/eqalign_r6_inner_selection_contract.yaml`;
-- SHA256 `a03824883e8e11d910cad1d94915c51df4fe072fef5786bd930d496d6f9fbcde`.
+- SHA256 `b39e82b7c15c754a9610b48b9234b7a3f35cef869d79c2bd55f2329ff62f09a8`.
 
 Counters and effects:
 
@@ -102,5 +102,6 @@ Counters and effects:
   `.codex_stage0_tests/`, `.codex_stage0_scripts/`, `.codex_stage0_src/`,
   `.codex_stage0_artifacts/`, `.codex_stage1_a1r_v318/`,
   `02_code/src/methods/__pycache__/`, and
-  `02_code/src/data/__pycache__/`;
+  `02_code/src/data/__pycache__/`, plus the post-validation
+  `scripts/__pycache__/`;
 - branches deleted: `[]`.
